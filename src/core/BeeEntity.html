@@ -503,6 +503,53 @@
     }
 
     /* ==========================================
+       3c. TABELLA API
+       ========================================== */
+    .bee-api-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0 0 20px 0;
+        font-size: 14px;
+        background: var(--bee-surface-2);
+        border: 1px solid var(--bee-line);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .bee-api-table thead th {
+        background: rgba(245, 158, 11, 0.1);
+        color: var(--bee-honey);
+        text-align: left;
+        font-family: var(--bee-mono);
+        font-size: 13px;
+        letter-spacing: 0.4px;
+        padding: 11px 14px;
+        border-bottom: 1px solid var(--bee-line-honey);
+    }
+
+    .bee-api-table tbody td {
+        padding: 11px 14px;
+        border-top: 1px solid var(--bee-line);
+        color: var(--bee-text);
+        line-height: 1.6;
+        vertical-align: top;
+    }
+
+    .bee-api-table tbody tr:hover td {
+        background: rgba(245, 158, 11, 0.05);
+    }
+
+    .bee-api-table code {
+        font-family: var(--bee-mono);
+        font-size: 13px;
+        color: #fcd34d;
+        background: rgba(245, 158, 11, 0.1);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+        padding: 1px 6px;
+        border-radius: 5px;
+    }
+
+    /* ==========================================
        4. REGOLE SPECIFICHE PER TELEFONO (MOBILE)
        ========================================== */
     @media (max-width: 768px) {
@@ -556,6 +603,12 @@
             font-size: 11px;
             padding: 6px 9px;
         }
+
+        .bee-api-table {
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
     }
 </style>
 
@@ -566,6 +619,13 @@
     </a>
     <span class="bee-header-badge">v2.2.0</span>
 </header>
+
+<!-- BANNER COCCINELLA (predisposizione: togliere il commento quando serve)
+<div class="bee-ladybug-banner">
+    <img src="URL_IMMAGINE_COCCINELLA" alt="BeeLadybug">
+    <div><strong>BeeLadybug</strong> — testo del banner qui.</div>
+</div>
+-->
 
 <!-- CONTENITORE PRINCIPALE -->
 <div class="bee-docs-container">
@@ -591,6 +651,7 @@
                 <summary>📁 Core </summary>
                 <ul>
                     <li><a href="#BeeAssetManager">BeeAssetManager .js</a></li>
+                    <li><a href="#BeeEntity" class="is-current">BeeEntity.js</a></li>
                     <li><a href="#BeeGrid">BeeGrid.js</a></li>
                     <li><a href="#BeeSave">BeeSave.js</a></li>
                     <li><a href="#BeeSceneManager">BeeSceneManager.js</a></li>
@@ -603,7 +664,7 @@
                 <ul>
                     <li><a href="#BeeCollectible">BeeCollectible.js</a></li>
                     <li><a href="#BeeEnemyShooter">BeeEnemyShooter.js</a></li>
-                    <li><a href="#BeeEntity">BeeEntity.js</a></li>
+
                     <li><a href="#BeeMenuScene">BeeMenuScene.js</a></li>
                     <li><a href="#BeeNemico">BeeNemico.js</a></li>
                     <li><a href="#BeePlatform">BeePlatform.js</a></li>
@@ -656,7 +717,7 @@
             <!-- Titolo e Descrizione -->
             <div>
                 <h2 class="bee-section-title" style="margin: 0;">BeeEntity — Documentazione Tecnica</h2>
-                <p style="margin-top: 5px;">Classe madre base per tutte le entità di gioco in BeeEngine</p>
+                <p style="margin-top: 5px;">Nodo di scene graph: trasformata, gerarchia, ciclo di vita e cinematica</p>
             </div>
 
             <!-- Mascotte a Destra (Incolla l'URL al posto di URL_DELLA_TUA_IMMAGINE) -->
@@ -664,412 +725,491 @@
                 alt="BeeEngine Mascot" width="80" height="80" style="width: 80px; height: auto; flex-shrink: 0;">
 
         </div>
+
         <div class="bee-class-card" id="BeeEntity">
 
-            <h3>📁Panoramica</h3>
+            <h3>📁 Panoramica</h3>
 
-            <p>BeeEntity è la classe fondamentale da cui derivano (o a cui si ispirano) tutti gli oggetti attivi di un
-                gioco
-                costruito con BeeEngine: il giocatore, i nemici, le piattaforme, i proiettili, i power-up. Gestisce
-                quattro
-                responsabilità core che quasi ogni entità di gioco 2D condivide:</p>
-            <div class="bee-code-block">1. Posizione e dimensioni (x, y, width, height)
-                2. Movimento tramite velocità (vx, vy) e gravità opzionale
-                3. Collisioni rettangolari (AABB) e risoluzione fisica delle collisioni solide
-                4. Gerarchia padre-figlio, per composizione di entità complesse (es. un nemico con un'arma agganciata)
+            <p><code>BeeEntity</code> è il nodo base dello scene graph di BeeEngine: da lei derivano il giocatore, i
+                nemici, le piattaforme, i proiettili e i collezionabili. Ha una responsabilità unica e dichiarata: dati
+                di trasformata, gerarchia, ciclo di vita e cinematica (velocità → posizione).</p>
+
+            <p>Quello che <strong>non</strong> fa è altrettanto importante: non disegna nulla. Il rendering è
+                responsabilità delle sottoclassi, la traversata del grafo per il disegno è del motore. Le collisioni
+                leggono l'AABB in coordinate mondo, e il solver riscrive il risultato in coordinate locali.</p>
+
+            <div class="bee-code-block">
+                <span class="token keyword">import</span> <span class="token punctuation">{</span> <span class="token class-name">BeeRectCollider</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'../physics/BeeRectCollider.js'</span><span class="token punctuation">;</span>
+                <span class="token keyword">import</span> <span class="token punctuation">{</span> <span class="token class-name">BeeEntity</span><span class="token punctuation">,</span> <span class="token constant">BEE_ENTITY_DEFAULTS</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./src/core/BeeEntity.js'</span><span class="token punctuation">;</span>
             </div>
 
-            <p>Il design è deliberatamente "piatto" e senza dipendenze da un framework grafico specifico: BeeEntity non
-                sa nulla di come viene disegnata (delega tutto a draw, che a sua volta può delegare a un
-                engine.drawEntity), il che la rende riutilizzabile sia con "canvas" puro sia con altri sistemi di
-                rendering.</p>
+            <h3>📁 Il concetto chiave: coordinate locali e coordinate mondo</h3>
 
-            <h3>📁Architettura interna</h3>
+            <p>Questa è la differenza più importante rispetto a un'entità "piatta". <code>x</code> e <code>y</code> sono
+                <strong>sempre locali al parent</strong>. Le coordinate assolute si leggono da <code>worldX</code> e
+                <code>worldY</code>, che sono una cache <em>lazy</em>: non vengono ricalcolate quando muovi l'entità, ma
+                solo quando qualcuno le legge dopo che la catena è stata marcata come "sporca".
+            </p>
 
-            <p>Stato di base</p>
-
-            <div class="bee-code-block">
-                this.x = x; this.y = y;
-                this.width = width; this.height = height;
-                this.vx = 0; this.vy = 0;
-                this.gravity = 0;
-                this.isGrounded = false;
-                this.active = true;
-                this.visible = true;
-                this.destroyed = false;
-                this.collider = null;
-                this.children = [];</div>
-
-            <h3>📁Da notare tre coppie di flag booleani con significati distinti e volutamente separati:</h3>
-
-            <p>active controlla se l'entità viene aggiornata (update)</p>
-
-            <p>visible controlla se viene disegnata (draw)</p>
-
-            <p>destroyed è un marcatore logico di "questa entità è morta", che però non rimuove l'oggetto dalla memoria
-                né dagli array dei genitori — è responsabilità di chi gestisce la lista di entità (una scena, un pool)
-                controllare questo flag e fare l'effettiva pulizia (es. filtrare l'array ad ogni frame o riciclare
-                l'oggetto in un object pool).</p>
-
-            <p>Questa separazione è utile: puoi avere un'entità invisibile ma ancora attiva (es. un'area trigger
-                invisibile), o disattivata ma ancora visibile per un frame di dissolvenza in uscita.</p>
-
-            <h3>Gerarchia di entità (children)</h3>
-
-            <div class="bee-code-block">addChild(entity) { this.children.push(entity); return entity; }
-                removeChild(entity) { this.children = this.children.filter(child => child !== entity); }</div>
-
-            <p>Ogni BeeEntity può contenere altre entità figlie. Questo pattern (comune nei motori a scene graph)
-                permette la composizione: ad esempio, un nemico può avere come figlio un'arma che si muove relativamente
-                a lui, oppure il giocatore può avere come figlio un'aura o uno scudo temporaneo</p>
-
-            <p>update e draw propagano automaticamente la chiamata a tutti i figli attivi/visibili, quindi basta
-                chiamare i due metodi sulla radice della gerarchia perché l'intero albero venga processato.</p>
-
-            <p>Da notare che le coordinate x/y dei figli in questa implementazione non sono relative al genitore — sono
-                assolute, esattamente come per qualsiasi altra entità. La gerarchia qui serve per organizzare
-                l'update/draw, non per un sistema di trasformazioni annidate in stile "parent-relative transform".</p>
-
-            <h3>📁Collisione AABB (collidesWith)</h3>
+            <p>Il meccanismo è a due tempi. Quando scrivi <code>x</code> o <code>y</code>, un flag di invalidazione si
+                propaga a tutto il sottoalbero (con uscita anticipata se era già sporco, così non si ripercorre lo stesso
+                ramo due volte). Alla lettura di <code>worldX</code>, la catena viene risincronizzata dal parent verso il
+                basso e il valore viene messo in cache.</p>
 
             <div class="bee-code-block">
-                collidesWith(other) {
-                if (!other || other === this) return false;
-                return (
-                this.x < other.x + other.width && this.x + this.width> other.x &&
-                    this.y < other.y + other.height && this.y + this.height> other.y
-                        );
-                        }</div>
+                <span class="token keyword">const</span> mondo <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeeEntity</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">,</span> <span class="token number">50</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">const</span> arma <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeeEntity</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                mondo<span class="token punctuation">.</span><span class="token function">addChild</span><span class="token punctuation">(</span>arma<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-            <p>Questo è il classico test Axis-Aligned Bounding Box: due rettangoli si sovrappongono se e solo se si
-                sovrappongono sia sull'asse X che sull'asse Y.</p>
+                arma<span class="token punctuation">.</span>x<span class="token punctuation">;</span>        <span class="token comment">// 10  → locale al parent</span>
+                arma<span class="token punctuation">.</span>worldX<span class="token punctuation">;</span>   <span class="token comment">// 110 → 100 (parent) + 10 (locale)</span>
 
-            <p>È il metodo di collision detection più economico in termini di calcolo (solo confronti numerici, nessuna
-                radice quadrata o trigonometria) ed è la scelta giusta per la stragrande maggioranza dei giochi
-                platform/arcade 2D dove le hitbox sono rettangoli non ruotati.</p>
+                <span class="token comment">// Scrivere worldX converte automaticamente in locale</span>
+                arma<span class="token punctuation">.</span>worldX <span class="token operator">=</span> <span class="token number">130</span><span class="token punctuation">;</span>
+                arma<span class="token punctuation">.</span>x<span class="token punctuation">;</span>        <span class="token comment">// 30</span>
+            </div>
 
-            <p>Da notare: il metodo usa direttamente this.x/y/width/height, non l'eventuale this.collider creato con
-                addRectCollider.</p>
+            <p>Il vantaggio pratico: muovere un parent aggiorna implicitamente tutti i figli, senza cicli espliciti e
+                senza ricalcoli inutili. Il costo si paga solo alla lettura, e una volta sola per frame per nodo.</p>
 
-            <p>Questo significa che se un'entità ha un collider con offset personalizzato (diverso dal bounding box
-                grezzo dell'entità), collidesWith lo ignora — è un dettaglio importante da tenere presente: il collider
-                dedicato esiste ma questo metodo non lo consulta automaticamente.</p>
+            <h3>📁 BEE_ENTITY_DEFAULTS — parametri cinematici</h3>
 
-            <h3>📁Risoluzione delle collisioni solide (resolvePlatformCollision)</h3>
+            <p>Nessun magic number sparso nel solver: tutti i parametri fisici vivono in un oggetto congelato ed
+                esportato, sovrascrivibile in costruzione o a runtime sulla singola istanza.</p>
 
-            <p>Questo è il metodo più delicato della classe, e merita una lettura riga per riga perché implementa una
-                tecnica classica ma con alcune scelte specifiche.</p>
+            <table class="bee-api-table">
+                <thead>
+                    <tr>
+                        <th>Parametro</th>
+                        <th>Default</th>
+                        <th>Significato</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>width</code> / <code>height</code></td>
+                        <td><code>32</code></td>
+                        <td>Dimensioni dell'AABB dell'entità</td>
+                    </tr>
+                    <tr>
+                        <td><code>gravity</code></td>
+                        <td><code>0</code></td>
+                        <td>Accelerazione verticale in px/s². A 0 l'entità non cade</td>
+                    </tr>
+                    <tr>
+                        <td><code>friction</code></td>
+                        <td><code>0</code></td>
+                        <td>Attrito orizzontale applicato quando l'entità è a terra</td>
+                    </tr>
+                    <tr>
+                        <td><code>airFriction</code></td>
+                        <td><code>0</code></td>
+                        <td>Attrito orizzontale applicato in aria</td>
+                    </tr>
+                    <tr>
+                        <td><code>landingTolerance</code></td>
+                        <td><code>10</code></td>
+                        <td>Banda in px sopra la piattaforma entro cui l'atterraggio è valido</td>
+                    </tr>
+                    <tr>
+                        <td><code>velocityLookahead</code></td>
+                        <td><code>0.1</code></td>
+                        <td>Frazione di <code>vy</code> usata per anticipare il contatto</td>
+                    </tr>
+                    <tr>
+                        <td><code>maxFallSpeed</code></td>
+                        <td><code>Infinity</code></td>
+                        <td>Clamp della velocità di caduta. Applicato solo se finito</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>📁 Costruttore</h3>
+
+            <p>La firma resta posizionale per compatibilità, con un quinto argomento opzionale per la fisica. Se
+                <code>physics</code> è omesso, i default vengono usati direttamente senza creare una copia.
+            </p>
 
             <div class="bee-code-block">
-                const overlapX = Math.min(this.x + this.width - platform.x, platform.x + platform.width - this.x);
-                const overlapY = Math.min(this.y + this.height - platform.y, platform.y + platform.height - this.y);
+                <span class="token keyword">new</span> <span class="token class-name">BeeEntity</span><span class="token punctuation">(</span>x<span class="token punctuation">,</span> y<span class="token punctuation">,</span> width<span class="token punctuation">,</span> height<span class="token punctuation">,</span> physics<span class="token punctuation">)</span>
 
-                if (overlapY < overlapX) { // risolvi verticalmente } else { // risolvi orizzontalmente }</div>
+                <span class="token comment">// Un nemico che cade, con attrito a terra e caduta limitata</span>
+                <span class="token keyword">const</span> nemico <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeeEntity</span><span class="token punctuation">(</span><span class="token number">120</span><span class="token punctuation">,</span> <span class="token number">340</span><span class="token punctuation">,</span> <span class="token number">32</span><span class="token punctuation">,</span> <span class="token number">48</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+                    <span class="token property">gravity</span><span class="token punctuation">:</span> <span class="token number">1200</span><span class="token punctuation">,</span>
+                    <span class="token property">friction</span><span class="token punctuation">:</span> <span class="token number">8</span><span class="token punctuation">,</span>
+                    <span class="token property">maxFallSpeed</span><span class="token punctuation">:</span> <span class="token number">900</span>
+                <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-                    <p>La logica calcola quanto le due entità si sovrappongono su ciascun asse, poi risolve la
-                        collisione lungo l'asse con la sovrapposizione minore.</p>
+                <span class="token comment">// I parametri restano modificabili a runtime</span>
+                nemico<span class="token punctuation">.</span>gravity <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>  <span class="token comment">// es. entra in modalità volo</span>
+            </div>
 
-                    <p>L'intuizione: se la sovrapposizione verticale è più piccola di quella orizzontale, vuol dire che
-                        l'entità sta "toccando appena" la piattaforma dall'alto o dal basso, quindi ha senso spingerla
-                        fuori verticalmente (e viceversa per l'asse orizzontale)</p>
+            <h3>📁 Proprietà di stato</h3>
 
-                    <p>Questa è una tecnica standard per collisioni discrete (non continue) tra rettangoli, ed è
-                        efficace nella maggior parte dei casi tipici di un platform, con il limite noto di tutte le
-                        collisioni discrete:</p>
+            <table class="bee-api-table">
+                <thead>
+                    <tr>
+                        <th>Proprietà</th>
+                        <th>Tipo</th>
+                        <th>Ruolo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>x</code> / <code>y</code></td>
+                        <td><code>number</code></td>
+                        <td>Posizione locale al parent. In scrittura invalidano la cache mondo</td>
+                    </tr>
+                    <tr>
+                        <td><code>worldX</code> / <code>worldY</code></td>
+                        <td><code>number</code></td>
+                        <td>Posizione assoluta. In scrittura vengono convertite in locale</td>
+                    </tr>
+                    <tr>
+                        <td><code>vx</code> / <code>vy</code></td>
+                        <td><code>number</code></td>
+                        <td>Velocità in px/s, integrate da <code>integrate()</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>parent</code></td>
+                        <td><code>BeeEntity|null</code></td>
+                        <td>Sola lettura. Si modifica con <code>addChild</code> / <code>detach</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>children</code></td>
+                        <td><code>BeeEntity[]</code></td>
+                        <td>Sola lettura. Vedi la nota sull'array vivo più sotto</td>
+                    </tr>
+                    <tr>
+                        <td><code>isGrounded</code></td>
+                        <td><code>boolean</code></td>
+                        <td>Vero solo se l'atterraggio è stato riconfermato in questo frame</td>
+                    </tr>
+                    <tr>
+                        <td><code>active</code></td>
+                        <td><code>boolean</code></td>
+                        <td>Se falso, l'entità non viene aggiornata</td>
+                    </tr>
+                    <tr>
+                        <td><code>visible</code></td>
+                        <td><code>boolean</code></td>
+                        <td>Se falso, il motore non la disegna</td>
+                    </tr>
+                    <tr>
+                        <td><code>destroyed</code></td>
+                        <td><code>boolean</code></td>
+                        <td>Marcatore di fine vita. Il parent la scollega al tick successivo</td>
+                    </tr>
+                    <tr>
+                        <td><code>collider</code></td>
+                        <td><code>BeeRectCollider|null</code></td>
+                        <td>Collisore opzionale creato con <code>addRectCollider()</code></td>
+                    </tr>
+                </tbody>
+            </table>
 
-                    <p>a velocità molto alte un'entità può "bucare" un ostacolo sottile tra un frame e l'altro (fenomeno
-                        noto come tunneling), perché il test avviene solo sulla posizione già aggiornata, senza
-                        controllare la traiettoria percorsa nel frame.</p>
+            <h3>📁 Gerarchia: addChild, removeChild, detach</h3>
 
-                    <h3>Il ramo verticale merita attenzione particolare:</h3>
+            <p><code>addChild()</code> aggancia un nodo mantenendo le sue <code>x</code>/<code>y</code> come locali al
+                nuovo parent. È difensivo per costruzione: ignora valori falsy, sé stesso e le entità già distrutte,
+                rifiuta l'aggancio se creerebbe un ciclo nel grafo, ed è idempotente se il nodo è già figlio. Se
+                l'entità aveva un altro parent viene staccata prima, così non esistono mai doppi riferimenti.</p>
 
-                    <div class="bee-code-block">
-                        if (this.vy >= 0 && this.y + this.height - this.vy * 0.1 <= platform.y + 10) { this.y=platform.y
-                            - this.height; this.vy=0; this.isGrounded=true; return true; } else if (this.vy < 0) {
-                            this.y=platform.y + platform.height; this.vy=0; }</div>
+            <div class="bee-code-block">
+                <span class="token keyword">const</span> giocatore <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeeEntity</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">const</span> scudo <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeeEntity</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-                            <p>La condizione this.vy >= 0 distingue "sto cadendo o sono fermo verticalmente" da "sto
-                                salendo" (vy < 0, tipicamente durante un salto). Se sto cadendo, l'entità
-                                    viene "agganciata" sopra la piattaforma (platform.y - this.height) e marcata come
-                                    isGrounded</p>
+                giocatore<span class="token punctuation">.</span><span class="token function">addChild</span><span class="token punctuation">(</span>scudo<span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// ritorna scudo, per concatenare</span>
+                scudo<span class="token punctuation">.</span><span class="token function">detach</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>              <span class="token comment">// stacca senza distruggere, ritorna this</span>
+                giocatore<span class="token punctuation">.</span><span class="token function">removeChild</span><span class="token punctuation">(</span>scudo<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// no-op se non è figlio</span>
 
-                                    <p>Se invece sto salendo e collido, vengo respinto sotto la piattaforma (utile per
-                                        simulare la testa che sbatte contro un blocco dal basso, come nei platform stile
-                                        Mario).</p>
+                <span class="token comment">// Guardia anti-ciclo: l'aggancio viene rifiutato</span>
+                scudo<span class="token punctuation">.</span><span class="token function">addChild</span><span class="token punctuation">(</span>giocatore<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            </div>
 
-                                    <p>Il controllo this.y + this.height - this.vy * 0.1 <= platform.y + 10 è una
-                                            tolleranza euristica: invece di verificare la posizione esatta del bordo
-                                            inferiore dell'entità, sottrae una piccola frazione della velocità verticale
-                                            (vy * 0.1) e aggiunge un margine fisso di 10 pixel alla soglia della
-                                            piattaforma.</p>
+            <h3>📁 Collisioni: getWorldAABB, collidesWith, addRectCollider</h3>
 
-                                            <p>Questo crea un margine di tolleranza che rende l'atterraggio più
-                                                "morbido" e meno sensibile a piccole discrepanze di frame-timing,
-                                                evitando che l'entità venga respinta lateralmente per errore quando in
-                                                realtà sta solo atterrando. È una soluzione pragmatica tipica dello
-                                                sviluppo di platform game "a sensazione",</p>
+            <p><code>getWorldAABB()</code> restituisce il rettangolo dell'entità in coordinate assolute, pronto da
+                passare a un sistema di collisioni esterno. <code>collidesWith()</code> esegue il classico test
+                Axis-Aligned Bounding Box in spazio mondo: due rettangoli si sovrappongono se e solo se si sovrappongono
+                su entrambi gli assi. È il test più economico possibile, solo confronti numerici.</p>
 
-                                            <P>più che una formula fisicamente rigorosa — funziona bene nella pratica ma
-                                                i valori 0.1 e 10 sono magic number che andrebbero probabilmente esposti
-                                                come parametri configurabili se il comportamento di atterraggio
-                                                necessita di essere ritoccato per generi diversi di gioco.</P>
+            <p>Un dettaglio di interoperabilità: la controparte non deve essere necessariamente una
+                <code>BeeEntity</code>. Se l'oggetto passato espone <code>worldX</code>/<code>worldY</code> numerici
+                vengono usati quelli, altrimenti si ricade su <code>x</code>/<code>y</code>. Questo permette di
+                collidere anche con piattaforme rappresentate da oggetti semplici.
+            </p>
 
-                                            <p>Il ramo orizzontale è più semplice: spinge l'entità fuori dal lato da cui
-                                                proviene, basandosi sul segno di vx.</p>
+            <div class="bee-code-block">
+                nemico<span class="token punctuation">.</span><span class="token function">getWorldAABB</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// { x, y, width, height } in spazio mondo</span>
 
-                                            <h3>📁Il ciclo update</h3>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>nemico<span class="token punctuation">.</span><span class="token function">collidesWith</span><span class="token punctuation">(</span>giocatore<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    giocatore<span class="token punctuation">.</span><span class="token function">destroy</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
 
-                                            <div class="bee-code-block">
-                                                update(dt, input, engine) {
-                                                if (this.gravity > 0 && !this.isGrounded) {
-                                                this.vy += this.gravity * dt;
-                                                }
-                                                this.x += this.vx * dt;
-                                                this.y += this.vy * dt;
-                                                this.isGrounded = false;
-                                                for (const child of this.children) {
-                                                if (child.active && child.update) {
-                                                child.update(dt, input, engine);
-                                                }
-                                                }
-                                                }
-                                            </div>
+                <span class="token comment">// Collisore con offset e dimensioni personalizzate</span>
+                <span class="token keyword">const</span> hitbox <span class="token operator">=</span> nemico<span class="token punctuation">.</span><span class="token function">addRectCollider</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">24</span><span class="token punctuation">,</span> <span class="token number">44</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-                                            <p>Il pattern è quello classico basato su delta-time (dt): la velocità viene
-                                                applicata proporzionalmente al tempo trascorso dall'ultimo frame, non a
-                                                un numero fisso di pixel per frame — questo garantisce che il gioco si
-                                                comporti in modo consistente indipendentemente dal framerate del
-                                                dispositivo.</p>
+                <span class="token comment">// Accesso statico alle coordinate mondo di un nodo qualsiasi</span>
+                <span class="token class-name">BeeEntity</span><span class="token punctuation">.</span><span class="token function">worldXOf</span><span class="token punctuation">(</span>piattaforma<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token class-name">BeeEntity</span><span class="token punctuation">.</span><span class="token function">worldYOf</span><span class="token punctuation">(</span>piattaforma<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            </div>
 
-                                            <P>Un dettaglio cruciale da non perdere: this.isGrounded = false viene
-                                                eseguito ad ogni frame, prima del controllo delle collisioni con le
-                                                piattaforme. Questo significa che il flag va "riconfermato" ogni frame
-                                                chiamando resolvePlatformCollision</P>
+            <h3>📁 resolvePlatformCollision — il solver dei contatti solidi</h3>
 
-                                            <p>per ciascuna piattaforma rilevante dopo aver chiamato update — se il
-                                                codice della scena dimentica di richiamare resolvePlatformCollision dopo
-                                                update,</p>
+            <p>Il metodo lavora in spazio mondo e riscrive il risultato in coordinate locali. Calcola quanto i due
+                rettangoli si sovrappongono su ciascun asse e risolve lungo l'asse con la sovrapposizione
+                <strong>minore</strong>: se lo scavalcamento verticale è più piccolo di quello orizzontale, l'entità sta
+                toccando la piattaforma da sopra o da sotto, quindi ha senso spingerla fuori verticalmente.
+            </p>
 
-                                            <P>l'entità risulterà erroneamente "in aria" anche se è ferma su un terreno
-                                                solido. È un'interazione tra metodi che chi integra la classe deve
-                                                conoscere: l'ordine delle chiamate nel game loop è significativo.</P>
-                                            <h3>📁Disegno (draw)</h3>
+            <p>Sul ramo verticale entrano in gioco i due parametri configurabili. <code>velocityLookahead</code> anticipa
+                il contatto di una frazione della velocità corrente, e <code>landingTolerance</code> definisce una banda
+                di qualche pixel sopra la piattaforma entro cui l'atterraggio è considerato valido. Insieme rendono
+                l'atterraggio morbido e insensibile alle piccole discrepanze di frame-timing, evitando che l'entità
+                venga respinta di lato per errore quando appoggia sul bordo.</p>
 
-                                            <div class="bee-code-block">
-                                                draw(ctx, engine) {
-                                                for (const child of this.children) {
-                                                if (!child.visible || !child.draw) continue;
-                                                if (engine && typeof engine.drawEntity === 'function') {
-                                                engine.drawEntity(ctx, child);
-                                                } else {
-                                                child.draw(ctx, engine);
-                                                }
-                                                }
-                                                }</div>
+            <div class="bee-code-block">
+                <span class="token keyword">const</span> overlapX <span class="token operator">=</span> <span class="token class-name">Math</span><span class="token punctuation">.</span><span class="token function">min</span><span class="token punctuation">(</span>x <span class="token operator">+</span> <span class="token keyword">this</span><span class="token punctuation">.</span>width <span class="token operator">-</span> px<span class="token punctuation">,</span> px <span class="token operator">+</span> pw <span class="token operator">-</span> x<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">const</span> overlapY <span class="token operator">=</span> <span class="token class-name">Math</span><span class="token punctuation">.</span><span class="token function">min</span><span class="token punctuation">(</span>y <span class="token operator">+</span> <span class="token keyword">this</span><span class="token punctuation">.</span>height <span class="token operator">-</span> py<span class="token punctuation">,</span> py <span class="token operator">+</span> ph <span class="token operator">-</span> y<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-                                            <p>Interessante notare che BeeEntity.draw() disegna solo i figli, non sé
-                                                stessa. Questo implica che le classi derivate (es. una classe Player
-                                                extends BeeEntity) devono fare l'override di draw() per disegnare il
-                                                proprio sprite, chiamando eventualmente super.draw(ctx, engine)</p>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>overlapY <span class="token operator">&lt;</span> overlapX<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">const</span> lookahead <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>vy <span class="token operator">*</span> <span class="token keyword">this</span><span class="token punctuation">.</span>velocityLookahead<span class="token punctuation">;</span>
+                    <span class="token keyword">const</span> landingBand <span class="token operator">=</span> py <span class="token operator">+</span> <span class="token keyword">this</span><span class="token punctuation">.</span>landingTolerance<span class="token punctuation">;</span>
+                    <span class="token comment">// atterraggio dall'alto → grounded</span>
+                    <span class="token comment">// vy &lt; 0 → testa contro il blocco, respinta sotto</span>
+                <span class="token punctuation">}</span>
+            </div>
 
-                                            <p>per propagare comunque il disegno ai figli. È una scelta di design che
-                                                separa "disegnare questa entità" da "disegnare l'albero sotto questa
-                                                entità".</p>
+            <p>Il valore di ritorno ha un significato preciso e vale la pena sottolinearlo: <code>true</code> significa
+                <strong>"sono atterrato sopra"</strong>, non "c'è stata una collisione". Le spinte laterali e la
+                respinta dal basso avvengono comunque, ma restituiscono <code>false</code>.
+            </p>
 
-                                            <p>Il controllo su engine.drawEntity permette al motore di intercettare
-                                                centralmente ogni chiamata di disegno (utile per applicare effetti
-                                                globali, ordinamento per z-index, o batching), con fallback al metodo
-                                                draw diretto dell'entità se l'engine non lo implementa.</p>
+            <h3>📁 integrate — la cinematica pura</h3>
 
-                                            <h3>📁Distruzione (destroy)</h3>
+            <p>Integra velocità e gravità sulla posizione <strong>locale</strong>. Non risolve collisioni e non tocca il
+                canvas: è puro aggiornamento di dati, quindi si può chiamare in isolamento (utile nei test). Esce subito
+                se l'entità è inattiva, distrutta o se <code>dt</code> non è positivo.</p>
 
-                                            <div class="bee-code-block">
-                                                destroy() {
-                                                this.active = false;
-                                                this.visible = false;
-                                                this.destroyed = true;
-                                                }
-                                            </div>
+            <p>L'ordine delle operazioni è significativo. La gravità si applica solo se non sei a terra, così non
+                accumula velocità verso il basso mentre appoggi. L'attrito usa <code>friction</code> a terra e
+                <code>airFriction</code> in volo. La posizione si aggiorna solo se c'è movimento effettivo, evitando
+                invalidazioni inutili della cache mondo.
+            </p>
 
-                                            <p>Come accennato sopra, questo metodo non rimuove l'entità da nessuna
-                                                struttura dati — si limita a marcarla. La rimozione effettiva
-                                                (dall'array children del genitore, da un array di nemici in una scena,
-                                                ecc.) è responsabilità del codice chiamante, che tipicamente controlla
-                                                destroyed per filtrare le entità morte a fine frame.</p>
+            <div class="bee-code-block">
+                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>gravity <span class="token operator">!==</span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span><span class="token keyword">this</span><span class="token punctuation">.</span>isGrounded<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">this</span><span class="token punctuation">.</span>vy <span class="token operator">+=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>gravity <span class="token operator">*</span> dt<span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
 
-                                            <h3>Esempio pratico</h3>
+                <span class="token keyword">const</span> drag <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>isGrounded <span class="token operator">?</span> <span class="token keyword">this</span><span class="token punctuation">.</span>friction <span class="token operator">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>airFriction<span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>drag <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    <span class="token keyword">this</span><span class="token punctuation">.</span>vx <span class="token operator">*=</span> <span class="token class-name">Math</span><span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span> <span class="token operator">-</span> drag <span class="token operator">*</span> dt<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
 
-                                            <div class="bee-code-block">
-                                                import { BeeEntity } from './core/BeeEntity.js';
+                <span class="token keyword">this</span><span class="token punctuation">.</span>isGrounded <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span> <span class="token comment">// va riconfermato dal solver</span>
+            </div>
 
-                                                // Creiamo una piattaforma statica: nessuna velocità, nessuna gravità
-                                                class Piattaforma extends BeeEntity {
-                                                constructor(x, y, width, height) {
-                                                super(x, y, width, height);
-                                                }
-                                                draw(ctx, engine) {
-                                                ctx.fillStyle = '#5a3d2b';
-                                                ctx.fillRect(this.x, this.y, this.width, this.height);
-                                                super.draw(ctx, engine); // propaga il disegno agli eventuali figli
-                                                }
-                                                }
+            <p>L'ultima riga è il punto su cui si sbaglia più spesso: <code>isGrounded</code> viene azzerato
+                <em>alla fine</em> di ogni integrazione. Il flag va riconfermato ad ogni frame chiamando
+                <code>resolvePlatformCollision()</code> per ciascuna piattaforma rilevante. Se la scena dimentica di
+                farlo, l'entità risulterà "in aria" anche se è ferma su un terreno solido.
+            </p>
 
-                                                // Creiamo il giocatore: con gravità e input da tastiera
-                                                class Giocatore extends BeeEntity {
-                                                constructor(x, y) {
-                                                super(x, y, 32, 48);
-                                                this.gravity = 900; // px/s^2
-                                                this.addRectCollider(); // hitbox uguale al bounding box
-                                                }
+            <h3>📁 update — il tick del grafo</h3>
 
-                                                update(dt, input, engine) {
-                                                // Movimento orizzontale controllato dall'input
-                                                this.vx = input.right ? 200 : (input.left ? -200 : 0);
+            <p>Applica la cinematica al nodo, poi ricorre sui figli attivi. La rimozione dei figli distrutti avviene qui,
+                controllata due volte (prima e dopo l'update del figlio, perché un'entità può distruggersi durante il
+                proprio update) e senza allocare un nuovo array: l'indice non avanza quando si rimuove, perché lo splice
+                ha già spostato gli elementi.</p>
 
-                                                // Salto solo se a terra
-                                                if (input.jump && this.isGrounded) {
-                                                this.vy = -450;
-                                                }
+            <div class="bee-code-block">
+                <span class="token comment">// Nel game loop della scena</span>
+                <span class="token function">function</span> <span class="token function">loop</span><span class="token punctuation">(</span>dt<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    radice<span class="token punctuation">.</span><span class="token function">update</span><span class="token punctuation">(</span>dt<span class="token punctuation">,</span> input<span class="token punctuation">,</span> engine<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-                                                // Applica gravità, movimento e propagazione ai figli
-                                                super.update(dt, input, engine);
-                                                }
+                    <span class="token comment">// Subito dopo: riconferma dei contatti solidi</span>
+                    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">const</span> p <span class="token keyword">of</span> piattaforme<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        giocatore<span class="token punctuation">.</span><span class="token function">resolvePlatformCollision</span><span class="token punctuation">(</span>p<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+            </div>
 
-                                                draw(ctx, engine) {
-                                                ctx.fillStyle = '#2b7fd6';
-                                                ctx.fillRect(this.x, this.y, this.width, this.height);
-                                                super.draw(ctx, engine);
-                                                }
-                                                }
+            <h3>📁 draw — hook intenzionalmente vuoto</h3>
 
-                                                // --- Setup della scena ---
-                                                const piattaforma = new Piattaforma(0, 400, 800, 40);
-                                                const giocatore = new Giocatore(100, 100);
+            <p><code>BeeEntity</code> non renderizza: <code>draw()</code> è un hook vuoto per rispettare la singola
+                responsabilità. Le sottoclassi disegnano usando <code>worldX</code>/<code>worldY</code>, mentre la
+                traversata dell'albero per il disegno è compito di BeeEngine.</p>
 
-                                                const input = { left: false, right: false, jump: false };
-                                                document.addEventListener('keydown', e => {
-                                                if (e.code === 'ArrowLeft') input.left = true;
-                                                if (e.code === 'ArrowRight') input.right = true;
-                                                if (e.code === 'Space') input.jump = true;
-                                                });
-                                                document.addEventListener('keyup', e => {
-                                                if (e.code === 'ArrowLeft') input.left = false;
-                                                if (e.code === 'ArrowRight') input.right = false;
-                                                if (e.code === 'Space') input.jump = false;
-                                                });
+            <div class="bee-code-block">
+                <span class="token keyword">class</span> <span class="token class-name">Giocatore</span> <span class="token keyword">extends</span> <span class="token class-name">BeeEntity</span> <span class="token punctuation">{</span>
+                    <span class="token function">draw</span><span class="token punctuation">(</span>ctx<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                        ctx<span class="token punctuation">.</span><span class="token function">drawImage</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>sprite<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>worldX<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>worldY<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                    <span class="token punctuation">}</span>
+                <span class="token punctuation">}</span>
+            </div>
 
-                                                // --- Game loop ---
-                                                let lastTime = performance.now();
-                                                function loop(now) {
-                                                const dt = (now - lastTime) / 1000; // delta-time in secondi
-                                                lastTime = now;
+            <h3>📁 destroy — teardown ricorsivo</h3>
 
-                                                // 1. Aggiorna la logica (movimento, gravità)
-                                                giocatore.update(dt, input, null);
+            <p>È idempotente: la seconda chiamata esce subito. Marca l'entità come distrutta, inattiva e invisibile, la
+                stacca dal parent per rompere il ciclo di riferimenti, poi svuota la lista figli e distrugge
+                ricorsivamente ciascuno. Infine azzera il riferimento inverso del collisore, se puntava a questa entità.
+            </p>
 
-                                                // 2. IMPORTANTE: risolvi le collisioni DOPO l'update,
-                                                // altrimenti isGrounded resterà sempre false
-                                                giocatore.resolvePlatformCollision(piattaforma);
+            <p>Il flag <code>destroyed</code> resta comunque un marcatore logico: la rimozione effettiva dall'albero
+                avviene al tick successivo del parent, dentro <code>update()</code>.</p>
+        </div>
 
-                                                // 3. Disegna
-                                                const ctx = document.querySelector('canvas').getContext('2d');
-                                                ctx.clearRect(0, 0, 800, 450);
-                                                piattaforma.draw(ctx, null);
-                                                giocatore.draw(ctx, null);
+        <div class="bee-class-card" id="BeeEntity-note">
+            <h3>📁 Note per chi integra la classe</h3>
 
-                                                requestAnimationFrame(loop);
-                                                }
-                                                requestAnimationFrame(loop);
-                                            </div>
+            <p><strong>L'ordine update → resolvePlatformCollision non è intercambiabile.</strong> È l'interazione più
+                importante da conoscere: <code>isGrounded</code> viene resettato in coda a <code>integrate()</code>, e
+                il solver è l'unico che lo riporta a vero.</p>
 
-                                            <h3>📁Perché è scritto così — note per chi integra la classe</h3>
+            <p><strong>Le collisioni non sono automatiche.</strong> <code>collidesWith()</code> e
+                <code>resolvePlatformCollision()</code> vanno invocati esplicitamente dalla scena: BeeEntity non tiene
+                un registro globale di cosa può collidere con cosa.
+            </p>
 
-                                            <p>Estendere, non modificare. BeeEntity è pensata per essere sottoclassata
-                                                (class Giocatore extends BeeEntity), sovrascrivendo update e draw e
-                                                richiamando super.update()/super.draw() per non perdere il comportamento
-                                                base (movimento, gravità, propagazione ai figli).</p>
+            <p><strong>Il getter <code>children</code> restituisce l'array interno vivo, non una copia.</strong> È una
+                scelta voluta per non allocare ad ogni frame, ma significa che modificarlo direttamente aggira la
+                contabilità di parent e cache mondo. Per aggiungere e togliere nodi usa sempre <code>addChild()</code>,
+                <code>removeChild()</code> e <code>detach()</code>.</p>
 
-                                            <P>L'ordine update → resolvePlatformCollision non è intercambiabile. Come
-                                                spiegato sopra, isGrounded viene resettato a false dentro update; se non
-                                                richiami resolvePlatformCollision subito dopo per ogni piattaforma
-                                                rilevante, il salto (che dipende da isGrounded) smetterà di funzionare
-                                                correttamente.</P>
+            <p><strong><code>collidesWith</code> usa l'AABB grezzo dell'entità</strong>
+                (<code>width</code>/<code>height</code>), non l'eventuale <code>collider</code> con offset creato da
+                <code>addRectCollider()</code>. Il collisore serve ai sistemi esterni che lo leggono esplicitamente.</p>
 
-                                            <p>collidesWith e resolvePlatformCollision vanno chiamati esplicitamente
-                                                dalla scena, non avvengono automaticamente: BeeEntity non tiene una
-                                                lista globale di "cosa può collidere con cosa" — è compito del codice di
-                                                gioco decidere quali coppie di entità testare (es. giocatore contro ogni
-                                                piattaforma, non ogni entità contro ogni altra, per motivi di
-                                                performance).</p>
+            <p><strong>I setter di <code>x</code> e <code>y</code> normalizzano l'input.</strong> Un valore non numerico
+                diventa <code>0</code> invece di propagare <code>NaN</code> in tutta la catena delle trasformate: la
+                posizione resta sempre in uno stato valido.</p>
 
-                                            <p>I magic number nella risoluzione verticale (0.1, 10) sono tarati per un
-                                                "feeling" di gioco arcade tipico; se un gioco richiede un comportamento
-                                                di atterraggio più preciso o diverso (es. un gioco fisico più
-                                                realistico), vale la pena esporli come parametri configurabili della
-                                                classe piuttosto che valori fissi nel codice.</p>
+            <p><strong>Estendere, non modificare.</strong> Sovrascrivi <code>update</code> e <code>draw</code> nelle
+                sottoclassi richiamando <code>super.update()</code> per non perdere cinematica e traversata dei figli.
+            </p>
 
-                                            <div class="bee-code-block"> </div>
-                                            <h3>📁 Riepilogo API</h3>
-                                            <div class="bee-code-block">
-                                                <table class="bee-api-table">
-                                                    <thead>
-                                                        <tr>
-                                                            <th>Metodo</th>
-                                                            <th>Ritorna</th>
-                                                            <th>Scopo</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                        <tr>
-                                                            <td><code>addRectCollider(offsetX, offsetY, width, height)</code>
-                                                            </td>
-                                                            <td><code>BeeRectCollider</code></td>
-                                                            <td>Crea e assegna un collider rettangolare con offset
-                                                                personalizzabile</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><code>addChild(entity)</code></td>
-                                                            <td><code>BeeEntity</code></td>
-                                                            <td>Aggiunge un'entità figlia alla gerarchia</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><code>removeChild(entity)</code></td>
-                                                            <td><code>void</code></td>
-                                                            <td>Rimuove un'entità figlia dalla gerarchia</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><code>collidesWith(other)</code></td>
-                                                            <td><code>boolean</code></td>
-                                                            <td>Test di sovrapposizione AABB tra due entità</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><code>resolvePlatformCollision(platform)</code></td>
-                                                            <td><code>boolean</code></td>
-                                                            <td>Risolve una collisione solida, spingendo l'entità fuori
-                                                                dalla piattaforma</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><code>update(dt, input, engine)</code></td>
-                                                            <td><code>void</code></td>
-                                                            <td>Applica gravità, movimento e propaga l'update ai figli
-                                                            </td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><code>draw(ctx, engine)</code></td>
-                                                            <td><code>void</code></td>
-                                                            <td>Propaga il disegno ai figli (non disegna sé stessa)</td>
-                                                        </tr>
-                                                        <tr>
-                                                            <td><code>destroy()</code></td>
-                                                            <td><code>void</code></td>
-                                                            <td>Marca l'entità come inattiva, invisibile e distrutta
-                                                            </td>
-                                                        </tr>
-                                                    </tbody>
-                                                </table>
+            <p><strong>Le collisioni discrete hanno il limite noto del tunneling:</strong> a velocità molto alte
+                un'entità può attraversare un ostacolo sottile tra un frame e l'altro, perché il test avviene sulla
+                posizione già aggiornata. Se serve precisione, riduci il passo temporale o limita
+                <code>maxFallSpeed</code>.</p>
+        </div>
 
+        <div class="bee-class-card" id="BeeEntity-esempio">
+            <h3>📁 Esempio completo</h3>
 
+            <div class="bee-code-block">
+                <span class="token keyword">import</span> <span class="token punctuation">{</span> <span class="token class-name">BeeEntity</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'beeengine'</span><span class="token punctuation">;</span>
 
+                <span class="token comment">// Piattaforma statica, senza gravità</span>
+                <span class="token keyword">const</span> suolo <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeeEntity</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">560</span><span class="token punctuation">,</span> <span class="token number">800</span><span class="token punctuation">,</span> <span class="token number">40</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token comment">// Giocatore con fisica da platform</span>
+                <span class="token keyword">const</span> giocatore <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeeEntity</span><span class="token punctuation">(</span><span class="token number">80</span><span class="token punctuation">,</span> <span class="token number">400</span><span class="token punctuation">,</span> <span class="token number">32</span><span class="token punctuation">,</span> <span class="token number">48</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+                    <span class="token property">gravity</span><span class="token punctuation">:</span> <span class="token number">1600</span><span class="token punctuation">,</span>
+                    <span class="token property">friction</span><span class="token punctuation">:</span> <span class="token number">10</span><span class="token punctuation">,</span>
+                    <span class="token property">airFriction</span><span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+                    <span class="token property">maxFallSpeed</span><span class="token punctuation">:</span> <span class="token number">1200</span>
+                <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token comment">// Un'aura agganciata: si muove insieme al giocatore</span>
+                <span class="token keyword">const</span> aura <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeeEntity</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">4</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">40</span><span class="token punctuation">,</span> <span class="token number">56</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                giocatore<span class="token punctuation">.</span><span class="token function">addChild</span><span class="token punctuation">(</span>aura<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                <span class="token comment">// Salto</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>input<span class="token punctuation">.</span><span class="token function">isDown</span><span class="token punctuation">(</span><span class="token string">'Space'</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> giocatore<span class="token punctuation">.</span>isGrounded<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                    giocatore<span class="token punctuation">.</span>vy <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">620</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+
+                <span class="token comment">// Tick: prima la cinematica, poi i contatti</span>
+                giocatore<span class="token punctuation">.</span><span class="token function">update</span><span class="token punctuation">(</span>dt<span class="token punctuation">,</span> input<span class="token punctuation">,</span> engine<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                giocatore<span class="token punctuation">.</span><span class="token function">resolvePlatformCollision</span><span class="token punctuation">(</span>suolo<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+                aura<span class="token punctuation">.</span>worldX<span class="token punctuation">;</span> <span class="token comment">// segue il giocatore senza codice aggiuntivo</span>
+            </div>
+        </div>
+
+        <div class="bee-class-card" id="BeeEntity-api">
+            <h3>📁 Riepilogo API</h3>
+
+            <table class="bee-api-table">
+                <thead>
+                    <tr>
+                        <th>Membro</th>
+                        <th>Ritorna</th>
+                        <th>Scopo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>BeeEntity.worldXOf(node)</code></td>
+                        <td><code>number</code></td>
+                        <td>Statico. Coordinata X mondo di un nodo, con fallback su <code>x</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>BeeEntity.worldYOf(node)</code></td>
+                        <td><code>number</code></td>
+                        <td>Statico. Coordinata Y mondo di un nodo, con fallback su <code>y</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>getWorldAABB()</code></td>
+                        <td><code>object</code></td>
+                        <td>Rettangolo <code>{x, y, width, height}</code> in coordinate assolute</td>
+                    </tr>
+                    <tr>
+                        <td><code>addRectCollider(ox, oy, w, h)</code></td>
+                        <td><code>BeeRectCollider</code></td>
+                        <td>Crea e assegna un collisore rettangolare con offset opzionale</td>
+                    </tr>
+                    <tr>
+                        <td><code>addChild(entity)</code></td>
+                        <td><code>BeeEntity</code></td>
+                        <td>Aggancia un figlio, con reparenting e guardia anti-ciclo</td>
+                    </tr>
+                    <tr>
+                        <td><code>removeChild(entity)</code></td>
+                        <td><code>void</code></td>
+                        <td>Scollega un figlio senza distruggerlo</td>
+                    </tr>
+                    <tr>
+                        <td><code>detach()</code></td>
+                        <td><code>this</code></td>
+                        <td>Si stacca dal proprio parent, concatenabile</td>
+                    </tr>
+                    <tr>
+                        <td><code>collidesWith(other)</code></td>
+                        <td><code>boolean</code></td>
+                        <td>Test AABB in spazio mondo contro un altro nodo o oggetto</td>
+                    </tr>
+                    <tr>
+                        <td><code>resolvePlatformCollision(platform)</code></td>
+                        <td><code>boolean</code></td>
+                        <td>Risolve un contatto solido. <code>true</code> solo se è un atterraggio</td>
+                    </tr>
+                    <tr>
+                        <td><code>integrate(dt)</code></td>
+                        <td><code>void</code></td>
+                        <td>Integra gravità, attrito e velocità sulla posizione locale</td>
+                    </tr>
+                    <tr>
+                        <td><code>update(dt, input, engine)</code></td>
+                        <td><code>void</code></td>
+                        <td>Tick del nodo e dei figli attivi, con pulizia dei distrutti</td>
+                    </tr>
+                    <tr>
+                        <td><code>draw(ctx, engine)</code></td>
+                        <td><code>void</code></td>
+                        <td>Hook vuoto. Il disegno spetta alle sottoclassi</td>
+                    </tr>
+                    <tr>
+                        <td><code>destroy()</code></td>
+                        <td><code>void</code></td>
+                        <td>Teardown idempotente e ricorsivo sui figli</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
 
     </main>

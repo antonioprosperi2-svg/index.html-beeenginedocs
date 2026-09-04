@@ -503,6 +503,53 @@
     }
 
     /* ==========================================
+       3c. TABELLA API
+       ========================================== */
+    .bee-api-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0 0 20px 0;
+        font-size: 14px;
+        background: var(--bee-surface-2);
+        border: 1px solid var(--bee-line);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .bee-api-table thead th {
+        background: rgba(245, 158, 11, 0.1);
+        color: var(--bee-honey);
+        text-align: left;
+        font-family: var(--bee-mono);
+        font-size: 13px;
+        letter-spacing: 0.4px;
+        padding: 11px 14px;
+        border-bottom: 1px solid var(--bee-line-honey);
+    }
+
+    .bee-api-table tbody td {
+        padding: 11px 14px;
+        border-top: 1px solid var(--bee-line);
+        color: var(--bee-text);
+        line-height: 1.6;
+        vertical-align: top;
+    }
+
+    .bee-api-table tbody tr:hover td {
+        background: rgba(245, 158, 11, 0.05);
+    }
+
+    .bee-api-table code {
+        font-family: var(--bee-mono);
+        font-size: 13px;
+        color: #fcd34d;
+        background: rgba(245, 158, 11, 0.1);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+        padding: 1px 6px;
+        border-radius: 5px;
+    }
+
+    /* ==========================================
        4. REGOLE SPECIFICHE PER TELEFONO (MOBILE)
        ========================================== */
     @media (max-width: 768px) {
@@ -555,6 +602,12 @@
         .bee-copy-btn {
             font-size: 11px;
             padding: 6px 9px;
+        }
+
+        .bee-api-table {
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
         }
     }
 </style>
@@ -680,57 +733,57 @@
             </h3>
             <div class="bee-code-block">
                 BeeEngine-V2.2/
-                ├── index.html # Punto di ingresso HTML e configurazione Canvas
-                ├── main.js # Demo, gestione scene e punto d'avvio del gioco
-                ├── BeeEngine.js # Il CUORE del motore (Core Loop & System Coordinator)
-                ├── README.md # Documentazione ufficiale e specifiche tecniche
-                ├── package.json # Manifest di configurazione per la pubblicazione NPM
-                ├── tsconfig.json # Configurazione TypeScript per i controlli dell'IDE
-                ├── index.d.ts # Definizioni di tipo globali per IntelliSense e TypeScript
-                ├── assets/ # Gestione centralizzata e ordinata delle risorse
-                │ ├── audio/ # Effetti sonori (.mp3) e musiche di sottofondo
-                │ └── images/ # Texture dei personaggi (.png), sprite e sfondi</div>
+                ├── index.html <span class="bee-cm"># Punto di ingresso HTML e configurazione Canvas</span>
+                ├── main.js <span class="bee-cm"># Demo, gestione scene e punto d'avvio del gioco</span>
+                ├── BeeEngine.js <span class="bee-cm"># Il CUORE del motore (Core Loop &amp; System Coordinator)</span>
+                ├── README.md <span class="bee-cm"># Documentazione ufficiale e specifiche tecniche</span>
+                ├── package.json <span class="bee-cm"># Manifest di configurazione per la pubblicazione NPM</span>
+                ├── tsconfig.json <span class="bee-cm"># Configurazione TypeScript per i controlli dell'IDE</span>
+                ├── index.d.ts <span class="bee-cm"># Definizioni di tipo globali per IntelliSense e TypeScript</span>
+                ├── assets/ <span class="bee-cm"># Gestione centralizzata e ordinata delle risorse</span>
+                │ ├── audio/ <span class="bee-cm"># Effetti sonori (.mp3) e musiche di sottofondo</span>
+                │ └── images/ <span class="bee-cm"># Texture dei personaggi (.png), sprite e sfondi</span></div>
             <h3>📁Di seguito /src/🚀</h3>
             <div class="bee-code-block">
-                └── src/ # Tutti i moduli logici del motore
-                ├── BeeAssetManager.js # Caricamento asincrono e cache di immagini/audio
-                ├── BeeBullet.js # Gestione dei proiettili 2D attivi
-                ├── BeeButton.js # Pulsanti interattivi per menu su Canvas
-                ├── BeeCamera.js # Telecamera 2D con supporto al bounding box visivo
-                ├── BeeCollectible.js # Oggetti raccoglibili (monete, miele)
-                ├── BeeCollisionSystem.js # Gestore centralizzato e ottimizzato delle collisioni
-                ├── BeeEnemyShooter.js # Nemico avanzato a 4 direzioni con sparo automatico
-                ├── BeeEntity.js # Classe base per tutte le entità di gioco
-                ├── BeeGrid.js # Griglia di sfondo / debug spaziale
-                ├── BeeInput.js # Gestione input (tastiera, mouse, comandi)
-                ├── BeeJoystick.js # NUOVO: Leva analogica virtuale integrata per mobile
+                └── src/ <span class="bee-cm"># Tutti i moduli logici del motore</span>
+                ├── BeeAssetManager.js <span class="bee-cm"># Caricamento asincrono e cache di immagini/audio</span>
+                ├── BeeBullet.js <span class="bee-cm"># Gestione dei proiettili 2D attivi</span>
+                ├── BeeButton.js <span class="bee-cm"># Pulsanti interattivi per menu su Canvas</span>
+                ├── BeeCamera.js <span class="bee-cm"># Telecamera 2D con supporto al bounding box visivo</span>
+                ├── BeeCollectible.js <span class="bee-cm"># Oggetti raccoglibili (monete, miele)</span>
+                ├── BeeCollisionSystem.js <span class="bee-cm"># Gestore centralizzato e ottimizzato delle collisioni</span>
+                ├── BeeEnemyShooter.js <span class="bee-cm"># Nemico avanzato a 4 direzioni con sparo automatico</span>
+                ├── BeeEntity.js <span class="bee-cm"># Classe base per tutte le entità di gioco</span>
+                ├── BeeGrid.js <span class="bee-cm"># Griglia di sfondo / debug spaziale</span>
+                ├── BeeInput.js <span class="bee-cm"># Gestione input (tastiera, mouse, comandi)</span>
+                ├── BeeJoystick.js <span class="bee-cm"># NUOVO: Leva analogica virtuale integrata per mobile</span>
             </div>
             <h3>📁Logica di Gioco & Sistema </h3>
             <div class="bee-code-block">
-                ├── BeeMenuScene.js # Scena nativa del menu principale
-                ├── BeeNemico.js # Nemico base con movimento a pattuglia
-                ├── BeeParticleSystem.js # Sistema di particelle per effetti grafici
-                ├── BeePlayer.js # Personaggio giocabile (Modalità: 'platformer' o 'free')
-                ├── BeeRectCollider.js # Collisore geometrico rettangolare AABB
-                ├── BeeSave.js # Salvataggio dati persistenti in LocalStorage
-                └── BeeSceneManager.js # Gestore dei cicli di vita e transizioni delle scene
+                ├── BeeMenuScene.js <span class="bee-cm"># Scena nativa del menu principale</span>
+                ├── BeeNemico.js <span class="bee-cm"># Nemico base con movimento a pattuglia</span>
+                ├── BeeParticleSystem.js <span class="bee-cm"># Sistema di particelle per effetti grafici</span>
+                ├── BeePlayer.js <span class="bee-cm"># Personaggio giocabile (Modalità: 'platformer' o 'free')</span>
+                ├── BeeRectCollider.js <span class="bee-cm"># Collisore geometrico rettangolare AABB</span>
+                ├── BeeSave.js <span class="bee-cm"># Salvataggio dati persistenti in LocalStorage</span>
+                └── BeeSceneManager.js <span class="bee-cm"># Gestore dei cicli di vita e transizioni delle scene</span>
             </div>
 
             <h3>📁Grafica & Tilemap </h3>
             <div class="bee-code-block">
-                ├── BeeSprite.js # Renderizzatore di fogli di sprite e texture
-                ├── BeeSpriteSheet.js # NUOVO: Gestore e ritaglio avanzato degli sprite sheet
-                ├── BeeText.js # Disegno di testi e rendering della barra HUD nativa
-                ├── BeeTilemap.js # Mappe a blocchi ottimizzate con culling riga/colonna
-                ├── BeeTilemapLoader.js # NUOVO: Caricatore asincrono per mappe di tessere
-                └── BeeTimer.js # Gestore eventi basati sul tempo (Cooldown)
+                ├── BeeSprite.js <span class="bee-cm"># Renderizzatore di fogli di sprite e texture</span>
+                ├── BeeSpriteSheet.js <span class="bee-cm"># NUOVO: Gestore e ritaglio avanzato degli sprite sheet</span>
+                ├── BeeText.js <span class="bee-cm"># Disegno di testi e rendering della barra HUD nativa</span>
+                ├── BeeTilemap.js <span class="bee-cm"># Mappe a blocchi ottimizzate con culling riga/colonna</span>
+                ├── BeeTilemapLoader.js <span class="bee-cm"># NUOVO: Caricatore asincrono per mappe di tessere</span>
+                └── BeeTimer.js <span class="bee-cm"># Gestore eventi basati sul tempo (Cooldown)</span>
             </div>
 
             <h3>📁Interfaccia & Controlli Touch </h3>
             <div class="bee-code-block">
-                ├── BeeVirtualDPad.js # NUOVO: Pulsantiera direzionale virtuale a 4/8 vie
-                ├── BeeTouchButton.js # NUOVO: Pulsante tattile programmabile con etichetta
-                └── BeeTouchControls.js # NUOVO: Controller completo per input su schermo
+                ├── BeeVirtualDPad.js <span class="bee-cm"># NUOVO: Pulsantiera direzionale virtuale a 4/8 vie</span>
+                ├── BeeTouchButton.js <span class="bee-cm"># NUOVO: Pulsante tattile programmabile con etichetta</span>
+                └── BeeTouchControls.js <span class="bee-cm"># NUOVO: Controller completo per input su schermo</span>
             </div>
 
             <h3>📁 Novità e ottimizzazioni professionali nella v2.2.0.</h3>
@@ -802,29 +855,29 @@
 
             <h3>📁 Configurazione opzionale D-Pad e Pulsanti Touch personalizzati</h3>
 
-            <div class="bee-code-block">const dPad = new BeeVirtualDPad({
-                canvas: gioco.canvas,
-                x: 100,
-                y: 500,
-                size: 120,
-                eightWay: false
-                });
+            <div class="bee-code-block"><span class="token keyword">const</span> dPad <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeeVirtualDPad</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+                <span class="token property">canvas</span><span class="token punctuation">:</span> gioco<span class="token punctuation">.</span>canvas<span class="token punctuation">,</span>
+                <span class="token property">x</span><span class="token punctuation">:</span> <span class="token number">100</span><span class="token punctuation">,</span>
+                <span class="token property">y</span><span class="token punctuation">:</span> <span class="token number">500</span><span class="token punctuation">,</span>
+                <span class="token property">size</span><span class="token punctuation">:</span> <span class="token number">120</span><span class="token punctuation">,</span>
+                <span class="token property">eightWay</span><span class="token punctuation">:</span> <span class="token boolean">false</span>
+                <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-                const pulsanteSalto = new BeeTouchButton({
-                canvas: gioco.canvas,
-                x: 700,
-                y: 500,
-                radius: 35,
-                label: "SALTA"
-                });
+                <span class="token keyword">const</span> pulsanteSalto <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeeTouchButton</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+                <span class="token property">canvas</span><span class="token punctuation">:</span> gioco<span class="token punctuation">.</span>canvas<span class="token punctuation">,</span>
+                <span class="token property">x</span><span class="token punctuation">:</span> <span class="token number">700</span><span class="token punctuation">,</span>
+                <span class="token property">y</span><span class="token punctuation">:</span> <span class="token number">500</span><span class="token punctuation">,</span>
+                <span class="token property">radius</span><span class="token punctuation">:</span> <span class="token number">35</span><span class="token punctuation">,</span>
+                <span class="token property">label</span><span class="token punctuation">:</span> <span class="token string">"SALTA"</span>
+                <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
             </div>
 
             <h3> 📁Regole Collisioni Avvio Ciclo di Gioco</h3>
 
-            <div class="bee-code-block">gioco.collisions.setGroup('solidi', piattaforme);
-                gioco.collisions.setGroup('giocatore', [giocatore]);
-                gioco.collisions.solid('giocatore', 'solidi');
-                gioco.start()
+            <div class="bee-code-block">gioco<span class="token punctuation">.</span>collisions<span class="token punctuation">.</span><span class="token function">setGroup</span><span class="token punctuation">(</span><span class="token string">'solidi'</span><span class="token punctuation">,</span> piattaforme<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                gioco<span class="token punctuation">.</span>collisions<span class="token punctuation">.</span><span class="token function">setGroup</span><span class="token punctuation">(</span><span class="token string">'giocatore'</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>giocatore<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                gioco<span class="token punctuation">.</span>collisions<span class="token punctuation">.</span><span class="token function">solid</span><span class="token punctuation">(</span><span class="token string">'giocatore'</span><span class="token punctuation">,</span> <span class="token string">'solidi'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                gioco<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span>
             </div>
 
 

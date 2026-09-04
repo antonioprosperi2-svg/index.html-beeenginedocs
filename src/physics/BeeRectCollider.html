@@ -503,6 +503,53 @@
     }
 
     /* ==========================================
+       3c. TABELLA API
+       ========================================== */
+    .bee-api-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0 0 20px 0;
+        font-size: 14px;
+        background: var(--bee-surface-2);
+        border: 1px solid var(--bee-line);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .bee-api-table thead th {
+        background: rgba(245, 158, 11, 0.1);
+        color: var(--bee-honey);
+        text-align: left;
+        font-family: var(--bee-mono);
+        font-size: 13px;
+        letter-spacing: 0.4px;
+        padding: 11px 14px;
+        border-bottom: 1px solid var(--bee-line-honey);
+    }
+
+    .bee-api-table tbody td {
+        padding: 11px 14px;
+        border-top: 1px solid var(--bee-line);
+        color: var(--bee-text);
+        line-height: 1.6;
+        vertical-align: top;
+    }
+
+    .bee-api-table tbody tr:hover td {
+        background: rgba(245, 158, 11, 0.05);
+    }
+
+    .bee-api-table code {
+        font-family: var(--bee-mono);
+        font-size: 13px;
+        color: #fcd34d;
+        background: rgba(245, 158, 11, 0.1);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+        padding: 1px 6px;
+        border-radius: 5px;
+    }
+
+    /* ==========================================
        4. REGOLE SPECIFICHE PER TELEFONO (MOBILE)
        ========================================== */
     @media (max-width: 768px) {
@@ -555,6 +602,12 @@
         .bee-copy-btn {
             font-size: 11px;
             padding: 6px 9px;
+        }
+
+        .bee-api-table {
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
         }
     }
 </style>
@@ -641,7 +694,7 @@
                 <ul>
                     <li><a href="#BeeBullet">BeeBullet.js</a></li>
                     <li><a href="#BeeCollisionSystem">BeeCollisionSystem.js</a></li>
-                    <li><a href="#BeeRectCollider">BeeRectCollider.js</a></li>
+                    <li><a href="#BeeRectCollider" class="is-current">BeeRectCollider.js</a></li>
                 </ul>
             </details>
     </aside>
