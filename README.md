@@ -1,4 +1,5 @@
-<img width="1408" height="768" alt="Gemini_Generated_Image_ls40o4ls40o4ls40" src="https://github.com/user-attachments/assets/39e85f59-fc44-4d68-98e1-3a47ea2b5a06" />
+<img width="1408" height="768" alt="Gemini_Generated_Image_pz9goopz9goopz9g" src="https://github.com/user-attachments/assets/bc70f168-551d-4a22-b451-75891b16b091" />
+
 # 🐝 BeeEngine - Documentazione Ufficiale
 
 
