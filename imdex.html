@@ -4,17 +4,58 @@
 
 <style>
     /* ==========================================
-       RESET E BASE PAGINA
+       0. PALETTE BRAND (BeeEngine + BeeLadybug)
        ========================================== */
-    * {
+    :root {
+        /* Sfondi scuri desaturati (niente nero puro) */
+        --bee-bg: #12131c;
+        --bee-surface: #1a1b26;
+        --bee-surface-2: #20222f;
+        --bee-code-bg: #0f1018;
+
+        /* Testo */
+        --bee-text: #e2e8f0;
+        --bee-text-dim: #9aa4ba;
+
+        /* Giallo/Arancione Ape */
+        --bee-honey: #f59e0b;
+        --bee-honey-light: #eab308;
+
+        /* Rosso Coccinella */
+        --bee-ladybug: #ef4444;
+        --bee-ladybug-deep: #dc2626;
+
+        /* Linee e raggi */
+        --bee-line: rgba(226, 232, 240, 0.09);
+        --bee-line-honey: rgba(245, 158, 11, 0.22);
+        --bee-radius: 12px;
+
+        --bee-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, 'Cascadia Code', Consolas, 'Courier New', monospace;
+    }
+
+    /* ==========================================
+       RESET E BASE PAGINA
+       (reset limitato al sottoalbero docs:
+        su WordPress non tocca il tema)
+       ========================================== */
+    .bee-docs-header,
+    .bee-docs-header *,
+    .bee-ladybug-banner,
+    .bee-ladybug-banner *,
+    .bee-docs-container,
+    .bee-docs-container * {
         box-sizing: border-box;
         margin: 0;
         padding: 0;
     }
 
     body {
-        background-color: #0c0c0e;
-        color: #e0e0e0;
+        background-color: var(--bee-bg);
+        background-image:
+            radial-gradient(900px 420px at 12% -8%, rgba(245, 158, 11, 0.07), transparent 60%),
+            radial-gradient(760px 380px at 92% 0%, rgba(239, 68, 68, 0.06), transparent 62%);
+        background-attachment: fixed;
+        color: var(--bee-text);
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         padding-top: 80px;
         -webkit-font-smoothing: antialiased;
@@ -30,14 +71,29 @@
         left: 0;
         width: 100%;
         height: 70px;
-        background: #121214;
-        border-bottom: 2px solid rgba(255, 202, 40, 0.4);
+        background: linear-gradient(180deg, #1c1e2b 0%, #16171f 100%);
+        border-bottom: 1px solid var(--bee-line);
         display: flex;
         align-items: center;
         justify-content: space-between;
         padding: 0 25px;
         z-index: 1000;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+        box-shadow: 0 6px 24px rgba(8, 8, 12, 0.55);
+    }
+
+    /* Filo giallo/rosso brand sotto la header */
+    .bee-docs-header::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -2px;
+        height: 2px;
+        background: linear-gradient(90deg,
+                var(--bee-honey) 0%,
+                var(--bee-honey-light) 42%,
+                var(--bee-ladybug) 100%);
+        opacity: 0.9;
     }
 
     .bee-header-logo {
@@ -48,21 +104,53 @@
     }
 
     .bee-header-title {
-        color: #ffca28;
+        color: var(--bee-honey);
         font-size: 20px;
         font-weight: bold;
-        font-family: monospace;
+        font-family: var(--bee-mono);
         letter-spacing: 1px;
     }
 
+    /* Badge versione = Rosso Coccinella */
     .bee-header-badge {
-        background: rgba(255, 202, 40, 0.15);
-        color: #ffca28;
-        padding: 4px 10px;
-        border-radius: 4px;
+        background: rgba(239, 68, 68, 0.14);
+        color: #ffb4b4;
+        padding: 5px 11px;
+        border-radius: 999px;
         font-size: 13px;
-        border: 1px solid rgba(255, 202, 40, 0.3);
-        font-family: monospace;
+        border: 1px solid rgba(239, 68, 68, 0.38);
+        font-family: var(--bee-mono);
+        letter-spacing: 0.5px;
+    }
+
+    /* ==========================================
+       1b. BANNER COCCINELLA (predisposizione)
+       ========================================== */
+    .bee-ladybug-banner {
+        max-width: 1400px;
+        margin: 0 auto 18px auto;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 18px;
+        border-radius: var(--bee-radius);
+        background: linear-gradient(135deg, rgba(220, 38, 38, 0.18), rgba(26, 27, 38, 0.9));
+        border: 1px solid rgba(239, 68, 68, 0.32);
+        border-left: 4px solid var(--bee-ladybug);
+        color: var(--bee-text);
+        font-size: 14.5px;
+        line-height: 1.5;
+    }
+
+    .bee-ladybug-banner strong {
+        color: #ff8f8f;
+    }
+
+    .bee-ladybug-banner img {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        flex-shrink: 0;
     }
 
     /* ==========================================
@@ -73,49 +161,73 @@
         z-index: 5;
         display: flex;
         gap: 25px;
-        background-color: rgba(18, 18, 20, 0.85);
+        background-color: rgba(26, 27, 38, 0.82);
         backdrop-filter: blur(8px);
-        color: #ffca28;
-        padding: 20px;
-        border-radius: 12px;
-        border: 1px solid rgba(255, 202, 40, 0.2);
+        color: var(--bee-text);
+        padding: 22px;
+        border-radius: var(--bee-radius);
+        border: 1px solid var(--bee-line);
         max-width: 1400px;
         margin: 0 auto 40px auto;
+        box-shadow: 0 18px 50px rgba(8, 8, 12, 0.35);
     }
 
     .bee-docs-sidebar {
         width: 250px;
         flex-shrink: 0;
-        border-right: 2px solid rgba(255, 202, 40, 0.3);
+        border-right: 1px solid var(--bee-line);
         padding-right: 15px;
         position: sticky;
         top: 90px;
         max-height: calc(100vh - 110px);
         overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(245, 158, 11, 0.35) transparent;
+    }
+
+    .bee-docs-sidebar::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .bee-docs-sidebar::-webkit-scrollbar-thumb {
+        background: rgba(245, 158, 11, 0.3);
+        border-radius: 8px;
     }
 
     .bee-sidebar-title {
-        color: #ffca28;
+        color: var(--bee-honey);
         font-size: 18px;
         font-weight: bold;
-        margin-bottom: 12px;
-        border-bottom: 1px solid #ffca28;
-        padding-bottom: 6px;
+        margin-bottom: 14px;
+        border-bottom: 1px solid var(--bee-line-honey);
+        padding-bottom: 8px;
+        letter-spacing: 0.4px;
     }
 
     .bee-docs-sidebar details {
         margin-bottom: 10px;
-        background: rgba(30, 30, 30, 0.8);
-        border-radius: 6px;
-        border: 1px solid #333;
+        background: var(--bee-surface-2);
+        border-radius: 8px;
+        border: 1px solid var(--bee-line);
+        overflow: hidden;
+    }
+
+    .bee-docs-sidebar details[open] {
+        border-color: var(--bee-line-honey);
     }
 
     .bee-docs-sidebar summary {
-        padding: 10px;
-        font-weight: bold;
+        padding: 10px 12px;
+        font-weight: 600;
         font-size: 15px;
-        color: #ffffff;
+        color: var(--bee-text);
         cursor: pointer;
+        transition: color .15s ease, background .15s ease;
+    }
+
+    .bee-docs-sidebar summary:hover {
+        color: var(--bee-honey);
+        background: rgba(245, 158, 11, 0.06);
     }
 
     .bee-docs-sidebar ul {
@@ -129,14 +241,28 @@
     }
 
     .bee-docs-sidebar a {
-        color: #b0b0b0;
+        color: var(--bee-text-dim);
         text-decoration: none;
         font-size: 14px;
-        font-family: monospace;
+        font-family: var(--bee-mono);
+        display: block;
+        padding: 4px 8px;
+        border-left: 2px solid transparent;
+        border-radius: 4px;
+        transition: color .15s ease, border-color .15s ease, background .15s ease;
     }
 
     .bee-docs-sidebar a:hover {
-        color: #ffca28;
+        color: var(--bee-honey);
+        background: rgba(245, 158, 11, 0.07);
+        border-left-color: var(--bee-honey);
+    }
+
+    /* Pagina corrente = bordo attivo rosso coccinella */
+    .bee-docs-sidebar a.is-current {
+        color: #ffb4b4;
+        border-left-color: var(--bee-ladybug);
+        background: rgba(239, 68, 68, 0.08);
     }
 
     /* Area Contenuto */
@@ -146,11 +272,12 @@
     }
 
     .bee-section-title {
-        color: #ffca28;
-        font-size: 22px;
-        border-bottom: 2px solid rgba(255, 202, 40, 0.3);
-        padding-bottom: 8px;
-        margin: 30px 0 15px 0;
+        color: var(--bee-honey);
+        font-size: 23px;
+        letter-spacing: 0.2px;
+        border-bottom: 1px solid var(--bee-line-honey);
+        padding-bottom: 10px;
+        margin: 34px 0 16px 0;
     }
 
     .bee-section-title:first-of-type {
@@ -159,54 +286,220 @@
 
     /* Scheda normale */
     .bee-class-card {
-        background: rgba(26, 26, 26, 0.9);
-        border: 1px solid #333;
-        border-left: 4px solid #ffca28;
-        padding: 20px;
+        background: var(--bee-surface);
+        border: 1px solid var(--bee-line);
+        border-left: 4px solid var(--bee-honey);
+        padding: 22px;
         margin-bottom: 20px;
-        border-radius: 6px;
+        border-radius: 10px;
         scroll-margin-top: 90px;
+        transition: border-color .18s ease, box-shadow .18s ease;
     }
 
+    /* Sezioni BeeLadybug / Debug */
+    .bee-class-card.bee-debug,
+    .bee-class-card.bee-ladybug {
+        border-left-color: var(--bee-ladybug);
+        background: linear-gradient(180deg, rgba(220, 38, 38, 0.07), rgba(26, 27, 38, 0.95));
+    }
+
+    .bee-class-card.bee-debug h3,
+    .bee-class-card.bee-ladybug h3 {
+        color: #ff8f8f !important;
+    }
+
+    /* Bordo attivo (ancora selezionata) = rosso coccinella */
     .bee-class-card:target {
-        background: rgba(35, 35, 42, 0.95);
-        box-shadow: 0 0 15px rgba(255, 202, 40, 0.25);
+        background: var(--bee-surface-2);
+        border-left-color: var(--bee-ladybug);
+        box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.25), 0 0 26px rgba(239, 68, 68, 0.16);
     }
 
     .bee-class-card h3 {
-        color: #ffca28 !important;
+        color: var(--bee-honey-light) !important;
         margin-top: 0;
         font-size: 18px;
-        font-family: monospace;
-        margin-bottom: 8px;
+        font-family: var(--bee-mono);
+        margin-bottom: 10px;
+        letter-spacing: 0.2px;
     }
 
     .bee-class-card p {
-        line-height: 1.6;
-        color: #c7def9eb !important;
-        /* Colore grigio chiaro/bianco sporco ottimo per la vista */
+        line-height: 1.72;
+        color: var(--bee-text) !important;
         font-size: 15px;
         word-wrap: break-word;
-        margin-bottom: 10px;
-        font-weight: 500;
+        margin-bottom: 12px;
+        font-weight: 400;
+    }
+
+    /* Codice inline dentro i paragrafi */
+    .bee-class-card p code,
+    .bee-inline-code {
+        font-family: var(--bee-mono);
+        font-size: 13.5px;
+        background: rgba(245, 158, 11, 0.1);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+        color: #fcd34d;
+        padding: 1px 6px;
+        border-radius: 5px;
     }
 
     /* ==========================================
-       3. BLOCCO DI CODICE GLOBALE
+       3. BLOCCO DI CODICE GLOBALE (stile Prism)
        ========================================== */
-    .bee-code-block {
-        background: #141414 !important;
-        border: 1px solid rgba(255, 202, 40, 0.2) !important;
-        padding: 16px !important;
-        border-radius: 8px !important;
-        font-family: 'Courier New', Courier, monospace !important;
-        color: #06d0ef !important;
-        /* Tutto il testo semplice del codice diventa bianco puro */
-        line-height: 1.6 !important;
+    .bee-code-wrap {
+        position: relative;
+        margin: 0 0 20px 0;
+    }
+
+    .bee-code-block,
+    .bee-docs-content pre {
+        background: var(--bee-code-bg) !important;
+        border: 1px solid var(--bee-line) !important;
+        border-top: 2px solid rgba(245, 158, 11, 0.35) !important;
+        padding: 18px 18px 18px 18px !important;
+        border-radius: 10px !important;
+        font-family: var(--bee-mono) !important;
+        font-size: 13.5px !important;
+        color: #cbd5e1 !important;
+        line-height: 1.75 !important;
         white-space: pre !important;
         overflow-x: auto !important;
         word-break: normal !important;
         width: 100% !important;
+        tab-size: 2;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+    }
+
+    .bee-code-block.bee-has-copy,
+    .bee-docs-content pre.bee-has-copy {
+        padding-top: 46px !important;
+    }
+
+    .bee-code-block::-webkit-scrollbar,
+    .bee-docs-content pre::-webkit-scrollbar {
+        height: 9px;
+    }
+
+    .bee-code-block::-webkit-scrollbar-thumb,
+    .bee-docs-content pre::-webkit-scrollbar-thumb {
+        background: rgba(245, 158, 11, 0.28);
+        border-radius: 8px;
+    }
+
+    /* Pulsante "Copia codice" */
+    .bee-copy-btn {
+        position: absolute;
+        top: 9px;
+        right: 10px;
+        z-index: 3;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-family: var(--bee-mono);
+        font-size: 12px;
+        line-height: 1;
+        padding: 7px 11px;
+        cursor: pointer;
+        color: var(--bee-honey);
+        background: rgba(245, 158, 11, 0.1);
+        border: 1px solid rgba(245, 158, 11, 0.34);
+        border-radius: 7px;
+        transition: background .15s ease, color .15s ease, border-color .15s ease;
+    }
+
+    .bee-copy-btn:hover {
+        background: rgba(245, 158, 11, 0.2);
+        color: #fde68a;
+        border-color: var(--bee-honey);
+    }
+
+    .bee-copy-btn.bee-copied {
+        color: #86efac;
+        background: rgba(34, 197, 94, 0.14);
+        border-color: rgba(34, 197, 94, 0.45);
+    }
+
+    /* ==========================================
+       3b. SYNTAX HIGHLIGHTING (token Prism.js)
+       ========================================== */
+    .bee-code-block .token.comment,
+    .bee-docs-content pre .token.comment,
+    .bee-code-block .token.prolog,
+    .bee-code-block .token.doctype,
+    .bee-code-block .token.cdata {
+        color: #6b7590;
+        font-style: italic;
+    }
+
+    .bee-code-block .token.punctuation,
+    .bee-docs-content pre .token.punctuation {
+        color: #94a3b8;
+    }
+
+    .bee-code-block .token.keyword,
+    .bee-docs-content pre .token.keyword,
+    .bee-code-block .token.control,
+    .bee-code-block .token.important {
+        color: var(--bee-honey-light);
+        font-weight: 600;
+    }
+
+    .bee-code-block .token.string,
+    .bee-docs-content pre .token.string,
+    .bee-code-block .token.char,
+    .bee-code-block .token.attr-value {
+        color: #7ee0b0;
+    }
+
+    .bee-code-block .token.number,
+    .bee-docs-content pre .token.number,
+    .bee-code-block .token.boolean,
+    .bee-code-block .token.constant,
+    .bee-code-block .token.symbol {
+        color: var(--bee-honey);
+    }
+
+    .bee-code-block .token.function,
+    .bee-docs-content pre .token.function,
+    .bee-code-block .token.method {
+        color: #7dd3fc;
+    }
+
+    .bee-code-block .token.class-name,
+    .bee-docs-content pre .token.class-name {
+        color: #fcd34d;
+    }
+
+    .bee-code-block .token.operator,
+    .bee-docs-content pre .token.operator,
+    .bee-code-block .token.entity,
+    .bee-code-block .token.url {
+        color: #c4b5fd;
+    }
+
+    .bee-code-block .token.property,
+    .bee-docs-content pre .token.property,
+    .bee-code-block .token.tag,
+    .bee-code-block .token.attr-name {
+        color: #f0abfc;
+    }
+
+    .bee-code-block .token.deleted,
+    .bee-docs-content pre .token.deleted {
+        color: var(--bee-ladybug);
+    }
+
+    /* Commenti/percorsi negli alberi di cartelle */
+    .bee-code-block .bee-cm {
+        color: #6b7590;
+        font-style: italic;
+    }
+
+    .bee-code-block .bee-new {
+        color: var(--bee-ladybug);
+        font-weight: 600;
     }
 
     /* ==========================================
@@ -222,9 +515,13 @@
             height: 60px;
         }
 
+        .bee-header-title {
+            font-size: 16px;
+        }
+
         .bee-docs-container {
             flex-direction: column;
-            padding: 12px;
+            padding: 14px;
             gap: 15px;
         }
 
@@ -234,25 +531,31 @@
             top: 0;
             max-height: none;
             border-right: none;
-            border-bottom: 2px solid rgba(255, 202, 40, 0.3);
+            border-bottom: 1px solid var(--bee-line);
             padding-right: 0;
             padding-bottom: 15px;
         }
 
-        /* Forza la dimensione e lo spessore vistoso su Mobile */
+        /* Leggibilita' su mobile: piu' corpo e contrasto,
+           SENZA azzerare il syntax highlighting */
         .bee-code-block,
-        .bee-code-block * {
-            font-size: 15px !important;
-            font-weight: 700 !important;
-            letter-spacing: 0.3px !important;
-            color: #ffffff !important;
-            /* Mantiene il bianco puro anche su smartphone */
+        .bee-docs-content pre {
+            font-size: 14px !important;
+            letter-spacing: 0.2px !important;
+            line-height: 1.8 !important;
+            padding: 15px !important;
+            color: #dbe4f0 !important;
         }
 
-        .bee-code-block {
-            padding: 14px !important;
+        .bee-code-block.bee-has-copy,
+        .bee-docs-content pre.bee-has-copy {
+            padding-top: 44px !important;
         }
 
+        .bee-copy-btn {
+            font-size: 11px;
+            padding: 6px 9px;
+        }
     }
 </style>
 
@@ -271,7 +574,6 @@
     <aside class="bee-docs-sidebar">
         <div class="bee-sidebar-title">BeeEngine V2.2</div>
 
-        <details open="">
             <details>
                 <summary>🌐 Link Utili</summary>
                 <ul>
@@ -290,8 +592,8 @@
                 <ul>
                     <li><a href="#BeeAssetManager">BeeAssetManager .js</a></li>
                     <li><a href="#BeeGrid">BeeGrid.js</a></li>
-                    <li><a href="BeeSave# ">BeeSave.js</a></li>
-                    <li><a href="BeeSceneManager#">BeeSceneManager.js</a></li>
+                    <li><a href="#BeeSave">BeeSave.js</a></li>
+                    <li><a href="#BeeSceneManager">BeeSceneManager.js</a></li>
                     <li><a href="#BeeTimer">BeeTimer.js</a></li>
                 </ul>
             </details>
@@ -325,7 +627,7 @@
             <details>
                 <summary>📁 input</summary>
                 <ul>
-                    <li><a href="# BeeButton"> BeeButton.js</a></li>
+                    <li><a href="#BeeButton">BeeButton.js</a></li>
                     <li><a href="#BeeInput">BeeInput.js</a></li>
                     <li><a href="#BeeJoystick">BeeJoystick.js</a></li>
                     <li><a href="#BeeTouchButton">BeeTouchButton.js</a></li>
@@ -532,3 +834,94 @@
     </main>
 
 </div>
+
+<!-- PULSANTE "COPIA CODICE" (auto-applicato a .bee-code-block e <pre><code>) -->
+<script>
+    (function () {
+        if (window.__beeDocsCopyInit) return;
+        window.__beeDocsCopyInit = true;
+
+        function copyText(text, btn) {
+            var done = function () {
+                btn.textContent = '✔ Copiato';
+                btn.classList.add('bee-copied');
+                setTimeout(function () {
+                    btn.textContent = '⧉ Copia codice';
+                    btn.classList.remove('bee-copied');
+                }, 1600);
+            };
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(done, function () { fallback(text, done); });
+            } else {
+                fallback(text, done);
+            }
+        }
+
+        function fallback(text, done) {
+            var ta = document.createElement('textarea');
+            ta.value = text;
+            ta.setAttribute('readonly', '');
+            ta.style.position = 'fixed';
+            ta.style.top = '-1000px';
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand('copy'); done(); } catch (e) { }
+            document.body.removeChild(ta);
+        }
+
+        /* Rimuove il rientro comune ereditato dall'indentazione dell'HTML,
+           senza toccare la struttura relativa del codice */
+        function dedent(block) {
+            var lines = block.innerHTML.split('\n');
+            if (lines.length < 2) return;
+
+            var min = Infinity;
+            for (var i = 1; i < lines.length; i++) {
+                if (!lines[i].trim()) continue;
+                var pad = lines[i].match(/^[ \t]*/)[0].length;
+                if (pad < min) min = pad;
+            }
+            if (!min || min === Infinity) return;
+
+            var re = new RegExp('^[ \\t]{0,' + min + '}');
+            for (var j = 1; j < lines.length; j++) lines[j] = lines[j].replace(re, '');
+            block.innerHTML = lines.join('\n').replace(/^\s*\n/, '').replace(/\s+$/, '');
+        }
+
+        function enhance(block) {
+            if (block.dataset.beeCopy === '1') return;
+            block.dataset.beeCopy = '1';
+            dedent(block);
+
+            var wrap = document.createElement('div');
+            wrap.className = 'bee-code-wrap';
+            block.parentNode.insertBefore(wrap, block);
+            wrap.appendChild(block);
+
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'bee-copy-btn';
+            btn.textContent = '⧉ Copia codice';
+            btn.setAttribute('aria-label', 'Copia il codice');
+            btn.addEventListener('click', function () {
+                copyText(block.innerText.replace(/^\s*\n/, '').replace(/\s+$/, ''), btn);
+            });
+            wrap.appendChild(btn);
+            block.classList.add('bee-has-copy');
+        }
+
+        function init() {
+            var blocks = document.querySelectorAll('.bee-code-block');
+            for (var i = 0; i < blocks.length; i++) enhance(blocks[i]);
+
+            var codes = document.querySelectorAll('.bee-docs-content pre > code');
+            for (var j = 0; j < codes.length; j++) enhance(codes[j].parentNode);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    })();
+</script>
