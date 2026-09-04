@@ -1,0 +1,440 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Documentazione - BeeEngine</title>
+
+<style>
+    /* ==========================================
+       RESET E BASE PAGINA
+       ========================================== */
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        background-color: #0c0c0e;
+        color: #e0e0e0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        padding-top: 80px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ==========================================
+       1. BARRA HEADER FISSA IN ALTO
+       ========================================== */
+    .bee-docs-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 70px;
+        background: #121214;
+        border-bottom: 2px solid rgba(255, 202, 40, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 25px;
+        z-index: 1000;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .bee-header-logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+    }
+
+    .bee-header-title {
+        color: #ffca28;
+        font-size: 20px;
+        font-weight: bold;
+        font-family: monospace;
+        letter-spacing: 1px;
+    }
+
+    .bee-header-badge {
+        background: rgba(255, 202, 40, 0.15);
+        color: #ffca28;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 13px;
+        border: 1px solid rgba(255, 202, 40, 0.3);
+        font-family: monospace;
+    }
+
+    /* ==========================================
+       2. CONTENITORE DOCUMENTAZIONE
+       ========================================== */
+    .bee-docs-container {
+        position: relative;
+        z-index: 5;
+        display: flex;
+        gap: 25px;
+        background-color: rgba(18, 18, 20, 0.85);
+        backdrop-filter: blur(8px);
+        color: #ffca28;
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 202, 40, 0.2);
+        max-width: 1400px;
+        margin: 0 auto 40px auto;
+    }
+
+    .bee-docs-sidebar {
+        width: 250px;
+        flex-shrink: 0;
+        border-right: 2px solid rgba(255, 202, 40, 0.3);
+        padding-right: 15px;
+        position: sticky;
+        top: 90px;
+        max-height: calc(100vh - 110px);
+        overflow-y: auto;
+    }
+
+    .bee-sidebar-title {
+        color: #ffca28;
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 12px;
+        border-bottom: 1px solid #ffca28;
+        padding-bottom: 6px;
+    }
+
+    .bee-docs-sidebar details {
+        margin-bottom: 10px;
+        background: rgba(30, 30, 30, 0.8);
+        border-radius: 6px;
+        border: 1px solid #333;
+    }
+
+    .bee-docs-sidebar summary {
+        padding: 10px;
+        font-weight: bold;
+        font-size: 15px;
+        color: #ffffff;
+        cursor: pointer;
+    }
+
+    .bee-docs-sidebar ul {
+        list-style: none;
+        padding: 5px 12px 10px 12px;
+        margin: 0;
+    }
+
+    .bee-docs-sidebar li {
+        margin: 6px 0;
+    }
+
+    .bee-docs-sidebar a {
+        color: #b0b0b0;
+        text-decoration: none;
+        font-size: 14px;
+        font-family: monospace;
+    }
+
+    .bee-docs-sidebar a:hover {
+        color: #ffca28;
+    }
+
+    /* Area Contenuto */
+    .bee-docs-content {
+        flex-grow: 1;
+        min-width: 0;
+    }
+
+    .bee-section-title {
+        color: #ffca28;
+        font-size: 22px;
+        border-bottom: 2px solid rgba(255, 202, 40, 0.3);
+        padding-bottom: 8px;
+        margin: 30px 0 15px 0;
+    }
+
+    .bee-section-title:first-of-type {
+        margin-top: 0;
+    }
+
+    /* Scheda normale */
+    .bee-class-card {
+        background: rgba(26, 26, 26, 0.9);
+        border: 1px solid #333;
+        border-left: 4px solid #ffca28;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 6px;
+        scroll-margin-top: 90px;
+    }
+
+    .bee-class-card:target {
+        background: rgba(35, 35, 42, 0.95);
+        box-shadow: 0 0 15px rgba(255, 202, 40, 0.25);
+    }
+
+    .bee-class-card h3 {
+        color: #ffca28 !important;
+        margin-top: 0;
+        font-size: 18px;
+        font-family: monospace;
+        margin-bottom: 8px;
+    }
+
+    .bee-class-card p {
+        line-height: 1.6;
+        color: #c7def9eb !important;
+        /* Colore grigio chiaro/bianco sporco ottimo per la vista */
+        font-size: 15px;
+        word-wrap: break-word;
+        margin-bottom: 10px;
+        font-weight: 500;
+    }
+
+    /* ==========================================
+       3. BLOCCO DI CODICE GLOBALE
+       ========================================== */
+    .bee-code-block {
+        background: #141414 !important;
+        border: 1px solid rgba(255, 202, 40, 0.2) !important;
+        padding: 16px !important;
+        border-radius: 8px !important;
+        font-family: 'Courier New', Courier, monospace !important;
+        color: #06d0ef !important;
+        /* Tutto il testo semplice del codice diventa bianco puro */
+        line-height: 1.6 !important;
+        white-space: pre !important;
+        overflow-x: auto !important;
+        word-break: normal !important;
+        width: 100% !important;
+    }
+
+    /* ==========================================
+       4. REGOLE SPECIFICHE PER TELEFONO (MOBILE)
+       ========================================== */
+    @media (max-width: 768px) {
+        body {
+            padding-top: 75px;
+        }
+
+        .bee-docs-header {
+            padding: 0 15px;
+            height: 60px;
+        }
+
+        .bee-docs-container {
+            flex-direction: column;
+            padding: 12px;
+            gap: 15px;
+        }
+
+        .bee-docs-sidebar {
+            width: 100%;
+            position: relative;
+            top: 0;
+            max-height: none;
+            border-right: none;
+            border-bottom: 2px solid rgba(255, 202, 40, 0.3);
+            padding-right: 0;
+            padding-bottom: 15px;
+        }
+
+        /* Forza la dimensione e lo spessore vistoso su Mobile */
+        .bee-code-block,
+        .bee-code-block * {
+            font-size: 15px !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.3px !important;
+            color: #ffffff !important;
+            /* Mantiene il bianco puro anche su smartphone */
+        }
+
+        .bee-code-block {
+            padding: 14px !important;
+        }
+
+    }
+</style>
+
+<!-- HEADER FISSA -->
+<header class="bee-docs-header">
+    <a href="#" class="bee-header-logo">
+        <span class="bee-header-title">Documentazione mettere la classe</span>
+    </a>
+    <span class="bee-header-badge">v2.2.0</span>
+</header>
+
+<!-- CONTENITORE PRINCIPALE -->
+<div class="bee-docs-container">
+
+    <!-- SIDEBAR (UNICA PER TUTTA LA PAGINA) -->
+    <aside class="bee-docs-sidebar">
+        <div class="bee-sidebar-title">BeeEngine V2.2</div>
+
+        <details open="">
+            <details>
+                <summary>🌐 Link Utili</summary>
+                <ul>
+                    <li><a href="https://github.com/antonioprosperi2-svg/PLAYCOMBO" target="_blank"
+                            rel="noopener noreferrer">🐙
+                            GitHub</a></li>
+                    <li><a href="https://www.npmjs.com/package/beeengine" target="_blank" rel="noopener noreferrer">📦
+                            npm
+                            Registry</a></li>
+                </ul>
+            </details>
+
+            <details>
+
+                <summary>📁 Core </summary>
+                <ul>
+                    <li><a href="#BeeAssetManager">BeeAssetManager .js</a></li>
+                    <li><a href="#BeeGrid">BeeGrid.js</a></li>
+                    <li><a href="BeeSave# ">BeeSave.js</a></li>
+                    <li><a href="BeeSceneManager#">BeeSceneManager.js</a></li>
+                    <li><a href="#BeeTimer">BeeTimer.js</a></li>
+                </ul>
+            </details>
+
+            <details>
+                <summary>📁 gameplay</summary>
+                <ul>
+                    <li><a href="#BeeCollectible">BeeCollectible.js</a></li>
+                    <li><a href="#BeeEnemyShooter">BeeEnemyShooter.js</a></li>
+                    <li><a href="#BeeEntity">BeeEntity.js</a></li>
+                    <li><a href="#BeeMenuScene">BeeMenuScene.js</a></li>
+                    <li><a href="#BeeNemico">BeeNemico.js</a></li>
+                    <li><a href="#BeePlatform">BeePlatform.js</a></li>
+                    <li><a href="#BeePlayer">BeePlayer.js</a></li>
+                </ul>
+            </details>
+
+            <details>
+                <summary>📁 graphics</summary>
+                <ul>
+                    <li><a href="#BeeAnimatedSprite">BeeAnimatedSprite.js</a></li>
+                    <li><a href="#BeeCamera">BeeCamera.js</a></li>
+                    <li><a href="#BeeParticleSystem">BeeParticleSystem.js</a></li>
+                    <li><a href="#BeeSprite">BeeSprite.js</a></li>
+                    <li><a href="#BeeSpriteSheet">BeeSpriteSheet.js</a></li>
+                    <li><a href="#BeeText">BeeText.js</a></li>
+                    <li><a href="#BeeTilemap">BeeTilemap.js</a></li>
+                    <li><a href="#BeeTilemapLoade">BeeTilemapLoade.js</a></li>
+                </ul>
+            </details>
+            <details>
+                <summary>📁 input</summary>
+                <ul>
+                    <li><a href="# BeeButton"> BeeButton.js</a></li>
+                    <li><a href="#BeeInput">BeeInput.js</a></li>
+                    <li><a href="#BeeJoystick">BeeJoystick.js</a></li>
+                    <li><a href="#BeeTouchButton">BeeTouchButton.js</a></li>
+                    <li><a href="#BeeTouchControls">BeeTouchControls.js</a></li>
+                    <li><a href="#BeeVirtualDPad">BeeVirtualDPad.js</a></li>
+                </ul>
+            </details>
+
+            <details>
+                <summary>📁 physics</summary>
+                <ul>
+                    <li><a href="#BeeBullet">BeeBullet.js</a></li>
+                    <li><a href="#BeeCollisionSystem">BeeCollisionSystem.js</a></li>
+                    <li><a href="#BeeRectCollider">BeeRectCollider.js</a></li>
+                </ul>
+            </details>
+    </aside>
+
+
+    <!-- AREA CONTENUTI (TUTTI I MODULI VANNO QUI DENTRO) -->
+    <main class="bee-docs-content">
+
+        <!-- SEZIONE 1 -->
+        <h2 class="bee-section-title"></h2>
+
+        <div class="bee-class-card" id="radme">****>>>>>>>> mettere id >>>>>>>>>>*****
+            <h3> </h3>
+
+            <p></p>
+
+            <p> </p>
+
+            <p>📁 </p>
+
+            <div class="bee-code-block"></div>
+
+            <p>📁</p>
+
+            <div class="bee-code-block"></div>
+
+            <p>📁</p>
+
+            <div class="bee-code-block"> </div>
+
+            <p>📁</p>
+
+            <div class="bee-code-block"></div>
+
+            <p>📁</p>
+
+            <div class="bee-code-block"></div>
+
+            <p>📁 </p>
+
+            <div class="bee-class-card"></div>
+
+            <p>📁 </p>
+
+            <div class="bee-class-card"></div>
+
+            <p> 📁 </p>
+
+            <div class="bee-class-card"></div>
+
+            <p> 📁 </p>
+
+            <div class="bee-class-card"></div>
+
+            <p>📁 </p>
+
+            <div class="bee-class-card"> </div>
+
+            <p>📁 </p>
+
+            <div class="bee-class-card"></div>
+
+            <p>📁</p>
+
+            <div class="bee-class-card"> </div>
+
+            <p>📁 </p>
+
+            <div class="bee-class-card"> </div>
+
+            <p> 📁 </p>
+
+            <div class="bee-code-block"></div>
+
+            <p>📁</p>
+
+            <div class="bee-code-block"></div>
+
+
+            <p>📁 </p>
+
+            <div class="bee-code-block"> </div>
+
+            <p>📁 </p>
+
+            <div class="bee-code-block"></div>
+
+            <p> 📁</p>
+
+            <div class="bee-code-block"> </div>
+
+
+
+
+
+    </main>
+
+</div>

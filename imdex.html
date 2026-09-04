@@ -1,0 +1,534 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Documentazione - BeeEngine</title>
+
+<style>
+    /* ==========================================
+       RESET E BASE PAGINA
+       ========================================== */
+    * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        background-color: #0c0c0e;
+        color: #e0e0e0;
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        padding-top: 80px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ==========================================
+       1. BARRA HEADER FISSA IN ALTO
+       ========================================== */
+    .bee-docs-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 70px;
+        background: #121214;
+        border-bottom: 2px solid rgba(255, 202, 40, 0.4);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 25px;
+        z-index: 1000;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    }
+
+    .bee-header-logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+    }
+
+    .bee-header-title {
+        color: #ffca28;
+        font-size: 20px;
+        font-weight: bold;
+        font-family: monospace;
+        letter-spacing: 1px;
+    }
+
+    .bee-header-badge {
+        background: rgba(255, 202, 40, 0.15);
+        color: #ffca28;
+        padding: 4px 10px;
+        border-radius: 4px;
+        font-size: 13px;
+        border: 1px solid rgba(255, 202, 40, 0.3);
+        font-family: monospace;
+    }
+
+    /* ==========================================
+       2. CONTENITORE DOCUMENTAZIONE
+       ========================================== */
+    .bee-docs-container {
+        position: relative;
+        z-index: 5;
+        display: flex;
+        gap: 25px;
+        background-color: rgba(18, 18, 20, 0.85);
+        backdrop-filter: blur(8px);
+        color: #ffca28;
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px solid rgba(255, 202, 40, 0.2);
+        max-width: 1400px;
+        margin: 0 auto 40px auto;
+    }
+
+    .bee-docs-sidebar {
+        width: 250px;
+        flex-shrink: 0;
+        border-right: 2px solid rgba(255, 202, 40, 0.3);
+        padding-right: 15px;
+        position: sticky;
+        top: 90px;
+        max-height: calc(100vh - 110px);
+        overflow-y: auto;
+    }
+
+    .bee-sidebar-title {
+        color: #ffca28;
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 12px;
+        border-bottom: 1px solid #ffca28;
+        padding-bottom: 6px;
+    }
+
+    .bee-docs-sidebar details {
+        margin-bottom: 10px;
+        background: rgba(30, 30, 30, 0.8);
+        border-radius: 6px;
+        border: 1px solid #333;
+    }
+
+    .bee-docs-sidebar summary {
+        padding: 10px;
+        font-weight: bold;
+        font-size: 15px;
+        color: #ffffff;
+        cursor: pointer;
+    }
+
+    .bee-docs-sidebar ul {
+        list-style: none;
+        padding: 5px 12px 10px 12px;
+        margin: 0;
+    }
+
+    .bee-docs-sidebar li {
+        margin: 6px 0;
+    }
+
+    .bee-docs-sidebar a {
+        color: #b0b0b0;
+        text-decoration: none;
+        font-size: 14px;
+        font-family: monospace;
+    }
+
+    .bee-docs-sidebar a:hover {
+        color: #ffca28;
+    }
+
+    /* Area Contenuto */
+    .bee-docs-content {
+        flex-grow: 1;
+        min-width: 0;
+    }
+
+    .bee-section-title {
+        color: #ffca28;
+        font-size: 22px;
+        border-bottom: 2px solid rgba(255, 202, 40, 0.3);
+        padding-bottom: 8px;
+        margin: 30px 0 15px 0;
+    }
+
+    .bee-section-title:first-of-type {
+        margin-top: 0;
+    }
+
+    /* Scheda normale */
+    .bee-class-card {
+        background: rgba(26, 26, 26, 0.9);
+        border: 1px solid #333;
+        border-left: 4px solid #ffca28;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 6px;
+        scroll-margin-top: 90px;
+    }
+
+    .bee-class-card:target {
+        background: rgba(35, 35, 42, 0.95);
+        box-shadow: 0 0 15px rgba(255, 202, 40, 0.25);
+    }
+
+    .bee-class-card h3 {
+        color: #ffca28 !important;
+        margin-top: 0;
+        font-size: 18px;
+        font-family: monospace;
+        margin-bottom: 8px;
+    }
+
+    .bee-class-card p {
+        line-height: 1.6;
+        color: #c7def9eb !important;
+        /* Colore grigio chiaro/bianco sporco ottimo per la vista */
+        font-size: 15px;
+        word-wrap: break-word;
+        margin-bottom: 10px;
+        font-weight: 500;
+    }
+
+    /* ==========================================
+       3. BLOCCO DI CODICE GLOBALE
+       ========================================== */
+    .bee-code-block {
+        background: #141414 !important;
+        border: 1px solid rgba(255, 202, 40, 0.2) !important;
+        padding: 16px !important;
+        border-radius: 8px !important;
+        font-family: 'Courier New', Courier, monospace !important;
+        color: #06d0ef !important;
+        /* Tutto il testo semplice del codice diventa bianco puro */
+        line-height: 1.6 !important;
+        white-space: pre !important;
+        overflow-x: auto !important;
+        word-break: normal !important;
+        width: 100% !important;
+    }
+
+    /* ==========================================
+       4. REGOLE SPECIFICHE PER TELEFONO (MOBILE)
+       ========================================== */
+    @media (max-width: 768px) {
+        body {
+            padding-top: 75px;
+        }
+
+        .bee-docs-header {
+            padding: 0 15px;
+            height: 60px;
+        }
+
+        .bee-docs-container {
+            flex-direction: column;
+            padding: 12px;
+            gap: 15px;
+        }
+
+        .bee-docs-sidebar {
+            width: 100%;
+            position: relative;
+            top: 0;
+            max-height: none;
+            border-right: none;
+            border-bottom: 2px solid rgba(255, 202, 40, 0.3);
+            padding-right: 0;
+            padding-bottom: 15px;
+        }
+
+        /* Forza la dimensione e lo spessore vistoso su Mobile */
+        .bee-code-block,
+        .bee-code-block * {
+            font-size: 15px !important;
+            font-weight: 700 !important;
+            letter-spacing: 0.3px !important;
+            color: #ffffff !important;
+            /* Mantiene il bianco puro anche su smartphone */
+        }
+
+        .bee-code-block {
+            padding: 14px !important;
+        }
+
+    }
+</style>
+
+<!-- HEADER FISSA -->
+<header class="bee-docs-header">
+    <a href="#" class="bee-header-logo">
+        <span class="bee-header-title">Documentazione BeeEngine.js</span>
+    </a>
+    <span class="bee-header-badge">v2.2.0</span>
+</header>
+
+<!-- CONTENITORE PRINCIPALE -->
+<div class="bee-docs-container">
+
+    <!-- SIDEBAR (UNICA PER TUTTA LA PAGINA) -->
+    <aside class="bee-docs-sidebar">
+        <div class="bee-sidebar-title">BeeEngine V2.2</div>
+
+        <details open="">
+            <details>
+                <summary>🌐 Link Utili</summary>
+                <ul>
+                    <li><a href="https://github.com/antonioprosperi2-svg/PLAYCOMBO" target="_blank"
+                            rel="noopener noreferrer">🐙
+                            GitHub</a></li>
+                    <li><a href="https://www.npmjs.com/package/beeengine" target="_blank" rel="noopener noreferrer">📦
+                            npm
+                            Registry</a></li>
+                </ul>
+            </details>
+
+            <details>
+
+                <summary>📁 Core </summary>
+                <ul>
+                    <li><a href="#BeeAssetManager">BeeAssetManager .js</a></li>
+                    <li><a href="#BeeGrid">BeeGrid.js</a></li>
+                    <li><a href="BeeSave# ">BeeSave.js</a></li>
+                    <li><a href="BeeSceneManager#">BeeSceneManager.js</a></li>
+                    <li><a href="#BeeTimer">BeeTimer.js</a></li>
+                </ul>
+            </details>
+
+            <details>
+                <summary>📁 gameplay</summary>
+                <ul>
+                    <li><a href="#BeeCollectible">BeeCollectible.js</a></li>
+                    <li><a href="#BeeEnemyShooter">BeeEnemyShooter.js</a></li>
+                    <li><a href="#BeeEntity">BeeEntity.js</a></li>
+                    <li><a href="#BeeMenuScene">BeeMenuScene.js</a></li>
+                    <li><a href="#BeeNemico">BeeNemico.js</a></li>
+                    <li><a href="#BeePlatform">BeePlatform.js</a></li>
+                    <li><a href="#BeePlayer">BeePlayer.js</a></li>
+                </ul>
+            </details>
+
+            <details>
+                <summary>📁 graphics</summary>
+                <ul>
+                    <li><a href="#BeeAnimatedSprite">BeeAnimatedSprite.js</a></li>
+                    <li><a href="#BeeCamera">BeeCamera.js</a></li>
+                    <li><a href="#BeeParticleSystem">BeeParticleSystem.js</a></li>
+                    <li><a href="#BeeSprite">BeeSprite.js</a></li>
+                    <li><a href="#BeeSpriteSheet">BeeSpriteSheet.js</a></li>
+                    <li><a href="#BeeText">BeeText.js</a></li>
+                    <li><a href="#BeeTilemap">BeeTilemap.js</a></li>
+                    <li><a href="#BeeTilemapLoade">BeeTilemapLoade.js</a></li>
+                </ul>
+            </details>
+            <details>
+                <summary>📁 input</summary>
+                <ul>
+                    <li><a href="# BeeButton"> BeeButton.js</a></li>
+                    <li><a href="#BeeInput">BeeInput.js</a></li>
+                    <li><a href="#BeeJoystick">BeeJoystick.js</a></li>
+                    <li><a href="#BeeTouchButton">BeeTouchButton.js</a></li>
+                    <li><a href="#BeeTouchControls">BeeTouchControls.js</a></li>
+                    <li><a href="#BeeVirtualDPad">BeeVirtualDPad.js</a></li>
+                </ul>
+            </details>
+
+            <details>
+                <summary>📁 physics</summary>
+                <ul>
+                    <li><a href="#BeeBullet">BeeBullet.js</a></li>
+                    <li><a href="#BeeCollisionSystem">BeeCollisionSystem.js</a></li>
+                    <li><a href="#BeeRectCollider">BeeRectCollider.js</a></li>
+                </ul>
+            </details>
+    </aside>
+
+
+    <!-- AREA CONTENUTI (TUTTI I MODULI VANNO QUI DENTRO) -->
+    <main class="bee-docs-content">
+
+        <div
+            style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
+
+            <!-- Titolo e Descrizione -->
+            <div>
+                <h2 class="bee-section-title" style="margin: 0;">Panoramica del progetto</h2>
+                <p style="margin-top: 5px;"></p>
+            </div>
+
+            <!-- Mascotte a Destra (Incolla l'URL al posto di URL_DELLA_TUA_IMMAGINE) -->
+            <img decoding="async"
+                src="https://beeenginejs.com/wp-content/uploads/2026/08/cropped-Gemini_Generated_Image_hsvpp7hsvpp7hsvp-1.jpg"
+                alt="BeeEngine Mascot" width="80" height="80" style="width: 80px; height: auto; flex-shrink: 0;">
+
+        </div>
+
+        <div class="bee-class-card" id="radme">
+            <h3>BeeEngine 2D - README & Struttura</h3>
+            <p>Documentazione ufficiale e panoramica dell'architettura del motore.</p>
+            <p>🐝 Motore di gioco 2D BeeEngine (v2.2.0 Professional)
+
+                BeeEngine è un motore di gioco 2D leggero, modulare e altamente ottimizzato scritto in puro JavaScript
+                moderno (ES Modules) per HTML5 Canvas.
+                La versione 2.2 espande il motore introducendo controlli touch nativi e joystick virtuale per
+                smartphone, architettura pronta per la distribuzione tramite NPM, ottimizzazioni avanzate per il
+                risparmio della CPU e un sistema di collisioni centralizzato.</p>
+            <h3>📁 Struttura del Progetto Aggiornata
+            </h3>
+            <div class="bee-code-block">
+                BeeEngine-V2.2/
+                ├── index.html # Punto di ingresso HTML e configurazione Canvas
+                ├── main.js # Demo, gestione scene e punto d'avvio del gioco
+                ├── BeeEngine.js # Il CUORE del motore (Core Loop & System Coordinator)
+                ├── README.md # Documentazione ufficiale e specifiche tecniche
+                ├── package.json # Manifest di configurazione per la pubblicazione NPM
+                ├── tsconfig.json # Configurazione TypeScript per i controlli dell'IDE
+                ├── index.d.ts # Definizioni di tipo globali per IntelliSense e TypeScript
+                ├── assets/ # Gestione centralizzata e ordinata delle risorse
+                │ ├── audio/ # Effetti sonori (.mp3) e musiche di sottofondo
+                │ └── images/ # Texture dei personaggi (.png), sprite e sfondi</div>
+            <h3>📁Di seguito /src/🚀</h3>
+            <div class="bee-code-block">
+                └── src/ # Tutti i moduli logici del motore
+                ├── BeeAssetManager.js # Caricamento asincrono e cache di immagini/audio
+                ├── BeeBullet.js # Gestione dei proiettili 2D attivi
+                ├── BeeButton.js # Pulsanti interattivi per menu su Canvas
+                ├── BeeCamera.js # Telecamera 2D con supporto al bounding box visivo
+                ├── BeeCollectible.js # Oggetti raccoglibili (monete, miele)
+                ├── BeeCollisionSystem.js # Gestore centralizzato e ottimizzato delle collisioni
+                ├── BeeEnemyShooter.js # Nemico avanzato a 4 direzioni con sparo automatico
+                ├── BeeEntity.js # Classe base per tutte le entità di gioco
+                ├── BeeGrid.js # Griglia di sfondo / debug spaziale
+                ├── BeeInput.js # Gestione input (tastiera, mouse, comandi)
+                ├── BeeJoystick.js # NUOVO: Leva analogica virtuale integrata per mobile
+            </div>
+            <h3>📁Logica di Gioco & Sistema </h3>
+            <div class="bee-code-block">
+                ├── BeeMenuScene.js # Scena nativa del menu principale
+                ├── BeeNemico.js # Nemico base con movimento a pattuglia
+                ├── BeeParticleSystem.js # Sistema di particelle per effetti grafici
+                ├── BeePlayer.js # Personaggio giocabile (Modalità: 'platformer' o 'free')
+                ├── BeeRectCollider.js # Collisore geometrico rettangolare AABB
+                ├── BeeSave.js # Salvataggio dati persistenti in LocalStorage
+                └── BeeSceneManager.js # Gestore dei cicli di vita e transizioni delle scene
+            </div>
+
+            <h3>📁Grafica & Tilemap </h3>
+            <div class="bee-code-block">
+                ├── BeeSprite.js # Renderizzatore di fogli di sprite e texture
+                ├── BeeSpriteSheet.js # NUOVO: Gestore e ritaglio avanzato degli sprite sheet
+                ├── BeeText.js # Disegno di testi e rendering della barra HUD nativa
+                ├── BeeTilemap.js # Mappe a blocchi ottimizzate con culling riga/colonna
+                ├── BeeTilemapLoader.js # NUOVO: Caricatore asincrono per mappe di tessere
+                └── BeeTimer.js # Gestore eventi basati sul tempo (Cooldown)
+            </div>
+
+            <h3>📁Interfaccia & Controlli Touch </h3>
+            <div class="bee-code-block">
+                ├── BeeVirtualDPad.js # NUOVO: Pulsantiera direzionale virtuale a 4/8 vie
+                ├── BeeTouchButton.js # NUOVO: Pulsante tattile programmabile con etichetta
+                └── BeeTouchControls.js # NUOVO: Controller completo per input su schermo
+            </div>
+
+            <h3>📁 Novità e ottimizzazioni professionali nella v2.2.0.</h3>
+
+            <p>Controlli Mobile e Joystick Virtuale (`BeeJoystick` & `BeeTouchControls`)
+                Supporto nativo: Gestione integrata per tutti gli schermi touch.
+                Attivazione rapida: Attiva il joystick analogico e i pulsanti programmabili con un solo comando.
+                Codice:`gioco.enableJoystick()`</p>
+
+            <h3>📁 NUOVO: Componenti Interfaccia Touch Avanzati</h3>
+
+            <p>Nella v2.2.0 sono state introdotte due nuove classi specifiche esportate per una
+                gestione granulare dell'input mobile:
+                `BeeVirtualDPad`: Una pulsantiera direzionale configurabile a 4 o 8 direzioni (`eightWay:
+                false/true`), ideale per movimenti precisi stile retro-game o platform.
+                `BeeTouchButton`: Un pulsante tattile rotondo completamente personalizzabile nel raggio e nel
+                testo dell'etichetta (es. "A" per saltare, "B" per sparare).
+            </p>
+            <h3> 📁 Gestione Sprite e Mappe Avanzata (`BeeSpriteSheet` & `BeeTilemapLoader`)</h3>
+
+            <p>
+                Ritaglio tessere: Semplificato il caricamento e il ritaglio da fogli di sprite complessi.
+                Asincronia: Gestione fluida e asincrona dei livelli di gioco durante i caricamenti.
+            </p>
+            <p> 📁 Sistema di Collisioni Centralizzato (`BeeCollisionSystem`)</p>
+
+            <p>Gruppi logici: Registro centralizzato per dividere le entità in gruppi.
+                Fisica ottimizzata:** Risoluzioni fisiche solide (`solid`) e interazioni ad eventi (`overlap`) ad alta
+                efficienza.</p>
+
+            <h3>📁 Risparmio CPU tramite Frustum Culling (`BeeCamera`)</h3>
+
+            <p>
+                Sfoltimento grafico: Algoritmo per saltare il rendering delle entità fuori dallo schermo.
+                Performance: Mantiene i 60 FPS stabili anche con centinaia di oggetti in gioco.
+
+            </p>
+
+            <h3>📁 Distribuzione NPM & Type Definitions (`index.d.ts`)</h3>
+
+            <p>*Modulo ES6: Distribuzione ufficiale sul registro NPM ottimizzata per i moduli
+                moderni.
+                Autocompletamento: Definizioni di tipo aggiornate per l'IntelliSense e i suggerimenti in VS Code.</p>
+
+            <h3>📁 Distribuzione NPM & Type Definitions (`index.d.ts`)</h3>
+
+            <p>Aggiornata la documentazione e il layout Markdown.
+            </p>
+
+            <h3>📁 Esportate nuove classi touch in `index.js` per una perfetta integrazione con il pacchetto.</h3>
+
+            <p>Testata e verificata la reattività al tocco in tempo reale su dispositivi
+                mobili.
+            </p>
+
+            <h3> 📁 Esempio d'Uso Rapido (v2.2.0)</h3>
+            <p>import { BeeEngine, BeeVirtualDPad, BeeTouchButton } from 'beeengine';</p>
+
+            <h3>Inizializzazione Motore</h3>
+
+            <p>const gioco = new BeeEngine("testCanvas", 800, 600);
+                gioco.enableAutoResize(800, 600, 100);</p>
+
+
+            <h3>📁 Attivazione controlli mobile nativi (v2.2)</h3>
+
+            <p>gioco.enableJoystick();
+            </p>
+
+            <h3>📁 Configurazione opzionale D-Pad e Pulsanti Touch personalizzati</h3>
+
+            <div class="bee-code-block">const dPad = new BeeVirtualDPad({
+                canvas: gioco.canvas,
+                x: 100,
+                y: 500,
+                size: 120,
+                eightWay: false
+                });
+
+                const pulsanteSalto = new BeeTouchButton({
+                canvas: gioco.canvas,
+                x: 700,
+                y: 500,
+                radius: 35,
+                label: "SALTA"
+                });
+            </div>
+
+            <h3> 📁Regole Collisioni Avvio Ciclo di Gioco</h3>
+
+            <div class="bee-code-block">gioco.collisions.setGroup('solidi', piattaforme);
+                gioco.collisions.setGroup('giocatore', [giocatore]);
+                gioco.collisions.solid('giocatore', 'solidi');
+                gioco.start()
+            </div>
+
+
+
+
+
+    </main>
+
+</div>
