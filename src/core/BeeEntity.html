@@ -424,18 +424,21 @@
     /* ==========================================
        3b. SYNTAX HIGHLIGHTING (token Prism.js)
        ========================================== */
+    /* Commenti Prism e token speciali */
     .bee-code-block .token.comment,
     .bee-docs-content pre .token.comment,
     .bee-code-block .token.prolog,
     .bee-code-block .token.doctype,
     .bee-code-block .token.cdata {
-        color: #6b7590;
+        color: #94a3b8;
+        /* Cambiato da #6b7590 a #94a3b8 per contrasto > 4.5:1 */
         font-style: italic;
     }
 
     .bee-code-block .token.punctuation,
     .bee-docs-content pre .token.punctuation {
-        color: #94a3b8;
+        color: #cbd5e1;
+        /* Leggermente schiarito da #94a3b8 a #cbd5e1 */
     }
 
     .bee-code-block .token.keyword,
@@ -493,7 +496,7 @@
 
     /* Commenti/percorsi negli alberi di cartelle */
     .bee-code-block .bee-cm {
-        color: #6b7590;
+        color: #94a3b8;
         font-style: italic;
     }
 
@@ -634,77 +637,77 @@
     <aside class="bee-docs-sidebar">
         <div class="bee-sidebar-title">BeeEngine V2.2</div>
 
-            <details>
-                <summary>🌐 Link Utili</summary>
-                <ul>
-                    <li><a href="https://github.com/antonioprosperi2-svg/PLAYCOMBO" target="_blank"
-                            rel="noopener noreferrer">🐙
-                            GitHub</a></li>
-                    <li><a href="https://www.npmjs.com/package/beeengine" target="_blank" rel="noopener noreferrer">📦
-                            npm
-                            Registry</a></li>
-                </ul>
-            </details>
+        <details>
+            <summary>🌐 Link Utili</summary>
+            <ul>
+                <li><a href="https://github.com/antonioprosperi2-svg/PLAYCOMBO" target="_blank"
+                        rel="noopener noreferrer">🐙
+                        GitHub</a></li>
+                <li><a href="https://www.npmjs.com/package/beeengine" target="_blank" rel="noopener noreferrer">📦
+                        npm
+                        Registry</a></li>
+            </ul>
+        </details>
 
-            <details>
+        <details>
 
-                <summary>📁 Core </summary>
-                <ul>
-                    <li><a href="#BeeAssetManager">BeeAssetManager .js</a></li>
-                    <li><a href="#BeeEntity" class="is-current">BeeEntity.js</a></li>
-                    <li><a href="#BeeGrid">BeeGrid.js</a></li>
-                    <li><a href="#BeeSave">BeeSave.js</a></li>
-                    <li><a href="#BeeSceneManager">BeeSceneManager.js</a></li>
-                    <li><a href="#BeeTimer">BeeTimer.js</a></li>
-                </ul>
-            </details>
+            <summary>📁 Core </summary>
+            <ul>
+                <li><a href="#BeeEngine">BeeEngine.js</a></li>
+                <li><a href="#BeeAssetManager">BeeAssetManager .js</a></li>
+                <li><a href="#BeeEntity">BeeEntity.js</a></li>
+                <li><a href="#BeeGrid">BeeGrid.js</a></li>
+                <li><a href="#BeeSave">BeeSave.js</a></li>
+                <li><a href="#BeeSceneManager">BeeSceneManager.js</a></li>
+                <li><a href="#BeeTimer">BeeTimer.js</a></li>
+            </ul>
+        </details>
 
-            <details>
-                <summary>📁 gameplay</summary>
-                <ul>
-                    <li><a href="#BeeCollectible">BeeCollectible.js</a></li>
-                    <li><a href="#BeeEnemyShooter">BeeEnemyShooter.js</a></li>
+        <details>
+            <summary>📁 gameplay</summary>
+            <ul>
+                <li><a href="#BeeCollectible">BeeCollectible.js</a></li>
+                <li><a href="#BeeEnemyShooter">BeeEnemyShooter.js</a></li>
+                <li><a href="#BeeMenuScene">BeeMenuScene.js</a></li>
+                <li><a href="#BeeNemico">BeeNemico.js</a></li>
+                <li><a href="#BeePlatform">BeePlatform.js</a></li>
+                <li><a href="#BeePlayer">BeePlayer.js</a></li>
+            </ul>
+        </details>
 
-                    <li><a href="#BeeMenuScene">BeeMenuScene.js</a></li>
-                    <li><a href="#BeeNemico">BeeNemico.js</a></li>
-                    <li><a href="#BeePlatform">BeePlatform.js</a></li>
-                    <li><a href="#BeePlayer">BeePlayer.js</a></li>
-                </ul>
-            </details>
+        <details>
+            <summary>📁 graphics</summary>
+            <ul>
+                <li><a href="#BeeAnimatedSprite">BeeAnimatedSprite.js</a></li>
+                <li><a href="#BeeCamera">BeeCamera.js</a></li>
+                <li><a href="#BeeParticleSystem">BeeParticleSystem.js</a></li>
+                <li><a href="#BeeSprite">BeeSprite.js</a></li>
+                <li><a href="#BeeSpriteSheet">BeeSpriteSheet.js</a></li>
+                <li><a href="#BeeText">BeeText.js</a></li>
+                <li><a href="#BeeTilemap">BeeTilemap.js</a></li>
+                <li><a href="#BeeTilemapLoade">BeeTilemapLoade.js</a></li>
+            </ul>
+        </details>
+        <details>
+            <summary>📁 input</summary>
+            <ul>
+                <li><a href="#BeeButton">BeeButton.js</a></li>
+                <li><a href="#BeeInput">BeeInput.js</a></li>
+                <li><a href="#BeeJoystick">BeeJoystick.js</a></li>
+                <li><a href="#BeeTouchButton">BeeTouchButton.js</a></li>
+                <li><a href="#BeeTouchControls">BeeTouchControls.js</a></li>
+                <li><a href="#BeeVirtualDPad">BeeVirtualDPad.js</a></li>
+            </ul>
+        </details>
 
-            <details>
-                <summary>📁 graphics</summary>
-                <ul>
-                    <li><a href="#BeeAnimatedSprite">BeeAnimatedSprite.js</a></li>
-                    <li><a href="#BeeCamera">BeeCamera.js</a></li>
-                    <li><a href="#BeeParticleSystem">BeeParticleSystem.js</a></li>
-                    <li><a href="#BeeSprite">BeeSprite.js</a></li>
-                    <li><a href="#BeeSpriteSheet">BeeSpriteSheet.js</a></li>
-                    <li><a href="#BeeText">BeeText.js</a></li>
-                    <li><a href="#BeeTilemap">BeeTilemap.js</a></li>
-                    <li><a href="#BeeTilemapLoade">BeeTilemapLoade.js</a></li>
-                </ul>
-            </details>
-            <details>
-                <summary>📁 input</summary>
-                <ul>
-                    <li><a href="#BeeButton">BeeButton.js</a></li>
-                    <li><a href="#BeeInput">BeeInput.js</a></li>
-                    <li><a href="#BeeJoystick">BeeJoystick.js</a></li>
-                    <li><a href="#BeeTouchButton">BeeTouchButton.js</a></li>
-                    <li><a href="#BeeTouchControls">BeeTouchControls.js</a></li>
-                    <li><a href="#BeeVirtualDPad">BeeVirtualDPad.js</a></li>
-                </ul>
-            </details>
-
-            <details>
-                <summary>📁 physics</summary>
-                <ul>
-                    <li><a href="#BeeBullet">BeeBullet.js</a></li>
-                    <li><a href="#BeeCollisionSystem">BeeCollisionSystem.js</a></li>
-                    <li><a href="#BeeRectCollider">BeeRectCollider.js</a></li>
-                </ul>
-            </details>
+        <details>
+            <summary>📁 physics</summary>
+            <ul>
+                <li><a href="#BeeBullet">BeeBullet.js</a></li>
+                <li><a href="#BeeCollisionSystem">BeeCollisionSystem.js</a></li>
+                <li><a href="#BeeRectCollider">BeeRectCollider.js</a></li>
+            </ul>
+        </details>
     </aside>
 
 
@@ -721,7 +724,7 @@
             </div>
 
             <!-- Mascotte a Destra (Incolla l'URL al posto di URL_DELLA_TUA_IMMAGINE) -->
-            <img src="https://beeenginejs.com/wp-content/uploads/2026/08/gemini-2.5-flash-image_A_circular_vector_logo_icon_minimalist_graphic_design_centered_inside_a_perfect_-0.jpg"
+            <img src="https://beeenginejs.com/wp-content/uploads/2026/09/Gemini_Generated_Image_bg7xjjbg7xjjbg7x-1-1.jpg"
                 alt="BeeEngine Mascot" width="80" height="80" style="width: 80px; height: auto; flex-shrink: 0;">
 
         </div>
@@ -739,8 +742,15 @@
                 leggono l'AABB in coordinate mondo, e il solver riscrive il risultato in coordinate locali.</p>
 
             <div class="bee-code-block">
-                <span class="token keyword">import</span> <span class="token punctuation">{</span> <span class="token class-name">BeeRectCollider</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'../physics/BeeRectCollider.js'</span><span class="token punctuation">;</span>
-                <span class="token keyword">import</span> <span class="token punctuation">{</span> <span class="token class-name">BeeEntity</span><span class="token punctuation">,</span> <span class="token constant">BEE_ENTITY_DEFAULTS</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./src/core/BeeEntity.js'</span><span class="token punctuation">;</span>
+                <span class="token keyword">import</span> <span class="token punctuation">{</span> <span
+                    class="token class-name">BeeRectCollider</span> <span class="token punctuation">}</span> <span
+                    class="token keyword">from</span> <span
+                    class="token string">'../physics/BeeRectCollider.js'</span><span class="token punctuation">;</span>
+                <span class="token keyword">import</span> <span class="token punctuation">{</span> <span
+                    class="token class-name">BeeEntity</span><span class="token punctuation">,</span> <span
+                    class="token constant">BEE_ENTITY_DEFAULTS</span> <span class="token punctuation">}</span> <span
+                    class="token keyword">from</span> <span class="token string">'./src/core/BeeEntity.js'</span><span
+                    class="token punctuation">;</span>
             </div>
 
             <h3>📁 Il concetto chiave: coordinate locali e coordinate mondo</h3>
@@ -752,21 +762,37 @@
             </p>
 
             <p>Il meccanismo è a due tempi. Quando scrivi <code>x</code> o <code>y</code>, un flag di invalidazione si
-                propaga a tutto il sottoalbero (con uscita anticipata se era già sporco, così non si ripercorre lo stesso
-                ramo due volte). Alla lettura di <code>worldX</code>, la catena viene risincronizzata dal parent verso il
+                propaga a tutto il sottoalbero (con uscita anticipata se era già sporco, così non si ripercorre lo
+                stesso
+                ramo due volte). Alla lettura di <code>worldX</code>, la catena viene risincronizzata dal parent verso
+                il
                 basso e il valore viene messo in cache.</p>
 
             <div class="bee-code-block">
-                <span class="token keyword">const</span> mondo <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeeEntity</span><span class="token punctuation">(</span><span class="token number">100</span><span class="token punctuation">,</span> <span class="token number">50</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">const</span> arma <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeeEntity</span><span class="token punctuation">(</span><span class="token number">10</span><span class="token punctuation">,</span> <span class="token number">5</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                mondo<span class="token punctuation">.</span><span class="token function">addChild</span><span class="token punctuation">(</span>arma<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">const</span> mondo <span class="token operator">=</span> <span
+                    class="token keyword">new</span> <span class="token class-name">BeeEntity</span><span
+                    class="token punctuation">(</span><span class="token number">100</span><span
+                    class="token punctuation">,</span> <span class="token number">50</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">const</span> arma <span class="token operator">=</span> <span
+                    class="token keyword">new</span> <span class="token class-name">BeeEntity</span><span
+                    class="token punctuation">(</span><span class="token number">10</span><span
+                    class="token punctuation">,</span> <span class="token number">5</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
+                mondo<span class="token punctuation">.</span><span class="token function">addChild</span><span
+                    class="token punctuation">(</span>arma<span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
 
-                arma<span class="token punctuation">.</span>x<span class="token punctuation">;</span>        <span class="token comment">// 10  → locale al parent</span>
-                arma<span class="token punctuation">.</span>worldX<span class="token punctuation">;</span>   <span class="token comment">// 110 → 100 (parent) + 10 (locale)</span>
+                arma<span class="token punctuation">.</span>x<span class="token punctuation">;</span> <span
+                    class="token comment">// 10 → locale al parent</span>
+                arma<span class="token punctuation">.</span>worldX<span class="token punctuation">;</span> <span
+                    class="token comment">// 110 → 100 (parent) + 10 (locale)</span>
 
                 <span class="token comment">// Scrivere worldX converte automaticamente in locale</span>
-                arma<span class="token punctuation">.</span>worldX <span class="token operator">=</span> <span class="token number">130</span><span class="token punctuation">;</span>
-                arma<span class="token punctuation">.</span>x<span class="token punctuation">;</span>        <span class="token comment">// 30</span>
+                arma<span class="token punctuation">.</span>worldX <span class="token operator">=</span> <span
+                    class="token number">130</span><span class="token punctuation">;</span>
+                arma<span class="token punctuation">.</span>x<span class="token punctuation">;</span> <span
+                    class="token comment">// 30</span>
             </div>
 
             <p>Il vantaggio pratico: muovere un parent aggiorna implicitamente tutti i figli, senza cicli espliciti e
@@ -831,17 +857,32 @@
             </p>
 
             <div class="bee-code-block">
-                <span class="token keyword">new</span> <span class="token class-name">BeeEntity</span><span class="token punctuation">(</span>x<span class="token punctuation">,</span> y<span class="token punctuation">,</span> width<span class="token punctuation">,</span> height<span class="token punctuation">,</span> physics<span class="token punctuation">)</span>
+                <span class="token keyword">new</span> <span class="token class-name">BeeEntity</span><span
+                    class="token punctuation">(</span>x<span class="token punctuation">,</span> y<span
+                    class="token punctuation">,</span> width<span class="token punctuation">,</span> height<span
+                    class="token punctuation">,</span> physics<span class="token punctuation">)</span>
 
                 <span class="token comment">// Un nemico che cade, con attrito a terra e caduta limitata</span>
-                <span class="token keyword">const</span> nemico <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeeEntity</span><span class="token punctuation">(</span><span class="token number">120</span><span class="token punctuation">,</span> <span class="token number">340</span><span class="token punctuation">,</span> <span class="token number">32</span><span class="token punctuation">,</span> <span class="token number">48</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
-                    <span class="token property">gravity</span><span class="token punctuation">:</span> <span class="token number">1200</span><span class="token punctuation">,</span>
-                    <span class="token property">friction</span><span class="token punctuation">:</span> <span class="token number">8</span><span class="token punctuation">,</span>
-                    <span class="token property">maxFallSpeed</span><span class="token punctuation">:</span> <span class="token number">900</span>
-                <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">const</span> nemico <span class="token operator">=</span> <span
+                    class="token keyword">new</span> <span class="token class-name">BeeEntity</span><span
+                    class="token punctuation">(</span><span class="token number">120</span><span
+                    class="token punctuation">,</span> <span class="token number">340</span><span
+                    class="token punctuation">,</span> <span class="token number">32</span><span
+                    class="token punctuation">,</span> <span class="token number">48</span><span
+                    class="token punctuation">,</span> <span class="token punctuation">{</span>
+                <span class="token property">gravity</span><span class="token punctuation">:</span> <span
+                    class="token number">1200</span><span class="token punctuation">,</span>
+                <span class="token property">friction</span><span class="token punctuation">:</span> <span
+                    class="token number">8</span><span class="token punctuation">,</span>
+                <span class="token property">maxFallSpeed</span><span class="token punctuation">:</span> <span
+                    class="token number">900</span>
+                <span class="token punctuation">}</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
 
                 <span class="token comment">// I parametri restano modificabili a runtime</span>
-                nemico<span class="token punctuation">.</span>gravity <span class="token operator">=</span> <span class="token number">0</span><span class="token punctuation">;</span>  <span class="token comment">// es. entra in modalità volo</span>
+                nemico<span class="token punctuation">.</span>gravity <span class="token operator">=</span> <span
+                    class="token number">0</span><span class="token punctuation">;</span> <span class="token comment">//
+                    es. entra in modalità volo</span>
             </div>
 
             <h3>📁 Proprietà di stato</h3>
@@ -916,15 +957,34 @@
                 l'entità aveva un altro parent viene staccata prima, così non esistono mai doppi riferimenti.</p>
 
             <div class="bee-code-block">
-                <span class="token keyword">const</span> giocatore <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeeEntity</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">const</span> scudo <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeeEntity</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">8</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">const</span> giocatore <span class="token operator">=</span> <span
+                    class="token keyword">new</span> <span class="token class-name">BeeEntity</span><span
+                    class="token punctuation">(</span><span class="token number">0</span><span
+                    class="token punctuation">,</span> <span class="token number">0</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">const</span> scudo <span class="token operator">=</span> <span
+                    class="token keyword">new</span> <span class="token class-name">BeeEntity</span><span
+                    class="token punctuation">(</span><span class="token number">4</span><span
+                    class="token punctuation">,</span> <span class="token operator">-</span><span
+                    class="token number">8</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
 
-                giocatore<span class="token punctuation">.</span><span class="token function">addChild</span><span class="token punctuation">(</span>scudo<span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// ritorna scudo, per concatenare</span>
-                scudo<span class="token punctuation">.</span><span class="token function">detach</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>              <span class="token comment">// stacca senza distruggere, ritorna this</span>
-                giocatore<span class="token punctuation">.</span><span class="token function">removeChild</span><span class="token punctuation">(</span>scudo<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// no-op se non è figlio</span>
+                giocatore<span class="token punctuation">.</span><span class="token function">addChild</span><span
+                    class="token punctuation">(</span>scudo<span class="token punctuation">)</span><span
+                    class="token punctuation">;</span> <span class="token comment">// ritorna scudo, per
+                    concatenare</span>
+                scudo<span class="token punctuation">.</span><span class="token function">detach</span><span
+                    class="token punctuation">(</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span> <span class="token comment">// stacca senza distruggere, ritorna
+                    this</span>
+                giocatore<span class="token punctuation">.</span><span class="token function">removeChild</span><span
+                    class="token punctuation">(</span>scudo<span class="token punctuation">)</span><span
+                    class="token punctuation">;</span> <span class="token comment">// no-op se non è figlio</span>
 
                 <span class="token comment">// Guardia anti-ciclo: l'aggancio viene rifiutato</span>
-                scudo<span class="token punctuation">.</span><span class="token function">addChild</span><span class="token punctuation">(</span>giocatore<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                scudo<span class="token punctuation">.</span><span class="token function">addChild</span><span
+                    class="token punctuation">(</span>giocatore<span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
             </div>
 
             <h3>📁 Collisioni: getWorldAABB, collidesWith, addRectCollider</h3>
@@ -941,18 +1001,36 @@
             </p>
 
             <div class="bee-code-block">
-                nemico<span class="token punctuation">.</span><span class="token function">getWorldAABB</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// { x, y, width, height } in spazio mondo</span>
+                nemico<span class="token punctuation">.</span><span class="token function">getWorldAABB</span><span
+                    class="token punctuation">(</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span> <span class="token comment">// { x, y, width, height } in spazio
+                    mondo</span>
 
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>nemico<span class="token punctuation">.</span><span class="token function">collidesWith</span><span class="token punctuation">(</span>giocatore<span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    giocatore<span class="token punctuation">.</span><span class="token function">destroy</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>nemico<span
+                    class="token punctuation">.</span><span class="token function">collidesWith</span><span
+                    class="token punctuation">(</span>giocatore<span class="token punctuation">)</span><span
+                    class="token punctuation">)</span> <span class="token punctuation">{</span>
+                giocatore<span class="token punctuation">.</span><span class="token function">destroy</span><span
+                    class="token punctuation">(</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
                 <span class="token punctuation">}</span>
 
                 <span class="token comment">// Collisore con offset e dimensioni personalizzate</span>
-                <span class="token keyword">const</span> hitbox <span class="token operator">=</span> nemico<span class="token punctuation">.</span><span class="token function">addRectCollider</span><span class="token punctuation">(</span><span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">2</span><span class="token punctuation">,</span> <span class="token number">24</span><span class="token punctuation">,</span> <span class="token number">44</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">const</span> hitbox <span class="token operator">=</span> nemico<span
+                    class="token punctuation">.</span><span class="token function">addRectCollider</span><span
+                    class="token punctuation">(</span><span class="token number">4</span><span
+                    class="token punctuation">,</span> <span class="token number">2</span><span
+                    class="token punctuation">,</span> <span class="token number">24</span><span
+                    class="token punctuation">,</span> <span class="token number">44</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
 
                 <span class="token comment">// Accesso statico alle coordinate mondo di un nodo qualsiasi</span>
-                <span class="token class-name">BeeEntity</span><span class="token punctuation">.</span><span class="token function">worldXOf</span><span class="token punctuation">(</span>piattaforma<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token class-name">BeeEntity</span><span class="token punctuation">.</span><span class="token function">worldYOf</span><span class="token punctuation">(</span>piattaforma<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token class-name">BeeEntity</span><span class="token punctuation">.</span><span
+                    class="token function">worldXOf</span><span class="token punctuation">(</span>piattaforma<span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token class-name">BeeEntity</span><span class="token punctuation">.</span><span
+                    class="token function">worldYOf</span><span class="token punctuation">(</span>piattaforma<span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
             </div>
 
             <h3>📁 resolvePlatformCollision — il solver dei contatti solidi</h3>
@@ -963,21 +1041,43 @@
                 toccando la piattaforma da sopra o da sotto, quindi ha senso spingerla fuori verticalmente.
             </p>
 
-            <p>Sul ramo verticale entrano in gioco i due parametri configurabili. <code>velocityLookahead</code> anticipa
+            <p>Sul ramo verticale entrano in gioco i due parametri configurabili. <code>velocityLookahead</code>
+                anticipa
                 il contatto di una frazione della velocità corrente, e <code>landingTolerance</code> definisce una banda
                 di qualche pixel sopra la piattaforma entro cui l'atterraggio è considerato valido. Insieme rendono
                 l'atterraggio morbido e insensibile alle piccole discrepanze di frame-timing, evitando che l'entità
                 venga respinta di lato per errore quando appoggia sul bordo.</p>
 
             <div class="bee-code-block">
-                <span class="token keyword">const</span> overlapX <span class="token operator">=</span> <span class="token class-name">Math</span><span class="token punctuation">.</span><span class="token function">min</span><span class="token punctuation">(</span>x <span class="token operator">+</span> <span class="token keyword">this</span><span class="token punctuation">.</span>width <span class="token operator">-</span> px<span class="token punctuation">,</span> px <span class="token operator">+</span> pw <span class="token operator">-</span> x<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">const</span> overlapY <span class="token operator">=</span> <span class="token class-name">Math</span><span class="token punctuation">.</span><span class="token function">min</span><span class="token punctuation">(</span>y <span class="token operator">+</span> <span class="token keyword">this</span><span class="token punctuation">.</span>height <span class="token operator">-</span> py<span class="token punctuation">,</span> py <span class="token operator">+</span> ph <span class="token operator">-</span> y<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">const</span> overlapX <span class="token operator">=</span> <span
+                    class="token class-name">Math</span><span class="token punctuation">.</span><span
+                    class="token function">min</span><span class="token punctuation">(</span>x <span
+                    class="token operator">+</span> <span class="token keyword">this</span><span
+                    class="token punctuation">.</span>width <span class="token operator">-</span> px<span
+                    class="token punctuation">,</span> px <span class="token operator">+</span> pw <span
+                    class="token operator">-</span> x<span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+                <span class="token keyword">const</span> overlapY <span class="token operator">=</span> <span
+                    class="token class-name">Math</span><span class="token punctuation">.</span><span
+                    class="token function">min</span><span class="token punctuation">(</span>y <span
+                    class="token operator">+</span> <span class="token keyword">this</span><span
+                    class="token punctuation">.</span>height <span class="token operator">-</span> py<span
+                    class="token punctuation">,</span> py <span class="token operator">+</span> ph <span
+                    class="token operator">-</span> y<span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
 
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>overlapY <span class="token operator">&lt;</span> overlapX<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token keyword">const</span> lookahead <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>vy <span class="token operator">*</span> <span class="token keyword">this</span><span class="token punctuation">.</span>velocityLookahead<span class="token punctuation">;</span>
-                    <span class="token keyword">const</span> landingBand <span class="token operator">=</span> py <span class="token operator">+</span> <span class="token keyword">this</span><span class="token punctuation">.</span>landingTolerance<span class="token punctuation">;</span>
-                    <span class="token comment">// atterraggio dall'alto → grounded</span>
-                    <span class="token comment">// vy &lt; 0 → testa contro il blocco, respinta sotto</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>overlapY <span
+                    class="token operator">&lt;</span> overlapX<span class="token punctuation">)</span> <span
+                    class="token punctuation">{</span>
+                <span class="token keyword">const</span> lookahead <span class="token operator">=</span> <span
+                    class="token keyword">this</span><span class="token punctuation">.</span>vy <span
+                    class="token operator">*</span> <span class="token keyword">this</span><span
+                    class="token punctuation">.</span>velocityLookahead<span class="token punctuation">;</span>
+                <span class="token keyword">const</span> landingBand <span class="token operator">=</span> py <span
+                    class="token operator">+</span> <span class="token keyword">this</span><span
+                    class="token punctuation">.</span>landingTolerance<span class="token punctuation">;</span>
+                <span class="token comment">// atterraggio dall'alto → grounded</span>
+                <span class="token comment">// vy &lt; 0 → testa contro il blocco, respinta sotto</span>
                 <span class="token punctuation">}</span>
             </div>
 
@@ -999,16 +1099,39 @@
             </p>
 
             <div class="bee-code-block">
-                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>gravity <span class="token operator">!==</span> <span class="token number">0</span> <span class="token operator">&amp;&amp;</span> <span class="token operator">!</span><span class="token keyword">this</span><span class="token punctuation">.</span>isGrounded<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token keyword">this</span><span class="token punctuation">.</span>vy <span class="token operator">+=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>gravity <span class="token operator">*</span> dt<span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span><span
+                    class="token keyword">this</span><span class="token punctuation">.</span>gravity <span
+                    class="token operator">!==</span> <span class="token number">0</span> <span
+                    class="token operator">&amp;&amp;</span> <span class="token operator">!</span><span
+                    class="token keyword">this</span><span class="token punctuation">.</span>isGrounded<span
+                    class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>vy <span
+                    class="token operator">+=</span> <span class="token keyword">this</span><span
+                    class="token punctuation">.</span>gravity <span class="token operator">*</span> dt<span
+                    class="token punctuation">;</span>
                 <span class="token punctuation">}</span>
 
-                <span class="token keyword">const</span> drag <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>isGrounded <span class="token operator">?</span> <span class="token keyword">this</span><span class="token punctuation">.</span>friction <span class="token operator">:</span> <span class="token keyword">this</span><span class="token punctuation">.</span>airFriction<span class="token punctuation">;</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>drag <span class="token operator">&gt;</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    <span class="token keyword">this</span><span class="token punctuation">.</span>vx <span class="token operator">*=</span> <span class="token class-name">Math</span><span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">1</span> <span class="token operator">-</span> drag <span class="token operator">*</span> dt<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">const</span> drag <span class="token operator">=</span> <span
+                    class="token keyword">this</span><span class="token punctuation">.</span>isGrounded <span
+                    class="token operator">?</span> <span class="token keyword">this</span><span
+                    class="token punctuation">.</span>friction <span class="token operator">:</span> <span
+                    class="token keyword">this</span><span class="token punctuation">.</span>airFriction<span
+                    class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>drag <span
+                    class="token operator">&gt;</span> <span class="token number">0</span><span
+                    class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>vx <span
+                    class="token operator">*=</span> <span class="token class-name">Math</span><span
+                    class="token punctuation">.</span><span class="token function">max</span><span
+                    class="token punctuation">(</span><span class="token number">0</span><span
+                    class="token punctuation">,</span> <span class="token number">1</span> <span
+                    class="token operator">-</span> drag <span class="token operator">*</span> dt<span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
                 <span class="token punctuation">}</span>
 
-                <span class="token keyword">this</span><span class="token punctuation">.</span>isGrounded <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span> <span class="token comment">// va riconfermato dal solver</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>isGrounded <span
+                    class="token operator">=</span> <span class="token boolean">false</span><span
+                    class="token punctuation">;</span> <span class="token comment">// va riconfermato dal solver</span>
             </div>
 
             <p>L'ultima riga è il punto su cui si sbaglia più spesso: <code>isGrounded</code> viene azzerato
@@ -1019,20 +1142,30 @@
 
             <h3>📁 update — il tick del grafo</h3>
 
-            <p>Applica la cinematica al nodo, poi ricorre sui figli attivi. La rimozione dei figli distrutti avviene qui,
+            <p>Applica la cinematica al nodo, poi ricorre sui figli attivi. La rimozione dei figli distrutti avviene
+                qui,
                 controllata due volte (prima e dopo l'update del figlio, perché un'entità può distruggersi durante il
                 proprio update) e senza allocare un nuovo array: l'indice non avanza quando si rimuove, perché lo splice
                 ha già spostato gli elementi.</p>
 
             <div class="bee-code-block">
                 <span class="token comment">// Nel game loop della scena</span>
-                <span class="token function">function</span> <span class="token function">loop</span><span class="token punctuation">(</span>dt<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    radice<span class="token punctuation">.</span><span class="token function">update</span><span class="token punctuation">(</span>dt<span class="token punctuation">,</span> input<span class="token punctuation">,</span> engine<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token function">function</span> <span class="token function">loop</span><span
+                    class="token punctuation">(</span>dt<span class="token punctuation">)</span> <span
+                    class="token punctuation">{</span>
+                radice<span class="token punctuation">.</span><span class="token function">update</span><span
+                    class="token punctuation">(</span>dt<span class="token punctuation">,</span> input<span
+                    class="token punctuation">,</span> engine<span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
 
-                    <span class="token comment">// Subito dopo: riconferma dei contatti solidi</span>
-                    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">const</span> p <span class="token keyword">of</span> piattaforme<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        giocatore<span class="token punctuation">.</span><span class="token function">resolvePlatformCollision</span><span class="token punctuation">(</span>p<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span>
+                <span class="token comment">// Subito dopo: riconferma dei contatti solidi</span>
+                <span class="token keyword">for</span> <span class="token punctuation">(</span><span
+                    class="token keyword">const</span> p <span class="token keyword">of</span> piattaforme<span
+                    class="token punctuation">)</span> <span class="token punctuation">{</span>
+                giocatore<span class="token punctuation">.</span><span
+                    class="token function">resolvePlatformCollision</span><span class="token punctuation">(</span>p<span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
                 <span class="token punctuation">}</span>
             </div>
 
@@ -1043,10 +1176,19 @@
                 traversata dell'albero per il disegno è compito di BeeEngine.</p>
 
             <div class="bee-code-block">
-                <span class="token keyword">class</span> <span class="token class-name">Giocatore</span> <span class="token keyword">extends</span> <span class="token class-name">BeeEntity</span> <span class="token punctuation">{</span>
-                    <span class="token function">draw</span><span class="token punctuation">(</span>ctx<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                        ctx<span class="token punctuation">.</span><span class="token function">drawImage</span><span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>sprite<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>worldX<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>worldY<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                    <span class="token punctuation">}</span>
+                <span class="token keyword">class</span> <span class="token class-name">Giocatore</span> <span
+                    class="token keyword">extends</span> <span class="token class-name">BeeEntity</span> <span
+                    class="token punctuation">{</span>
+                <span class="token function">draw</span><span class="token punctuation">(</span>ctx<span
+                    class="token punctuation">)</span> <span class="token punctuation">{</span>
+                ctx<span class="token punctuation">.</span><span class="token function">drawImage</span><span
+                    class="token punctuation">(</span><span class="token keyword">this</span><span
+                    class="token punctuation">.</span>sprite<span class="token punctuation">,</span> <span
+                    class="token keyword">this</span><span class="token punctuation">.</span>worldX<span
+                    class="token punctuation">,</span> <span class="token keyword">this</span><span
+                    class="token punctuation">.</span>worldY<span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
                 <span class="token punctuation">}</span>
             </div>
 
@@ -1076,11 +1218,13 @@
             <p><strong>Il getter <code>children</code> restituisce l'array interno vivo, non una copia.</strong> È una
                 scelta voluta per non allocare ad ogni frame, ma significa che modificarlo direttamente aggira la
                 contabilità di parent e cache mondo. Per aggiungere e togliere nodi usa sempre <code>addChild()</code>,
-                <code>removeChild()</code> e <code>detach()</code>.</p>
+                <code>removeChild()</code> e <code>detach()</code>.
+            </p>
 
             <p><strong><code>collidesWith</code> usa l'AABB grezzo dell'entità</strong>
                 (<code>width</code>/<code>height</code>), non l'eventuale <code>collider</code> con offset creato da
-                <code>addRectCollider()</code>. Il collisore serve ai sistemi esterni che lo leggono esplicitamente.</p>
+                <code>addRectCollider()</code>. Il collisore serve ai sistemi esterni che lo leggono esplicitamente.
+            </p>
 
             <p><strong>I setter di <code>x</code> e <code>y</code> normalizzano l'input.</strong> Un valore non numerico
                 diventa <code>0</code> invece di propagare <code>NaN</code> in tutta la catena delle trasformate: la
@@ -1093,40 +1237,84 @@
             <p><strong>Le collisioni discrete hanno il limite noto del tunneling:</strong> a velocità molto alte
                 un'entità può attraversare un ostacolo sottile tra un frame e l'altro, perché il test avviene sulla
                 posizione già aggiornata. Se serve precisione, riduci il passo temporale o limita
-                <code>maxFallSpeed</code>.</p>
+                <code>maxFallSpeed</code>.
+            </p>
         </div>
 
         <div class="bee-class-card" id="BeeEntity-esempio">
             <h3>📁 Esempio completo</h3>
 
             <div class="bee-code-block">
-                <span class="token keyword">import</span> <span class="token punctuation">{</span> <span class="token class-name">BeeEntity</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'beeengine'</span><span class="token punctuation">;</span>
+                <span class="token keyword">import</span> <span class="token punctuation">{</span> <span
+                    class="token class-name">BeeEntity</span> <span class="token punctuation">}</span> <span
+                    class="token keyword">from</span> <span class="token string">'beeengine'</span><span
+                    class="token punctuation">;</span>
 
                 <span class="token comment">// Piattaforma statica, senza gravità</span>
-                <span class="token keyword">const</span> suolo <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeeEntity</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">560</span><span class="token punctuation">,</span> <span class="token number">800</span><span class="token punctuation">,</span> <span class="token number">40</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">const</span> suolo <span class="token operator">=</span> <span
+                    class="token keyword">new</span> <span class="token class-name">BeeEntity</span><span
+                    class="token punctuation">(</span><span class="token number">0</span><span
+                    class="token punctuation">,</span> <span class="token number">560</span><span
+                    class="token punctuation">,</span> <span class="token number">800</span><span
+                    class="token punctuation">,</span> <span class="token number">40</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
 
                 <span class="token comment">// Giocatore con fisica da platform</span>
-                <span class="token keyword">const</span> giocatore <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeeEntity</span><span class="token punctuation">(</span><span class="token number">80</span><span class="token punctuation">,</span> <span class="token number">400</span><span class="token punctuation">,</span> <span class="token number">32</span><span class="token punctuation">,</span> <span class="token number">48</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
-                    <span class="token property">gravity</span><span class="token punctuation">:</span> <span class="token number">1600</span><span class="token punctuation">,</span>
-                    <span class="token property">friction</span><span class="token punctuation">:</span> <span class="token number">10</span><span class="token punctuation">,</span>
-                    <span class="token property">airFriction</span><span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
-                    <span class="token property">maxFallSpeed</span><span class="token punctuation">:</span> <span class="token number">1200</span>
-                <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">const</span> giocatore <span class="token operator">=</span> <span
+                    class="token keyword">new</span> <span class="token class-name">BeeEntity</span><span
+                    class="token punctuation">(</span><span class="token number">80</span><span
+                    class="token punctuation">,</span> <span class="token number">400</span><span
+                    class="token punctuation">,</span> <span class="token number">32</span><span
+                    class="token punctuation">,</span> <span class="token number">48</span><span
+                    class="token punctuation">,</span> <span class="token punctuation">{</span>
+                <span class="token property">gravity</span><span class="token punctuation">:</span> <span
+                    class="token number">1600</span><span class="token punctuation">,</span>
+                <span class="token property">friction</span><span class="token punctuation">:</span> <span
+                    class="token number">10</span><span class="token punctuation">,</span>
+                <span class="token property">airFriction</span><span class="token punctuation">:</span> <span
+                    class="token number">1</span><span class="token punctuation">,</span>
+                <span class="token property">maxFallSpeed</span><span class="token punctuation">:</span> <span
+                    class="token number">1200</span>
+                <span class="token punctuation">}</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
 
                 <span class="token comment">// Un'aura agganciata: si muove insieme al giocatore</span>
-                <span class="token keyword">const</span> aura <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeeEntity</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">4</span><span class="token punctuation">,</span> <span class="token operator">-</span><span class="token number">4</span><span class="token punctuation">,</span> <span class="token number">40</span><span class="token punctuation">,</span> <span class="token number">56</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                giocatore<span class="token punctuation">.</span><span class="token function">addChild</span><span class="token punctuation">(</span>aura<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">const</span> aura <span class="token operator">=</span> <span
+                    class="token keyword">new</span> <span class="token class-name">BeeEntity</span><span
+                    class="token punctuation">(</span><span class="token operator">-</span><span
+                    class="token number">4</span><span class="token punctuation">,</span> <span
+                    class="token operator">-</span><span class="token number">4</span><span
+                    class="token punctuation">,</span> <span class="token number">40</span><span
+                    class="token punctuation">,</span> <span class="token number">56</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
+                giocatore<span class="token punctuation">.</span><span class="token function">addChild</span><span
+                    class="token punctuation">(</span>aura<span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
 
                 <span class="token comment">// Salto</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>input<span class="token punctuation">.</span><span class="token function">isDown</span><span class="token punctuation">(</span><span class="token string">'Space'</span><span class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> giocatore<span class="token punctuation">.</span>isGrounded<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                    giocatore<span class="token punctuation">.</span>vy <span class="token operator">=</span> <span class="token operator">-</span><span class="token number">620</span><span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>input<span
+                    class="token punctuation">.</span><span class="token function">isDown</span><span
+                    class="token punctuation">(</span><span class="token string">'Space'</span><span
+                    class="token punctuation">)</span> <span class="token operator">&amp;&amp;</span> giocatore<span
+                    class="token punctuation">.</span>isGrounded<span class="token punctuation">)</span> <span
+                    class="token punctuation">{</span>
+                giocatore<span class="token punctuation">.</span>vy <span class="token operator">=</span> <span
+                    class="token operator">-</span><span class="token number">620</span><span
+                    class="token punctuation">;</span>
                 <span class="token punctuation">}</span>
 
                 <span class="token comment">// Tick: prima la cinematica, poi i contatti</span>
-                giocatore<span class="token punctuation">.</span><span class="token function">update</span><span class="token punctuation">(</span>dt<span class="token punctuation">,</span> input<span class="token punctuation">,</span> engine<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                giocatore<span class="token punctuation">.</span><span class="token function">resolvePlatformCollision</span><span class="token punctuation">(</span>suolo<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                giocatore<span class="token punctuation">.</span><span class="token function">update</span><span
+                    class="token punctuation">(</span>dt<span class="token punctuation">,</span> input<span
+                    class="token punctuation">,</span> engine<span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+                giocatore<span class="token punctuation">.</span><span
+                    class="token function">resolvePlatformCollision</span><span
+                    class="token punctuation">(</span>suolo<span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
 
-                aura<span class="token punctuation">.</span>worldX<span class="token punctuation">;</span> <span class="token comment">// segue il giocatore senza codice aggiuntivo</span>
+                aura<span class="token punctuation">.</span>worldX<span class="token punctuation">;</span> <span
+                    class="token comment">// segue il giocatore senza codice aggiuntivo</span>
             </div>
         </div>
 

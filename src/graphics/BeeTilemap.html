@@ -424,18 +424,21 @@
     /* ==========================================
        3b. SYNTAX HIGHLIGHTING (token Prism.js)
        ========================================== */
+    /* Commenti Prism e token speciali */
     .bee-code-block .token.comment,
     .bee-docs-content pre .token.comment,
     .bee-code-block .token.prolog,
     .bee-code-block .token.doctype,
     .bee-code-block .token.cdata {
-        color: #6b7590;
+        color: #94a3b8;
+        /* Cambiato da #6b7590 a #94a3b8 per contrasto > 4.5:1 */
         font-style: italic;
     }
 
     .bee-code-block .token.punctuation,
     .bee-docs-content pre .token.punctuation {
-        color: #94a3b8;
+        color: #cbd5e1;
+        /* Leggermente schiarito da #94a3b8 a #cbd5e1 */
     }
 
     .bee-code-block .token.keyword,
@@ -493,7 +496,7 @@
 
     /* Commenti/percorsi negli alberi di cartelle */
     .bee-code-block .bee-cm {
-        color: #6b7590;
+        color: #94a3b8;
         font-style: italic;
     }
 

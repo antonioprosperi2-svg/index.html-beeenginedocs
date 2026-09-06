@@ -424,18 +424,21 @@
     /* ==========================================
        3b. SYNTAX HIGHLIGHTING (token Prism.js)
        ========================================== */
+    /* Commenti Prism e token speciali */
     .bee-code-block .token.comment,
     .bee-docs-content pre .token.comment,
     .bee-code-block .token.prolog,
     .bee-code-block .token.doctype,
     .bee-code-block .token.cdata {
-        color: #6b7590;
+        color: #94a3b8;
+        /* Cambiato da #6b7590 a #94a3b8 per contrasto > 4.5:1 */
         font-style: italic;
     }
 
     .bee-code-block .token.punctuation,
     .bee-docs-content pre .token.punctuation {
-        color: #94a3b8;
+        color: #cbd5e1;
+        /* Leggermente schiarito da #94a3b8 a #cbd5e1 */
     }
 
     .bee-code-block .token.keyword,
@@ -493,7 +496,7 @@
 
     /* Commenti/percorsi negli alberi di cartelle */
     .bee-code-block .bee-cm {
-        color: #6b7590;
+        color: #94a3b8;
         font-style: italic;
     }
 
@@ -627,76 +630,77 @@
     <aside class="bee-docs-sidebar">
         <div class="bee-sidebar-title">BeeEngine V2.2</div>
 
-            <details>
-                <summary>🌐 Link Utili</summary>
-                <ul>
-                    <li><a href="https://github.com/antonioprosperi2-svg/PLAYCOMBO" target="_blank"
-                            rel="noopener noreferrer">🐙
-                            GitHub</a></li>
-                    <li><a href="https://www.npmjs.com/package/beeengine" target="_blank" rel="noopener noreferrer">📦
-                            npm
-                            Registry</a></li>
-                </ul>
-            </details>
+        <details>
+            <summary>🌐 Link Utili</summary>
+            <ul>
+                <li><a href="https://github.com/antonioprosperi2-svg/PLAYCOMBO" target="_blank"
+                        rel="noopener noreferrer">🐙
+                        GitHub</a></li>
+                <li><a href="https://www.npmjs.com/package/beeengine" target="_blank" rel="noopener noreferrer">📦
+                        npm
+                        Registry</a></li>
+            </ul>
+        </details>
 
-            <details>
+        <details>
 
-                <summary>📁 Core </summary>
-                <ul>
-                    <li><a href="#BeeAssetManager" class="is-current">BeeAssetManager .js</a></li>
-                    <li><a href="#BeeGrid">BeeGrid.js</a></li>
-                    <li><a href="#BeeSave">BeeSave.js</a></li>
-                    <li><a href="#BeeSceneManager">BeeSceneManager.js</a></li>
-                    <li><a href="#BeeTimer">BeeTimer.js</a></li>
-                </ul>
-            </details>
+            <summary>📁 Core </summary>
+            <ul>
+                <li><a href="#BeeEngine">BeeEngine.js</a></li>
+                <li><a href="#BeeAssetManager">BeeAssetManager .js</a></li>
+                <li><a href="#BeeEntity">BeeEntity.js</a></li>
+                <li><a href="#BeeGrid">BeeGrid.js</a></li>
+                <li><a href="#BeeSave">BeeSave.js</a></li>
+                <li><a href="#BeeSceneManager">BeeSceneManager.js</a></li>
+                <li><a href="#BeeTimer">BeeTimer.js</a></li>
+            </ul>
+        </details>
 
-            <details>
-                <summary>📁 gameplay</summary>
-                <ul>
-                    <li><a href="#BeeCollectible">BeeCollectible.js</a></li>
-                    <li><a href="#BeeEnemyShooter">BeeEnemyShooter.js</a></li>
-                    <li><a href="#BeeEntity">BeeEntity.js</a></li>
-                    <li><a href="#BeeMenuScene">BeeMenuScene.js</a></li>
-                    <li><a href="#BeeNemico">BeeNemico.js</a></li>
-                    <li><a href="#BeePlatform">BeePlatform.js</a></li>
-                    <li><a href="#BeePlayer">BeePlayer.js</a></li>
-                </ul>
-            </details>
+        <details>
+            <summary>📁 gameplay</summary>
+            <ul>
+                <li><a href="#BeeCollectible">BeeCollectible.js</a></li>
+                <li><a href="#BeeEnemyShooter">BeeEnemyShooter.js</a></li>
+                <li><a href="#BeeMenuScene">BeeMenuScene.js</a></li>
+                <li><a href="#BeeNemico">BeeNemico.js</a></li>
+                <li><a href="#BeePlatform">BeePlatform.js</a></li>
+                <li><a href="#BeePlayer">BeePlayer.js</a></li>
+            </ul>
+        </details>
 
-            <details>
-                <summary>📁 graphics</summary>
-                <ul>
-                    <li><a href="#BeeAnimatedSprite">BeeAnimatedSprite.js</a></li>
-                    <li><a href="#BeeCamera">BeeCamera.js</a></li>
-                    <li><a href="#BeeParticleSystem">BeeParticleSystem.js</a></li>
-                    <li><a href="#BeeSprite">BeeSprite.js</a></li>
-                    <li><a href="#BeeSpriteSheet">BeeSpriteSheet.js</a></li>
-                    <li><a href="#BeeText">BeeText.js</a></li>
-                    <li><a href="#BeeTilemap">BeeTilemap.js</a></li>
-                    <li><a href="#BeeTilemapLoade">BeeTilemapLoade.js</a></li>
-                </ul>
-            </details>
-            <details>
-                <summary>📁 input</summary>
-                <ul>
-                    <li><a href="#BeeButton">BeeButton.js</a></li>
-                    <li><a href="#BeeInput">BeeInput.js</a></li>
-                    <li><a href="#BeeJoystick">BeeJoystick.js</a></li>
-                    <li><a href="#BeeTouchButton">BeeTouchButton.js</a></li>
-                    <li><a href="#BeeTouchControls">BeeTouchControls.js</a></li>
-                    <li><a href="#BeeVirtualDPad">BeeVirtualDPad.js</a></li>
-                </ul>
-            </details>
+        <details>
+            <summary>📁 graphics</summary>
+            <ul>
+                <li><a href="#BeeAnimatedSprite">BeeAnimatedSprite.js</a></li>
+                <li><a href="#BeeCamera">BeeCamera.js</a></li>
+                <li><a href="#BeeParticleSystem">BeeParticleSystem.js</a></li>
+                <li><a href="#BeeSprite">BeeSprite.js</a></li>
+                <li><a href="#BeeSpriteSheet">BeeSpriteSheet.js</a></li>
+                <li><a href="#BeeText">BeeText.js</a></li>
+                <li><a href="#BeeTilemap">BeeTilemap.js</a></li>
+                <li><a href="#BeeTilemapLoade">BeeTilemapLoade.js</a></li>
+            </ul>
+        </details>
+        <details>
+            <summary>📁 input</summary>
+            <ul>
+                <li><a href="#BeeButton">BeeButton.js</a></li>
+                <li><a href="#BeeInput">BeeInput.js</a></li>
+                <li><a href="#BeeJoystick">BeeJoystick.js</a></li>
+                <li><a href="#BeeTouchButton">BeeTouchButton.js</a></li>
+                <li><a href="#BeeTouchControls">BeeTouchControls.js</a></li>
+                <li><a href="#BeeVirtualDPad">BeeVirtualDPad.js</a></li>
+            </ul>
+        </details>
 
-            <details>
-                <summary>📁 physics</summary>
-                <ul>
-                    <li><a href="#BeeBullet">BeeBullet.js</a></li>
-                    <li><a href="#BeeCollisionSystem">BeeCollisionSystem.js</a></li>
-                    <li><a href="#BeeRectCollider">BeeRectCollider.js</a></li>
-                </ul>
-            </details>
+        <details>
+            <summary>📁 physics</summary>
+            <ul>
+                <li><a href="#BeeBullet">BeeBullet.js</a></li>
+                <li><a href="#BeeCollisionSystem">BeeCollisionSystem.js</a></li>
+                <li><a href="#BeeRectCollider">BeeRectCollider.js</a></li>
+            </ul>
+        </details>
     </aside>
 
 
@@ -716,7 +720,7 @@
             </div>
 
             <!-- Mascotte a Destra (Incolla l'URL al posto di URL_DELLA_TUA_IMMAGINE) -->
-            <img src="https://beeenginejs.com/wp-content/uploads/2026/08/Gemini_Generated_Image_lwv81lwv81lwv81l-1.jpg"
+            <img src="https://beeenginejs.com/wp-content/uploads/2026/09/Gemini_Generated_Image_bg7xjjbg7xjjbg7x-1-1.jpg"
                 alt="BeeEngine Mascot" width="80" height="80" style="width: 80px; height: auto; flex-shrink: 0;">
 
         </div>
@@ -742,9 +746,20 @@
 
 
 
-            <div class="bee-code-block"><span class="token keyword">this</span><span class="token punctuation">.</span>images <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">Map</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">this</span><span class="token punctuation">.</span>sounds <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">Map</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">this</span><span class="token punctuation">.</span>jsons <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token function">Map</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></div>
+            <div class="bee-code-block"><span class="token keyword">this</span><span
+                    class="token punctuation">.</span>images <span class="token operator">=</span> <span
+                    class="token keyword">new</span> <span class="token function">Map</span><span
+                    class="token punctuation">(</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>sounds <span
+                    class="token operator">=</span> <span class="token keyword">new</span> <span
+                    class="token function">Map</span><span class="token punctuation">(</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">this</span><span class="token punctuation">.</span>jsons <span
+                    class="token operator">=</span> <span class="token keyword">new</span> <span
+                    class="token function">Map</span><span class="token punctuation">(</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
+            </div>
 
             <h3>📁Architettura interna</h3>
 
@@ -795,16 +810,42 @@
             <h3>📁loadManifest(manifest) accetta un array "piatto" dove ogni elemento dichiara il proprio tipo:</h3>
 
             <div class="bee-code-block"><span class="token punctuation">[</span>
-                <span class="token punctuation">{</span> <span class="token property">type</span><span class="token punctuation">:</span> <span class="token string">'image'</span><span class="token punctuation">,</span> <span class="token property">name</span><span class="token punctuation">:</span> <span class="token string">'player'</span><span class="token punctuation">,</span> <span class="token property">src</span><span class="token punctuation">:</span> <span class="token string">'assets/player.png'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
-                <span class="token punctuation">{</span> <span class="token property">type</span><span class="token punctuation">:</span> <span class="token string">'audio'</span><span class="token punctuation">,</span> <span class="token property">name</span><span class="token punctuation">:</span> <span class="token string">'jump'</span><span class="token punctuation">,</span> <span class="token property">src</span><span class="token punctuation">:</span> <span class="token string">'assets/jump.mp3'</span> <span class="token punctuation">}</span>
-                <span class="token punctuation">]</span></div>
+                <span class="token punctuation">{</span> <span class="token property">type</span><span
+                    class="token punctuation">:</span> <span class="token string">'image'</span><span
+                    class="token punctuation">,</span> <span class="token property">name</span><span
+                    class="token punctuation">:</span> <span class="token string">'player'</span><span
+                    class="token punctuation">,</span> <span class="token property">src</span><span
+                    class="token punctuation">:</span> <span class="token string">'assets/player.png'</span> <span
+                    class="token punctuation">}</span><span class="token punctuation">,</span>
+                <span class="token punctuation">{</span> <span class="token property">type</span><span
+                    class="token punctuation">:</span> <span class="token string">'audio'</span><span
+                    class="token punctuation">,</span> <span class="token property">name</span><span
+                    class="token punctuation">:</span> <span class="token string">'jump'</span><span
+                    class="token punctuation">,</span> <span class="token property">src</span><span
+                    class="token punctuation">:</span> <span class="token string">'assets/jump.mp3'</span> <span
+                    class="token punctuation">}</span>
+                <span class="token punctuation">]</span>
+            </div>
 
             <h3>📁loadAssets(assetList) accetta invece un oggetto già suddiviso per categoria:</h3>
 
             <div class="bee-code-block"> <span class="token punctuation">{</span>
-                <span class="token property">images</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span> <span class="token property">name</span><span class="token punctuation">:</span> <span class="token string">'player'</span><span class="token punctuation">,</span> <span class="token property">src</span><span class="token punctuation">:</span> <span class="token string">'assets/player.png'</span> <span class="token punctuation">}</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
-                <span class="token property">sounds</span><span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">{</span> <span class="token property">name</span><span class="token punctuation">:</span> <span class="token string">'jump'</span><span class="token punctuation">,</span> <span class="token property">src</span><span class="token punctuation">:</span> <span class="token string">'assets/jump.mp3'</span> <span class="token punctuation">}</span><span class="token punctuation">]</span>
-                <span class="token punctuation">}</span></div>
+                <span class="token property">images</span><span class="token punctuation">:</span> <span
+                    class="token punctuation">[</span><span class="token punctuation">{</span> <span
+                    class="token property">name</span><span class="token punctuation">:</span> <span
+                    class="token string">'player'</span><span class="token punctuation">,</span> <span
+                    class="token property">src</span><span class="token punctuation">:</span> <span
+                    class="token string">'assets/player.png'</span> <span class="token punctuation">}</span><span
+                    class="token punctuation">]</span><span class="token punctuation">,</span>
+                <span class="token property">sounds</span><span class="token punctuation">:</span> <span
+                    class="token punctuation">[</span><span class="token punctuation">{</span> <span
+                    class="token property">name</span><span class="token punctuation">:</span> <span
+                    class="token string">'jump'</span><span class="token punctuation">,</span> <span
+                    class="token property">src</span><span class="token punctuation">:</span> <span
+                    class="token string">'assets/jump.mp3'</span> <span class="token punctuation">}</span><span
+                    class="token punctuation">]</span>
+                <span class="token punctuation">}</span>
+            </div>
 
             <h3>📁Promise.all()</h3>
 
@@ -828,13 +869,29 @@
 
             <h3>📁Riproduzione audio: il trucco del cloneNode()</h3>
 
-            <div class="bee-code-block"><span class="token function">playSound</span><span class="token punctuation">(</span>name<span class="token punctuation">,</span> volume <span class="token operator">=</span> <span class="token number">1</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                <span class="token keyword">const</span> sound <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>sounds<span class="token punctuation">.</span><span class="token keyword">get</span><span class="token punctuation">(</span>name<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>sound<span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
-                <span class="token keyword">const</span> clone <span class="token operator">=</span> sound<span class="token punctuation">.</span><span class="token function">cloneNode</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                clone<span class="token punctuation">.</span>volume <span class="token operator">=</span> volume<span class="token punctuation">;</span>
-                clone<span class="token punctuation">.</span><span class="token function">play</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token punctuation">}</span></div>
+            <div class="bee-code-block"><span class="token function">playSound</span><span
+                    class="token punctuation">(</span>name<span class="token punctuation">,</span> volume <span
+                    class="token operator">=</span> <span class="token number">1</span><span
+                    class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">const</span> sound <span class="token operator">=</span> <span
+                    class="token keyword">this</span><span class="token punctuation">.</span>sounds<span
+                    class="token punctuation">.</span><span class="token keyword">get</span><span
+                    class="token punctuation">(</span>name<span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span><span
+                    class="token operator">!</span>sound<span class="token punctuation">)</span> <span
+                    class="token keyword">return</span><span class="token punctuation">;</span>
+                <span class="token keyword">const</span> clone <span class="token operator">=</span> sound<span
+                    class="token punctuation">.</span><span class="token function">cloneNode</span><span
+                    class="token punctuation">(</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+                clone<span class="token punctuation">.</span>volume <span class="token operator">=</span> volume<span
+                    class="token punctuation">;</span>
+                clone<span class="token punctuation">.</span><span class="token function">play</span><span
+                    class="token punctuation">(</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+                <span class="token punctuation">}</span>
+            </div>
 
             <h3>📁Audio</h3>
 
@@ -855,51 +912,137 @@
 
             <h3>📁Esempio pratico</h3>
 
-            <div class="bee-code-block"><span class="token keyword">import</span> <span class="token punctuation">{</span> <span class="token class-name">BeeAssetManager</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'./core/BeeAssetManager.js'</span><span class="token punctuation">;</span>
+            <div class="bee-code-block"><span class="token keyword">import</span> <span
+                    class="token punctuation">{</span> <span class="token class-name">BeeAssetManager</span> <span
+                    class="token punctuation">}</span> <span class="token keyword">from</span> <span
+                    class="token string">'./core/BeeAssetManager.js'</span><span class="token punctuation">;</span>
 
-                <span class="token comment">// 1. Creiamo l'istanza (di solito una sola, condivisa da tutto il gioco)</span>
-                <span class="token keyword">const</span> assetManager <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeeAssetManager</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment">// 1. Creiamo l'istanza (di solito una sola, condivisa da tutto il
+                    gioco)</span>
+                <span class="token keyword">const</span> assetManager <span class="token operator">=</span> <span
+                    class="token keyword">new</span> <span class="token class-name">BeeAssetManager</span><span
+                    class="token punctuation">(</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
 
                 <span class="token comment">// 2. Definiamo il manifest: cosa serve prima che il gioco parta</span>
-                <span class="token keyword">const</span> manifest <span class="token operator">=</span> <span class="token punctuation">[</span>
-                <span class="token punctuation">{</span> <span class="token property">type</span><span class="token punctuation">:</span> <span class="token string">'image'</span><span class="token punctuation">,</span> <span class="token property">name</span><span class="token punctuation">:</span> <span class="token string">'player'</span><span class="token punctuation">,</span> <span class="token property">src</span><span class="token punctuation">:</span> <span class="token string">'assets/img/player.png'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
-                <span class="token punctuation">{</span> <span class="token property">type</span><span class="token punctuation">:</span> <span class="token string">'image'</span><span class="token punctuation">,</span> <span class="token property">name</span><span class="token punctuation">:</span> <span class="token string">'nemico'</span><span class="token punctuation">,</span> <span class="token property">src</span><span class="token punctuation">:</span> <span class="token string">'assets/img/nemico.png'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
-                <span class="token punctuation">{</span> <span class="token property">type</span><span class="token punctuation">:</span> <span class="token string">'audio'</span><span class="token punctuation">,</span> <span class="token property">name</span><span class="token punctuation">:</span> <span class="token string">'salto'</span><span class="token punctuation">,</span> <span class="token property">src</span><span class="token punctuation">:</span> <span class="token string">'assets/audio/salto.mp3'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
-                <span class="token punctuation">{</span> <span class="token property">type</span><span class="token punctuation">:</span> <span class="token string">'audio'</span><span class="token punctuation">,</span> <span class="token property">name</span><span class="token punctuation">:</span> <span class="token string">'moneta'</span><span class="token punctuation">,</span> <span class="token property">src</span><span class="token punctuation">:</span> <span class="token string">'assets/audio/moneta.mp3'</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
-                <span class="token punctuation">{</span> <span class="token property">type</span><span class="token punctuation">:</span> <span class="token string">'json'</span><span class="token punctuation">,</span> <span class="token property">name</span><span class="token punctuation">:</span> <span class="token string">'livello1'</span><span class="token punctuation">,</span> <span class="token property">src</span><span class="token punctuation">:</span> <span class="token string">'assets/data/livello1.json'</span> <span class="token punctuation">}</span>
+                <span class="token keyword">const</span> manifest <span class="token operator">=</span> <span
+                    class="token punctuation">[</span>
+                <span class="token punctuation">{</span> <span class="token property">type</span><span
+                    class="token punctuation">:</span> <span class="token string">'image'</span><span
+                    class="token punctuation">,</span> <span class="token property">name</span><span
+                    class="token punctuation">:</span> <span class="token string">'player'</span><span
+                    class="token punctuation">,</span> <span class="token property">src</span><span
+                    class="token punctuation">:</span> <span class="token string">'assets/img/player.png'</span> <span
+                    class="token punctuation">}</span><span class="token punctuation">,</span>
+                <span class="token punctuation">{</span> <span class="token property">type</span><span
+                    class="token punctuation">:</span> <span class="token string">'image'</span><span
+                    class="token punctuation">,</span> <span class="token property">name</span><span
+                    class="token punctuation">:</span> <span class="token string">'nemico'</span><span
+                    class="token punctuation">,</span> <span class="token property">src</span><span
+                    class="token punctuation">:</span> <span class="token string">'assets/img/nemico.png'</span> <span
+                    class="token punctuation">}</span><span class="token punctuation">,</span>
+                <span class="token punctuation">{</span> <span class="token property">type</span><span
+                    class="token punctuation">:</span> <span class="token string">'audio'</span><span
+                    class="token punctuation">,</span> <span class="token property">name</span><span
+                    class="token punctuation">:</span> <span class="token string">'salto'</span><span
+                    class="token punctuation">,</span> <span class="token property">src</span><span
+                    class="token punctuation">:</span> <span class="token string">'assets/audio/salto.mp3'</span> <span
+                    class="token punctuation">}</span><span class="token punctuation">,</span>
+                <span class="token punctuation">{</span> <span class="token property">type</span><span
+                    class="token punctuation">:</span> <span class="token string">'audio'</span><span
+                    class="token punctuation">,</span> <span class="token property">name</span><span
+                    class="token punctuation">:</span> <span class="token string">'moneta'</span><span
+                    class="token punctuation">,</span> <span class="token property">src</span><span
+                    class="token punctuation">:</span> <span class="token string">'assets/audio/moneta.mp3'</span> <span
+                    class="token punctuation">}</span><span class="token punctuation">,</span>
+                <span class="token punctuation">{</span> <span class="token property">type</span><span
+                    class="token punctuation">:</span> <span class="token string">'json'</span><span
+                    class="token punctuation">,</span> <span class="token property">name</span><span
+                    class="token punctuation">:</span> <span class="token string">'livello1'</span><span
+                    class="token punctuation">,</span> <span class="token property">src</span><span
+                    class="token punctuation">:</span> <span class="token string">'assets/data/livello1.json'</span>
+                <span class="token punctuation">}</span>
                 <span class="token punctuation">]</span><span class="token punctuation">;</span>
 
-                <span class="token keyword">async</span> <span class="token keyword">function</span> <span class="token function">avviaGioco</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token keyword">async</span> <span class="token keyword">function</span> <span
+                    class="token function">avviaGioco</span><span class="token punctuation">(</span><span
+                    class="token punctuation">)</span> <span class="token punctuation">{</span>
                 <span class="token keyword">try</span> <span class="token punctuation">{</span>
                 <span class="token comment">// 3. Mostriamo una schermata di caricamento mentre attendiamo</span>
-                console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Caricamento risorse in corso...'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">await</span> assetManager<span class="token punctuation">.</span><span class="token function">loadManifest</span><span class="token punctuation">(</span>manifest<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                console<span class="token punctuation">.</span><span class="token function">log</span><span
+                    class="token punctuation">(</span><span class="token string">'Caricamento risorse in
+                    corso...'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">await</span> assetManager<span class="token punctuation">.</span><span
+                    class="token function">loadManifest</span><span class="token punctuation">(</span>manifest<span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
 
-                <span class="token comment">// 4. Da qui in poi tutti gli asset sono garantiti disponibili in memoria</span>
-                <span class="token keyword">const</span> spritePlayer <span class="token operator">=</span> assetManager<span class="token punctuation">.</span><span class="token function">getImage</span><span class="token punctuation">(</span><span class="token string">'player'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                <span class="token keyword">const</span> datiLivello <span class="token operator">=</span> assetManager<span class="token punctuation">.</span><span class="token function">getJSON</span><span class="token punctuation">(</span><span class="token string">'livello1'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment">// 4. Da qui in poi tutti gli asset sono garantiti disponibili in
+                    memoria</span>
+                <span class="token keyword">const</span> spritePlayer <span class="token operator">=</span>
+                assetManager<span class="token punctuation">.</span><span class="token function">getImage</span><span
+                    class="token punctuation">(</span><span class="token string">'player'</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">const</span> datiLivello <span class="token operator">=</span>
+                assetManager<span class="token punctuation">.</span><span class="token function">getJSON</span><span
+                    class="token punctuation">(</span><span class="token string">'livello1'</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
 
-                console<span class="token punctuation">.</span><span class="token function">log</span><span class="token punctuation">(</span><span class="token string">'Livello caricato:'</span><span class="token punctuation">,</span> datiLivello<span class="token punctuation">)</span><span class="token punctuation">;</span>
+                console<span class="token punctuation">.</span><span class="token function">log</span><span
+                    class="token punctuation">(</span><span class="token string">'Livello caricato:'</span><span
+                    class="token punctuation">,</span> datiLivello<span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
 
                 <span class="token comment">// 5. Disegniamo lo sprite su un canvas, ad esempio</span>
-                <span class="token keyword">const</span> ctx <span class="token operator">=</span> document<span class="token punctuation">.</span><span class="token function">querySelector</span><span class="token punctuation">(</span><span class="token string">'canvas'</span><span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">getContext</span><span class="token punctuation">(</span><span class="token string">'2d'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-                ctx<span class="token punctuation">.</span><span class="token function">drawImage</span><span class="token punctuation">(</span>spritePlayer<span class="token punctuation">,</span> <span class="token number">100</span><span class="token punctuation">,</span> <span class="token number">100</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">const</span> ctx <span class="token operator">=</span> document<span
+                    class="token punctuation">.</span><span class="token function">querySelector</span><span
+                    class="token punctuation">(</span><span class="token string">'canvas'</span><span
+                    class="token punctuation">)</span><span class="token punctuation">.</span><span
+                    class="token function">getContext</span><span class="token punctuation">(</span><span
+                    class="token string">'2d'</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+                ctx<span class="token punctuation">.</span><span class="token function">drawImage</span><span
+                    class="token punctuation">(</span>spritePlayer<span class="token punctuation">,</span> <span
+                    class="token number">100</span><span class="token punctuation">,</span> <span
+                    class="token number">100</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
 
                 <span class="token comment">// 6. Riproduciamo un suono in risposta a un evento di gioco</span>
-                document<span class="token punctuation">.</span><span class="token function">addEventListener</span><span class="token punctuation">(</span><span class="token string">'keydown'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>e<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
-                <span class="token keyword">if</span> <span class="token punctuation">(</span>e<span class="token punctuation">.</span>code <span class="token operator">===</span> <span class="token string">'Space'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-                assetManager<span class="token punctuation">.</span><span class="token function">playSound</span><span class="token punctuation">(</span><span class="token string">'salto'</span><span class="token punctuation">,</span> <span class="token number">0.8</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// volume all'80%</span>
+                document<span class="token punctuation">.</span><span
+                    class="token function">addEventListener</span><span class="token punctuation">(</span><span
+                    class="token string">'keydown'</span><span class="token punctuation">,</span> <span
+                    class="token punctuation">(</span>e<span class="token punctuation">)</span> <span
+                    class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>e<span
+                    class="token punctuation">.</span>code <span class="token operator">===</span> <span
+                    class="token string">'Space'</span><span class="token punctuation">)</span> <span
+                    class="token punctuation">{</span>
+                assetManager<span class="token punctuation">.</span><span class="token function">playSound</span><span
+                    class="token punctuation">(</span><span class="token string">'salto'</span><span
+                    class="token punctuation">,</span> <span class="token number">0.8</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span> <span
+                    class="token comment">// volume all'80%</span>
                 <span class="token punctuation">}</span>
-                <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token punctuation">}</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
 
-                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span class="token punctuation">(</span>errore<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+                <span class="token punctuation">}</span> <span class="token keyword">catch</span> <span
+                    class="token punctuation">(</span>errore<span class="token punctuation">)</span> <span
+                    class="token punctuation">{</span>
                 <span class="token comment">// Se anche un solo asset fallisce, finiamo qui</span>
-                console<span class="token punctuation">.</span><span class="token function">error</span><span class="token punctuation">(</span><span class="token string">'Impossibile avviare il gioco:'</span><span class="token punctuation">,</span> errore<span class="token punctuation">.</span>message<span class="token punctuation">)</span><span class="token punctuation">;</span>
-                document<span class="token punctuation">.</span>body<span class="token punctuation">.</span>innerHTML <span class="token operator">=</span> <span class="token string">'&lt;p&gt;Errore nel caricamento delle risorse.&lt;/p&gt;'</span><span class="token punctuation">;</span>
+                console<span class="token punctuation">.</span><span class="token function">error</span><span
+                    class="token punctuation">(</span><span class="token string">'Impossibile avviare il
+                    gioco:'</span><span class="token punctuation">,</span> errore<span
+                    class="token punctuation">.</span>message<span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+                document<span class="token punctuation">.</span>body<span class="token punctuation">.</span>innerHTML
+                <span class="token operator">=</span> <span class="token string">'&lt;p&gt;Errore nel caricamento delle
+                    risorse.&lt;/p&gt;'</span><span class="token punctuation">;</span>
                 <span class="token punctuation">}</span>
                 <span class="token punctuation">}</span>
 
-                <span class="token function">avviaGioco</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></div>
+                <span class="token function">avviaGioco</span><span class="token punctuation">(</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
+            </div>
 
             <h3>📁Perché è scritto così — note per chi integra la classe</h3>
 
@@ -930,66 +1073,66 @@
 
             <h3>📁Riepilogo API</h3>
             <table class="bee-api-table">
-                    <thead>
-                        <tr>
-                            <th>Metodo</th>
-                            <th>Ritorna</th>
-                            <th>Scopo</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><code>loadManifest(manifest)</code></td>
-                            <td><code>Promise&lt;void&gt;</code></td>
-                            <td>Carica un array misto di asset tipizzati</td>
-                        </tr>
-                        <tr>
-                            <td><code>loadAssets(assetList)</code></td>
-                            <td><code>Promise&lt;void&gt;</code></td>
-                            <td>Carica un oggetto asset suddiviso per categoria</td>
-                        </tr>
-                        <tr>
-                            <td><code>loadImage(name, src)</code></td>
-                            <td><code>Promise&lt;Image&gt;</code></td>
-                            <td>Carica una singola immagine</td>
-                        </tr>
-                        <tr>
-                            <td><code>loadSound(name, src)</code></td>
-                            <td><code>Promise&lt;Audio&gt;</code></td>
-                            <td>Carica una singola traccia audio</td>
-                        </tr>
-                        <tr>
-                            <td><code>loadJSON(name, src)</code></td>
-                            <td><code>Promise&lt;Object&gt;</code></td>
-                            <td>Carica e fa il parsing di un file JSON</td>
-                        </tr>
-                        <tr>
-                            <td><code>getImage(name)</code></td>
-                            <td><code>Image | undefined</code></td>
-                            <td>Recupera un'immagine già caricata</td>
-                        </tr>
-                        <tr>
-                            <td><code>getSound(name)</code></td>
-                            <td><code>Audio | undefined</code></td>
-                            <td>Recupera un audio già caricato</td>
-                        </tr>
-                        <tr>
-                            <td><code>getJSON(name)</code></td>
-                            <td><code>Object | undefined</code></td>
-                            <td>Recupera un JSON già caricato</td>
-                        </tr>
-                        <tr>
-                            <td><code>getAsset(name)</code></td>
-                            <td><code>any | undefined</code></td>
-                            <td>Cerca il nome in immagini &rarr; suoni &rarr; JSON, in ordine</td>
-                        </tr>
-                        <tr>
-                            <td><code>playSound(name, volume)</code></td>
-                            <td><code>void</code></td>
-                            <td>Riproduce un suono clonando il nodo per permettere overlap</td>
-                        </tr>
-                    </tbody>
-                </table>
+                <thead>
+                    <tr>
+                        <th>Metodo</th>
+                        <th>Ritorna</th>
+                        <th>Scopo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>loadManifest(manifest)</code></td>
+                        <td><code>Promise&lt;void&gt;</code></td>
+                        <td>Carica un array misto di asset tipizzati</td>
+                    </tr>
+                    <tr>
+                        <td><code>loadAssets(assetList)</code></td>
+                        <td><code>Promise&lt;void&gt;</code></td>
+                        <td>Carica un oggetto asset suddiviso per categoria</td>
+                    </tr>
+                    <tr>
+                        <td><code>loadImage(name, src)</code></td>
+                        <td><code>Promise&lt;Image&gt;</code></td>
+                        <td>Carica una singola immagine</td>
+                    </tr>
+                    <tr>
+                        <td><code>loadSound(name, src)</code></td>
+                        <td><code>Promise&lt;Audio&gt;</code></td>
+                        <td>Carica una singola traccia audio</td>
+                    </tr>
+                    <tr>
+                        <td><code>loadJSON(name, src)</code></td>
+                        <td><code>Promise&lt;Object&gt;</code></td>
+                        <td>Carica e fa il parsing di un file JSON</td>
+                    </tr>
+                    <tr>
+                        <td><code>getImage(name)</code></td>
+                        <td><code>Image | undefined</code></td>
+                        <td>Recupera un'immagine già caricata</td>
+                    </tr>
+                    <tr>
+                        <td><code>getSound(name)</code></td>
+                        <td><code>Audio | undefined</code></td>
+                        <td>Recupera un audio già caricato</td>
+                    </tr>
+                    <tr>
+                        <td><code>getJSON(name)</code></td>
+                        <td><code>Object | undefined</code></td>
+                        <td>Recupera un JSON già caricato</td>
+                    </tr>
+                    <tr>
+                        <td><code>getAsset(name)</code></td>
+                        <td><code>any | undefined</code></td>
+                        <td>Cerca il nome in immagini &rarr; suoni &rarr; JSON, in ordine</td>
+                    </tr>
+                    <tr>
+                        <td><code>playSound(name, volume)</code></td>
+                        <td><code>void</code></td>
+                        <td>Riproduce un suono clonando il nodo per permettere overlap</td>
+                    </tr>
+                </tbody>
+            </table>
     </main>
 
 </div>
