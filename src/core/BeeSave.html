@@ -618,7 +618,7 @@
 <!-- HEADER FISSA -->
 <header class="bee-docs-header">
     <a href="#" class="bee-header-logo">
-        <span class="bee-header-title">Documentazione mettere la classe</span>
+        <span class="bee-header-title">BeeSave</span>
     </a>
     <span class="bee-header-badge">v2.2.0</span>
 </header>
@@ -716,94 +716,368 @@
     <!-- AREA CONTENUTI (TUTTI I MODULI VANNO QUI DENTRO) -->
     <main class="bee-docs-content">
 
-        <!-- SEZIONE 1 -->
-        <h2 class="bee-section-title"></h2>
+        <div
+            style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
+            <div>
+                <h2 class="bee-section-title" style="margin: 0;">BeeSave — Documentazione Tecnica</h2>
+                <p style="margin-top: 5px;">Persistenza DTO su storage del browser: envelope, status, namespace e migrazione</p>
+            </div>
+            <img src="https://beeenginejs.com/wp-content/uploads/2026/09/Gemini_Generated_Image_bg7xjjbg7xjjbg7x-1-1.jpg"
+                alt="BeeEngine Mascot" width="80" height="80" style="width: 80px; height: auto; flex-shrink: 0;">
+        </div>
 
-        <div class="bee-class-card" id="radme">****>>>>>>>> mettere id >>>>>>>>>>*****
-            <h3> </h3>
+        <div class="bee-class-card" id="BeeSave">
 
-            <p></p>
+            <h3>📁 Panoramica</h3>
 
-            <p> </p>
+            <p><code>BeeSave</code> non è più un wrapper nudo su <code>localStorage.setItem</code>. Ogni record è un envelope <code>{ __bee, v, t, d }</code>: così chiave assente, JSON corrotto e primo avvio non sono la stessa cosa. La facade statica <code>BeeSave</code> delega a uno store di default; se ti servono due giochi (o i test) isolati, <code>BeeSave.create(options)</code> restituisce un <code>BeeSaveStore</code> indipendente.</p>
 
-            <p>📁 </p>
+            <p>La responsabilità resta serializzare un DTO JSON-piatto. Quello che <strong>ancora non</strong> fa: cifratura, sync tra tab, IndexedDB, compressione, stima della quota residua, debounce. Il motore non la chiama: sei tu a decidere quando salvare. Il barrel la re-esporta; il game loop no.</p>
 
-            <div class="bee-code-block"></div>
+            <div class="bee-code-block"><span class="token keyword">import</span> <span class="token punctuation">{</span> <span class="token class-name">BeeSave</span><span class="token punctuation">,</span> <span class="token class-name">BeeSaveStore</span><span class="token punctuation">,</span> <span class="token constant">BEE_SAVE_STATUS</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'beeengine'</span><span class="token punctuation">;</span>
 
-            <p>📁</p>
+<span class="token class-name">BeeSave</span><span class="token punctuation">.</span><span class="token function">configure</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token property">namespace</span><span class="token punctuation">:</span> <span class="token string">'honeyrun'</span><span class="token punctuation">,</span> <span class="token property">version</span><span class="token punctuation">:</span> <span class="token number">2</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-            <div class="bee-code-block"></div>
+<span class="token keyword">const</span> written <span class="token operator">=</span> <span class="token class-name">BeeSave</span><span class="token punctuation">.</span><span class="token function">save</span><span class="token punctuation">(</span><span class="token string">'progress'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> <span class="token property">level</span><span class="token punctuation">:</span> <span class="token number">3</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+written<span class="token punctuation">.</span>ok<span class="token punctuation">;</span>     <span class="token comment">// true se è andata a disco (o in memoria)</span>
+written<span class="token punctuation">.</span>status<span class="token punctuation">;</span> <span class="token comment">// 'ok' | 'rejected' | 'quota' | 'unavailable'</span></div>
 
-            <p>📁</p>
+            <h3>📁 Envelope: non è più il JSON nudo</h3>
 
-            <div class="bee-code-block"> </div>
+            <p>In storage non trovi più <code>"1200"</code> o <code>{"level":3}</code>. Trovi un oggetto marchiato:</p>
 
-            <p>📁</p>
+            <div class="bee-code-block"><span class="token punctuation">{</span>
+    <span class="token string">"__bee"</span><span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+    <span class="token string">"v"</span><span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">,</span>
+    <span class="token string">"t"</span><span class="token punctuation">:</span> <span class="token number">1736000000000</span><span class="token punctuation">,</span>
+    <span class="token string">"d"</span><span class="token punctuation">:</span> <span class="token punctuation">{</span> <span class="token string">"level"</span><span class="token punctuation">:</span> <span class="token number">3</span> <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></div>
 
-            <div class="bee-code-block"></div>
+            <p><code>__bee</code> è il marchio (costante interna <code>1</code>). <code>v</code> è la versione dello schema dello store, non un campo tuo. <code>t</code> è <code>Date.now()</code> al momento del save. <code>d</code> è il DTO. Se il JSON in disco non ha <code>__bee === 1</code> e una proprietà <code>d</code>, viene trattato come <strong>legacy</strong>: il valore parsato intero è il payload, <code>version</code> vale <code>0</code>, <code>legacy: true</code>. I save della classe vecchia restano leggibili.</p>
 
-            <p>📁</p>
+            <p>La chiave reale è <code>prefix + (namespace ? namespace + ':' : '') + key</code>. Default: <code>BeeSave:highScore</code>. Con namespace <code>honeyrun</code>: <code>BeeSave:honeyrun:highScore</code>. Non c’è sanitizzazione: se passi già il prefisso, lo duplichi.</p>
 
-            <div class="bee-code-block"></div>
+            <h3>📁 Result e status: save/read non lanciano più (di solito)</h3>
 
-            <p>📁 </p>
+            <p>Ogni scrittura e ogni <code>read</code> torna un oggetto result, anche in errore. <code>ok</code> è <code>true</code> solo se <code>status === 'ok'</code>. Gli ultimi esiti stanno su <code>lastWrite</code> / <code>lastRead</code> dello store (anche sulla facade: <code>BeeSave.store.lastRead</code>).</p>
 
-            <div class="bee-class-card"></div>
+            <table class="bee-api-table">
+                <thead>
+                    <tr>
+                        <th>Campo</th>
+                        <th>Tipo</th>
+                        <th>Significato</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>ok</code></td>
+                        <td><code>boolean</code></td>
+                        <td><code>true</code> solo per <code>BEE_SAVE_STATUS.OK</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>status</code></td>
+                        <td><code>string</code></td>
+                        <td>Uno dei valori congelati in <code>BEE_SAVE_STATUS</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>key</code> / <code>storageKey</code></td>
+                        <td><code>string</code></td>
+                        <td>Chiave logica vs chiave reale in storage.</td>
+                    </tr>
+                    <tr>
+                        <td><code>value</code></td>
+                        <td><code>any</code></td>
+                        <td>DTO se <code>ok</code>; <code>undefined</code> negli altri status.</td>
+                    </tr>
+                    <tr>
+                        <td><code>version</code> / <code>savedAt</code></td>
+                        <td><code>number</code></td>
+                        <td>Schema envelope e timestamp. Zero se assente/corrotto.</td>
+                    </tr>
+                    <tr>
+                        <td><code>legacy</code></td>
+                        <td><code>boolean</code></td>
+                        <td><code>true</code> se il JSON non era un envelope BeeSave.</td>
+                    </tr>
+                    <tr>
+                        <td><code>message</code></td>
+                        <td><code>string</code></td>
+                        <td>Motivo umano (chiave vuota, path DTO, errore nativo).</td>
+                    </tr>
+                </tbody>
+            </table>
 
-            <p>📁 </p>
+            <p>Status possibili: <code>ok</code>, <code>missing</code>, <code>corrupt</code>, <code>unavailable</code>, <code>rejected</code>, <code>quota</code>. Non sono numeri: confronta con <code>BEE_SAVE_STATUS.CORRUPT</code>, non con stringhe sparse se puoi evitarlo.</p>
 
-            <div class="bee-class-card"></div>
+            <h3>📁 save: validazione DTO, try/catch, quota</h3>
 
-            <p> 📁 </p>
+            <p><code>save</code> non è più “stringify e spera”. Ordine reale:</p>
 
-            <div class="bee-class-card"></div>
+            <p><strong>1. Chiave vuota</strong> → <code>rejected</code>, niente I/O.</p>
 
-            <p> 📁 </p>
+            <p><strong>2. <code>assertDto</code></strong> cammina l’albero. Rifiuta <code>undefined</code>, funzioni, <code>symbol</code>, <code>bigint</code>, cicli, istanze di classe (prototipo diverso da Object/Array). <code>Date</code> è ammessa in validazione, ma <code>JSON.stringify</code> la serializza come stringa ISO: al load torna una stringa, non un <code>Date</code>. Messaggio tipo <code>$.player is a live BeePlayer — serialize a plain DTO</code>.</p>
 
-            <div class="bee-class-card"></div>
+            <p><strong>3. Backend assente</strong> → <code>unavailable</code> (solo se hai spento il fallback memoria).</p>
 
-            <p>📁 </p>
+            <p><strong>4. <code>JSON.stringify</code> in try/catch</strong> → fallimento → <code>rejected</code>.</p>
 
-            <div class="bee-class-card"> </div>
+            <p><strong>5. <code>setItem</code> in try/catch</strong> → <code>QuotaExceededError</code> / <code>NS_ERROR_DOM_QUOTA_REACHED</code> / code 22 o 1014 → status <code>quota</code>; qualsiasi altro throw → <code>unavailable</code>. L’eccezione <strong>non</strong> sale al chiamante.</p>
 
-            <p>📁 </p>
+            <div class="bee-code-block"><span class="token keyword">const</span> r <span class="token operator">=</span> <span class="token class-name">BeeSave</span><span class="token punctuation">.</span><span class="token function">save</span><span class="token punctuation">(</span><span class="token string">'progress'</span><span class="token punctuation">,</span> payload<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>r<span class="token punctuation">.</span>ok<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>r<span class="token punctuation">.</span>status <span class="token operator">===</span> <span class="token constant">BEE_SAVE_STATUS</span><span class="token punctuation">.</span><span class="token constant">QUOTA</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// disco pieno; il valore precedente di quella chiave resta</span>
+    <span class="token punctuation">}</span>
+    <span class="token comment">// UI: r.message</span>
+<span class="token punctuation">}</span>
 
-            <div class="bee-class-card"></div>
+<span class="token class-name">BeeSave</span><span class="token punctuation">.</span><span class="token function">save</span><span class="token punctuation">(</span><span class="token string">'hero'</span><span class="token punctuation">,</span> player<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// rejected: $.hero is a live BeePlayer — serialize a plain DTO</span></div>
 
-            <p>📁</p>
+            <h3>📁 read vs load: missing e corrupt non sono più identici</h3>
 
-            <div class="bee-class-card"> </div>
+            <p><code>read(key)</code> è l’API onesta. <code>load(key, defaultValue)</code> è lo zucchero: se lo status è <code>ok</code> restituisce <code>value</code> (anche se hai salvato <code>null</code>); in <em>tutti</em> gli altri status restituisce <code>defaultValue</code>. Quindi <code>load</code> <strong>maschera ancora</strong> corruzione, quota di lettura, storage morto e chiave vuota. Se ti serve distinguere il primo avvio da un save marcio, usa <code>read</code>.</p>
 
-            <p>📁 </p>
+            <div class="bee-code-block"><span class="token keyword">const</span> rec <span class="token operator">=</span> <span class="token class-name">BeeSave</span><span class="token punctuation">.</span><span class="token function">read</span><span class="token punctuation">(</span><span class="token string">'progress'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-            <div class="bee-class-card"> </div>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>rec<span class="token punctuation">.</span>status <span class="token operator">===</span> <span class="token constant">BEE_SAVE_STATUS</span><span class="token punctuation">.</span><span class="token constant">MISSING</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// vero primo avvio</span>
+<span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>rec<span class="token punctuation">.</span>status <span class="token operator">===</span> <span class="token constant">BEE_SAVE_STATUS</span><span class="token punctuation">.</span><span class="token constant">CORRUPT</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token comment">// JSON.parse fallito, o migrate che ha lanciato</span>
+    <span class="token comment">// onCorrupt default 'keep': il record resta; 'remove' lo cancella</span>
+<span class="token punctuation">}</span> <span class="token keyword">else</span> <span class="token keyword">if</span> <span class="token punctuation">(</span>rec<span class="token punctuation">.</span>ok<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    applica<span class="token punctuation">(</span>rec<span class="token punctuation">.</span>value<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
 
-            <p> 📁 </p>
+<span class="token comment">// comodo, ma missing e corrupt cadono entrambi sul default</span>
+<span class="token keyword">const</span> data <span class="token operator">=</span> <span class="token class-name">BeeSave</span><span class="token punctuation">.</span><span class="token function">load</span><span class="token punctuation">(</span><span class="token string">'progress'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> <span class="token property">level</span><span class="token punctuation">:</span> <span class="token number">1</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></div>
 
-            <div class="bee-code-block"></div>
+            <p><code>getItem === null</code> → <code>missing</code>. Parse che lancia → status <code>corrupt</code>. Con <code>onCorrupt: 'remove'</code> prova a cancellare (se anche <code>removeItem</code> fallisce lo status resta comunque <code>corrupt</code>). Default <code>'keep'</code>: il byte marcio resta, <code>has</code> è <code>true</code>, <code>exists</code> è <code>false</code>.</p>
 
-            <p>📁</p>
+            <h3>📁 exists, has, null, undefined</h3>
 
-            <div class="bee-code-block"></div>
+            <p>Questo era il groviglio della classe vecchia. Ora i due booleani non coincidono.</p>
 
+            <p><code>exists(key)</code> è <code>read(key).status === 'ok'</code>: record <strong>valido e leggibile</strong>. Un JSON rotto non conta. Un <code>null</code> salvato di proposito sì: stringify di <code>null</code> è legale, <code>exists</code> è <code>true</code>, <code>load</code> restituisce <code>null</code> (il valore), non il default.</p>
 
-            <p>📁 </p>
+            <p><code>has(key)</code> è presenza fisica: <code>getItem !== null</code>, anche se il payload è spazzatura. Non parse-a.</p>
 
-            <div class="bee-code-block"> </div>
+            <p><code>save(key, undefined)</code> viene <strong>rifiutato</strong> da <code>assertDto</code> (<code>rejected</code>, messaggio <code>$ is undefined — JSON cannot store it; use null</code>). Non finisce più una stringa <code>"undefined"</code> in disco.</p>
 
-            <p>📁 </p>
+            <div class="bee-code-block"><span class="token class-name">BeeSave</span><span class="token punctuation">.</span><span class="token function">save</span><span class="token punctuation">(</span><span class="token string">'slot'</span><span class="token punctuation">,</span> <span class="token boolean">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token class-name">BeeSave</span><span class="token punctuation">.</span><span class="token function">exists</span><span class="token punctuation">(</span><span class="token string">'slot'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>                  <span class="token comment">// true</span>
+<span class="token class-name">BeeSave</span><span class="token punctuation">.</span><span class="token function">load</span><span class="token punctuation">(</span><span class="token string">'slot'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> <span class="token property">ok</span><span class="token punctuation">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// null, non { ok: true }</span>
 
-            <div class="bee-code-block"></div>
+<span class="token class-name">BeeSave</span><span class="token punctuation">.</span><span class="token function">has</span><span class="token punctuation">(</span><span class="token string">'rotto'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>     <span class="token comment">// true se la chiave c'è, anche corrotta</span>
+<span class="token class-name">BeeSave</span><span class="token punctuation">.</span><span class="token function">exists</span><span class="token punctuation">(</span><span class="token string">'rotto'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// false se read non è ok</span></div>
 
-            <p> 📁</p>
+            <p><strong>Breaking rispetto alla v vecchia:</strong> <code>exists</code> non è più <code>getItem !== null</code>. Codice che usava <code>exists</code> per dire “c’è qualcosa in disco” deve passare a <code>has</code>.</p>
 
-            <div class="bee-code-block"> </div>
+            <h3>📁 prefix, namespace, stessa origin</h3>
 
+            <p>Stessa origin = stesso disco. Il prefix <code>BeeSave:</code> ti isola dalle chiavi di analytics, non da un altro gioco BeeEngine sullo stesso dominio. Per quello esiste <code>namespace</code>: due store con namespace diversi non si pestano le chiavi e <code>clearAll</code> cancella solo il prefisso <em>corrente</em> (<code>storageKey('')</code>, quindi <code>BeeSave:</code> oppure <code>BeeSave:honeyrun:</code>).</p>
 
+            <div class="bee-code-block"><span class="token class-name">BeeSave</span><span class="token punctuation">.</span><span class="token function">configure</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    <span class="token property">prefix</span><span class="token punctuation">:</span> <span class="token string">'BeeSave:'</span><span class="token punctuation">,</span>
+    <span class="token property">namespace</span><span class="token punctuation">:</span> <span class="token string">'honeyrun'</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token class-name">BeeSave</span><span class="token punctuation">.</span>store<span class="token punctuation">.</span><span class="token function">storageKey</span><span class="token punctuation">(</span><span class="token string">'slot0'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// → "BeeSave:honeyrun:slot0"</span></div>
 
+            <p>Chiama <code>configure</code> <em>una volta, all’avvio, prima di qualsiasi load/save</em>. Cambiare prefix o namespace a metà sessione rende irraggiungibili i record vecchi: <code>load</code> vede <code>missing</code>, <code>clearAll</code> non li tocca. Non è sandbox di sicurezza: chi apre DevTools vede tutte le chiavi dell’origine.</p>
 
+            <p><code>BeeSave.prefix</code> è un getter/setter sullo store di default. Il setter con stringa vuota/falsy ripristina <code>'BeeSave:'</code>. <code>configure({ prefix: '' })</code> invece accetta la stringa vuota: attenzione, le chiavi diventano nude.</p>
+
+            <h3>📁 Versioning e migrate</h3>
+
+            <p>Lo store ha <code>version</code> (default <code>1</code>). Ogni save scrive quel numero nell’envelope. In <code>read</code>, se hai passato <code>migrate</code> e <code>version &lt; this.version</code>, chiama <code>migrate(value, fromVersion, toVersion, key)</code>. Se la callback lancia, il record è <code>corrupt</code>. Se <code>resaveOnMigrate</code> è <code>true</code>, dopo una migrazione riuscita riscrive col nuovo schema (un <code>save</code> interno: se quello fallisce, <code>read</code> torna comunque <code>ok</code> col valore migrato in RAM, ma il disco può restare vecchio).</p>
+
+            <p>I record legacy (senza envelope) hanno versione <code>0</code>: la migrate parte, se l’hai registrata. Non c’è migrate “verso il basso”. Non c’è checksum. La migrate è roba tua: mappa campi, non magia.</p>
+
+            <div class="bee-code-block"><span class="token class-name">BeeSave</span><span class="token punctuation">.</span><span class="token function">configure</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    <span class="token property">version</span><span class="token punctuation">:</span> <span class="token number">2</span><span class="token punctuation">,</span>
+    <span class="token property">resaveOnMigrate</span><span class="token punctuation">:</span> <span class="token boolean">true</span><span class="token punctuation">,</span>
+    <span class="token function">migrate</span><span class="token punctuation">(</span>data<span class="token punctuation">,</span> from<span class="token punctuation">,</span> to<span class="token punctuation">,</span> key<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>from <span class="token operator">&lt;</span> <span class="token number">1</span><span class="token punctuation">)</span> data <span class="token operator">=</span> <span class="token punctuation">{</span> <span class="token property">level</span><span class="token punctuation">:</span> data<span class="token punctuation">.</span>level <span class="token operator">??</span> <span class="token number">1</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>from <span class="token operator">&lt;</span> <span class="token number">2</span><span class="token punctuation">)</span> data<span class="token punctuation">.</span>muted <span class="token operator">=</span> data<span class="token punctuation">.</span>muted <span class="token operator">===</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+        <span class="token keyword">return</span> data<span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></div>
+
+            <h3>📁 localStorage assente, privato, fallback memoria</h3>
+
+            <p>All’avvio lo store prova <code>localStorage</code> con un probe <code>setItem</code>/<code>removeItem</code>. Se manca, se lancia (Safari privato, WebView, SSR), il disco nativo è <code>null</code>. Con <code>fallback: 'memory'</code> (default) usa una Map in RAM che imita l’interfaccia Storage: il gioco gira, i save <strong>non sopravvivono al reload</strong>.</p>
+
+            <p><code>persistent</code> è <code>true</code> solo se il disco nativo c’è. <code>available</code> è <code>true</code> se c’è un backend (disco o memoria). Con <code>fallback</code> diverso da <code>'memory'</code> e disco morto, <code>save</code>/<code>read</code> tornano <code>unavailable</code> senza lanciare.</p>
+
+            <p>Puoi iniettare uno storage finto: <code>BeeSave.create({ storage: mock })</code> o <code>configure({ storage })</code>. Utile nei test. <code>storage: null</code> è iniezione esplicita: niente probe, resti sul fallback.</p>
+
+            <h3>📁 Slot, remove, clearAll</h3>
+
+            <p><code>slotKey(i)</code> produce <code>slot:0</code>, <code>slot:1</code>, … (<code>Number(index) || 0</code>: <code>NaN</code> e <code>undefined</code> diventano slot 0). <code>saveSlot</code> / <code>readSlot</code> / <code>loadSlot</code> sono alias su quella chiave. Non c’è un indice massimo: tre slot o trenta, sei tu.</p>
+
+            <p><code>remove(key)</code> torna <code>boolean</code>: <code>false</code> se chiave vuota, backend assente, o <code>removeItem</code> lancia. Non throw-a.</p>
+
+            <p><code>clearAll</code> non chiama <code>localStorage.clear()</code>. Due passate (accumula, poi cancella) solo sulle chiavi che <code>startsWith</code> il root corrente. Ritorna il numero di chiavi rimosse, non <code>void</code>. Ogni <code>key(i)</code> / <code>removeItem</code> è in try: una chiave ostile non ferma il giro. Se cambi namespace, le chiavi dell’altro namespace restano.</p>
+
+            <h3>📁 Esempio d’uso con BeeEngine</h3>
+
+            <p>Configura una volta. Carica con <code>read</code> se ti interessa lo status; salva un DTO, non l’istanza <code>BeePlayer</code>. Il motore non serializza entità.</p>
+
+            <div class="bee-code-block"><span class="token keyword">import</span> <span class="token punctuation">{</span> <span class="token class-name">BeeSave</span><span class="token punctuation">,</span> <span class="token class-name">BeePlayer</span><span class="token punctuation">,</span> <span class="token constant">BEE_SAVE_STATUS</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'beeengine'</span><span class="token punctuation">;</span>
+
+<span class="token class-name">BeeSave</span><span class="token punctuation">.</span><span class="token function">configure</span><span class="token punctuation">(</span><span class="token punctuation">{</span>
+    <span class="token property">namespace</span><span class="token punctuation">:</span> <span class="token string">'honeyrun'</span><span class="token punctuation">,</span>
+    <span class="token property">version</span><span class="token punctuation">:</span> <span class="token number">1</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> DEFAULTS <span class="token operator">=</span> <span class="token punctuation">{</span> <span class="token property">level</span><span class="token punctuation">:</span> <span class="token number">1</span><span class="token punctuation">,</span> <span class="token property">highScore</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token property">muted</span><span class="token punctuation">:</span> <span class="token boolean">false</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+<span class="token keyword">function</span> <span class="token function">onEnter</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> rec <span class="token operator">=</span> <span class="token class-name">BeeSave</span><span class="token punctuation">.</span><span class="token function">readSlot</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">const</span> data <span class="token operator">=</span> rec<span class="token punctuation">.</span>ok <span class="token operator">?</span> rec<span class="token punctuation">.</span>value <span class="token punctuation">:</span> <span class="token punctuation">{</span> <span class="token operator">...</span><span class="token constant">DEFAULTS</span> <span class="token punctuation">}</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>rec<span class="token punctuation">.</span>status <span class="token operator">===</span> <span class="token constant">BEE_SAVE_STATUS</span><span class="token punctuation">.</span><span class="token constant">CORRUPT</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// UI: save illeggibile, si parte da DEFAULTS</span>
+    <span class="token punctuation">}</span>
+    <span class="token keyword">const</span> player <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeePlayer</span><span class="token punctuation">(</span><span class="token number">80</span><span class="token punctuation">,</span> <span class="token number">400</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">return</span> <span class="token punctuation">{</span> player<span class="token punctuation">,</span> data <span class="token punctuation">}</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+<span class="token keyword">function</span> <span class="token function">onGameOver</span><span class="token punctuation">(</span>score<span class="token punctuation">,</span> data<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> r <span class="token operator">=</span> <span class="token class-name">BeeSave</span><span class="token punctuation">.</span><span class="token function">saveSlot</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+        <span class="token property">level</span><span class="token punctuation">:</span> data<span class="token punctuation">.</span>level<span class="token punctuation">,</span>
+        <span class="token property">highScore</span><span class="token punctuation">:</span> <span class="token class-name">Math</span><span class="token punctuation">.</span><span class="token function">max</span><span class="token punctuation">(</span>data<span class="token punctuation">.</span>highScore<span class="token punctuation">,</span> score<span class="token punctuation">)</span><span class="token punctuation">,</span>
+        <span class="token property">muted</span><span class="token punctuation">:</span> data<span class="token punctuation">.</span>muted
+    <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>r<span class="token punctuation">.</span>ok<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// UI: "impossibile salvare" — r.status / r.message</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span></div>
+
+            <h3>📁 Note per chi integra — cosa è chiuso e cosa no</h3>
+
+            <p><strong>Non serializzare entità vive.</strong> Ora te lo dice in faccia (<code>rejected</code>), invece di scrivere <code>{}</code> o lanciare un <code>TypeError</code> non catturato. Estrai un DTO piatto.</p>
+
+            <p><strong><code>load</code> resta comodo e opaco.</strong> Se usi solo <code>load</code>, un parse rotto sembra ancora un primo avvio. Lo strumento per non farti fregare è <code>read</code> (o <code>lastRead</code> subito dopo).</p>
+
+            <p><strong>Fallback memoria non è persistenza.</strong> In privato o senza <code>localStorage</code>, <code>save</code> torna <code>ok</code> lo stesso. Controlla <code>BeeSave.store.persistent</code> se devi avvisare il giocatore.</p>
+
+            <p><strong>Nessun debounce.</strong> <code>save</code> ogni frame è legale e sbagliato: stringify + I/O sul main thread. Salva su eventi (pausa, game over, setting).</p>
+
+            <p><strong>Nessuna cifratura.</strong> Application → Local Storage è editabile. I high score non sono anti-cheat. Il namespace non è un confine di sicurezza.</p>
+
+            <p><strong>Due store, due dischi logici.</strong> <code>BeeSave.create({ namespace: 'editor' })</code> non condivide le chiavi con la facade statica, a meno che prefix+namespace coincidano. La facade e <code>BeeSave.store</code> sono lo stesso oggetto.</p>
+        </div>
+
+        <div class="bee-class-card" id="BeeSave-api">
+            <h3>📁 Riepilogo API</h3>
+            <p>I metodi statici di <code>BeeSave</code> sono alias dello store di default. <code>available</code>, <code>persistent</code>, <code>lastRead</code>, <code>lastWrite</code>, <code>storageKey</code> e <code>slotKey</code> vivono sullo store: <code>BeeSave.store</code> oppure un <code>BeeSaveStore</code> creato da te.</p>
+            <table class="bee-api-table">
+                <thead>
+                    <tr>
+                        <th>Membro</th>
+                        <th>Ritorna</th>
+                        <th>Scopo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>BEE_SAVE_DEFAULTS</code></td>
+                        <td>oggetto frozen</td>
+                        <td><code>prefix</code> <code>'BeeSave:'</code>, <code>namespace</code> <code>''</code>, <code>version</code> <code>1</code>, <code>onCorrupt</code> <code>'keep'</code>, <code>fallback</code> <code>'memory'</code>, <code>resaveOnMigrate</code> <code>false</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>BEE_SAVE_STATUS</code></td>
+                        <td>oggetto frozen</td>
+                        <td><code>OK</code> <code>MISSING</code> <code>CORRUPT</code> <code>UNAVAILABLE</code> <code>REJECTED</code> <code>QUOTA</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>new BeeSaveStore(options)</code></td>
+                        <td><code>BeeSaveStore</code></td>
+                        <td>Store isolato. Options: defaults + <code>storage</code> + <code>migrate</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>BeeSave.create(options)</code></td>
+                        <td><code>BeeSaveStore</code></td>
+                        <td>Factory: <code>new BeeSaveStore(options)</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>BeeSave.configure(options)</code></td>
+                        <td><code>BeeSave</code></td>
+                        <td>Riconfigura lo store di default. Da chiamare all’avvio.</td>
+                    </tr>
+                    <tr>
+                        <td><code>BeeSave.store</code></td>
+                        <td><code>BeeSaveStore</code></td>
+                        <td>Istanza di default usata da tutti i metodi statici.</td>
+                    </tr>
+                    <tr>
+                        <td><code>BeeSave.prefix</code></td>
+                        <td><code>string</code></td>
+                        <td>Getter/setter sullo store di default. Falsy nel setter → default.</td>
+                    </tr>
+                    <tr>
+                        <td><code>available</code> / <code>persistent</code></td>
+                        <td><code>boolean</code></td>
+                        <td>C’è un backend / il backend è il disco nativo, non la Map.</td>
+                    </tr>
+                    <tr>
+                        <td><code>lastRead</code> / <code>lastWrite</code></td>
+                        <td>result o <code>null</code></td>
+                        <td>Ultimo esito di <code>read</code> / <code>save</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>storageKey(key)</code></td>
+                        <td><code>string</code></td>
+                        <td><code>prefix + namespace: + key</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>save(key, value)</code></td>
+                        <td>result</td>
+                        <td>Valida DTO, scrive envelope. Catch su stringify e <code>setItem</code>. Non lancia.</td>
+                    </tr>
+                    <tr>
+                        <td><code>read(key)</code></td>
+                        <td>result</td>
+                        <td>Status onesto: <code>ok</code> / <code>missing</code> / <code>corrupt</code> / …</td>
+                    </tr>
+                    <tr>
+                        <td><code>load(key, defaultValue = null)</code></td>
+                        <td><code>any</code></td>
+                        <td>Valore se <code>ok</code> (incluso <code>null</code> salvato). Altrimenti il default.</td>
+                    </tr>
+                    <tr>
+                        <td><code>exists(key)</code></td>
+                        <td><code>boolean</code></td>
+                        <td><code>true</code> solo se <code>read</code> è <code>ok</code>. Il JSON rotto non conta.</td>
+                    </tr>
+                    <tr>
+                        <td><code>has(key)</code></td>
+                        <td><code>boolean</code></td>
+                        <td>Chiave presente in disco, anche corrotta.</td>
+                    </tr>
+                    <tr>
+                        <td><code>remove(key)</code></td>
+                        <td><code>boolean</code></td>
+                        <td>Rimuove la chiave prefissata. <code>false</code> se non può.</td>
+                    </tr>
+                    <tr>
+                        <td><code>clearAll()</code></td>
+                        <td><code>number</code></td>
+                        <td>Due passate sul prefix+namespace corrente. Non è <code>clear()</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>saveSlot</code> / <code>readSlot</code> / <code>loadSlot</code></td>
+                        <td>come save/read/load</td>
+                        <td>Chiave <code>slot:N</code>. <code>N</code> da <code>Number(index) || 0</code>.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
     </main>
+
 
 </div>
 
