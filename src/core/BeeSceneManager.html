@@ -710,7 +710,7 @@
             style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
             <div>
                 <h2 class="bee-section-title" style="margin: 0;">BeeSceneManager — Documentazione Tecnica</h2>
-                <p style="margin-top: 5px;">Registro e dispatcher della scena corrente: add, change, update, draw. Nessuno stack.</p>
+                <p style="margin-top: 5px;">Registro di scene, una sola corrente, replace (non stack). Il manager è l'unico owner del loop entity.</p>
             </div>
             <img src="https://beeenginejs.com/wp-content/uploads/2026/09/Gemini_Generated_Image_bg7xjjbg7xjjbg7x-1-1.jpg"
                 alt="BeeEngine Mascot" width="80" height="80" style="width: 80px; height: auto; flex-shrink: 0;">
@@ -720,17 +720,24 @@
 
             <h3>📁 Panoramica</h3>
 
-            <p><code>BeeSceneManager</code> è il registro delle schermate e il puntatore alla scena attiva. Il motore la crea nel costruttore e la espone come <code>engine.scenes</code>. Tu registri oggetti-scena con <code>add</code>, passi da una all’altra con <code>change</code>, e il game loop chiama <code>update</code> / <code>draw</code> sulla corrente.</p>
+            <p><code>BeeSceneManager</code> è il registro delle schermate e il puntatore alla scena attiva. Il motore la crea nel costruttore e la espone come <code>engine.scenes</code>. Tu registri oggetti-scena con <code>add</code>, passi da una all'altra con <code>change</code>, e il game loop chiama <code>update</code> / <code>draw</code> sulla corrente.</p>
 
-            <p>Quello che <strong>non</strong> è: uno stack (niente push/pop, niente overlay di pausa), un tween di transizione, un distruttore. Le scene restano nella <code>Map</code> finché non le sovrascrivi. <code>change</code> è un replace: esce la vecchia, entra la nuova, stesso oggetto se torni sullo stesso nome.</p>
+            <p>Quello che <strong>non</strong> è: uno stack (niente push/pop, niente overlay di pausa), un tween di transizione. <code>change</code> è un replace. Stesso nome = restart: exit, sweep delle entity, enter di nuovo. Il teardown ora esiste: <code>#leave</code> chiama <code>onExit</code>/<code>exit</code> e poi distrugge le entity; <code>destroy()</code> svuota la <code>Map</code>; <code>engine.destroy()</code> chiama il manager.</p>
+
+            <p>Contratto del loop: il manager è l'<strong>unico owner</strong> del tick e del draw delle entity. <code>scene.update</code> / <code>scene.draw</code> sono logica di scena e HUD — non un secondo <code>for</code> su <code>this.entities</code>.</p>
 
             <div class="bee-code-block"><span class="token keyword">export</span> <span class="token keyword">class</span> <span class="token class-name">BeeSceneManager</span> <span class="token punctuation">{</span>
     <span class="token function">constructor</span><span class="token punctuation">(</span>engine<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span>engine<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <span class="token keyword">throw</span> <span class="token keyword">new</span> <span class="token class-name">Error</span><span class="token punctuation">(</span><span class="token string">'BeeSceneManager: serve un engine'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        <span class="token punctuation">}</span>
         <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token property">engine</span> <span class="token operator">=</span> engine<span class="token punctuation">;</span>
         <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token property">ctx</span> <span class="token operator">=</span> engine<span class="token punctuation">.</span>ctx<span class="token punctuation">;</span>
         <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token property">scenes</span> <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">Map</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token property">currentScene</span> <span class="token operator">=</span> <span class="token boolean">null</span><span class="token punctuation">;</span>
         <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token property">currentSceneName</span> <span class="token operator">=</span> <span class="token boolean">null</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>#inUpdate <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+        <span class="token keyword">this</span><span class="token punctuation">.</span>#changedDuringUpdate <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span></div>
 
@@ -749,115 +756,141 @@
                 <tbody>
                     <tr>
                         <td><code>onEnter(data)</code> / <code>enter(data)</code></td>
-                        <td>Fine di <code>change</code></td>
+                        <td>Fine di <code>change</code> (<code>#enter</code>)</td>
                         <td><code>data</code> è il secondo argomento di <code>change</code>, default <code>null</code>.</td>
                     </tr>
                     <tr>
                         <td><code>onExit()</code> / <code>exit()</code></td>
-                        <td>Inizio di <code>change</code>, se c’è già una corrente</td>
-                        <td><strong>Nessun argomento.</strong> Non riceve la scena destinazione.</td>
+                        <td>Inizio di <code>#leave</code> (change della corrente, <code>remove</code> della corrente, <code>destroy</code>)</td>
+                        <td><strong>Nessun argomento.</strong> Poi parte lo sweep delle entity.</td>
                     </tr>
                     <tr>
                         <td><code>update(dt, input, engine)</code></td>
-                        <td>Ogni tick del manager</td>
-                        <td>Parte anche se <code>dt &lt;= 0</code>. Poi il manager itera <code>entities</code>.</td>
+                        <td>Ogni tick del manager, prima delle entity</td>
+                        <td>Parte anche se <code>dt &lt;= 0</code>. Logica e input di scena, <strong>non</strong> il <code>for</code> sulle entity.</td>
                     </tr>
                     <tr>
                         <td><code>draw(ctx, engine)</code></td>
-                        <td>Ogni frame</td>
-                        <td>Poi il manager disegna le entity con <code>engine.drawEntity</code>.</td>
+                        <td>Ogni frame, prima delle entity</td>
+                        <td>HUD / fondo. Poi il manager chiama <code>engine.drawEntity</code>.</td>
                     </tr>
                     <tr>
                         <td><code>entities</code></td>
                         <td>Lista viva della scena</td>
-                        <td>Se manca, <code>add</code> / <code>change</code> la creano come <code>[]</code>.</td>
+                        <td>Se non è un array, <code>add</code> / <code>#enter</code> / <code>addEntity</code> la creano come <code>[]</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>persistEntities</code></td>
+                        <td>Opt-out dello sweep</td>
+                        <td>Se <code>true</code>, <code>#sweep</code> non chiama <code>destroy</code> e non svuota la lista (vale anche in <code>manager.destroy()</code>).</td>
                     </tr>
                 </tbody>
             </table>
 
-            <h3>📁 add — registra, non avvia</h3>
+            <h3>📁 Owner del loop: la scena non ritocca le entity</h3>
 
-            <p><code>add(name, scene)</code> mette l’oggetto nella <code>Map</code>, assegna <code>scene.engine = this.engine</code> e, se <code>scene.entities</code> è falsy, lo inizializza a <code>[]</code>. Non chiama enter. Un secondo <code>add</code> con lo stesso nome sovrascrive la voce nella mappa; se quella era la scena corrente, <code>currentScene</code> resta l’oggetto vecchio finché non fai di nuovo <code>change</code>.</p>
+            <p>Il manager ticka e disegna <code>currentScene.entities</code>. Se in <code>scene.update</code> / <code>scene.draw</code> iteri già <code>this.entities</code>, nello stesso frame le ritocchi due volte. Non c'è un lock runtime: è un contratto. HUD, collisioni di livello, win/lose, input di menu: sì. <code>for (const e of this.entities) e.update(...)</code>: no.</p>
 
-            <p><code>scene</code> nullo o non-oggetto: <code>scene.entities</code> lancia <code>TypeError</code>. Non c’è guardia.</p>
+            <p>Il motore, se non è in pausa, chiama <code>scenes.update(dt, this.input)</code> e poi <code>updateEntities</code> sulla lista <code>engine.entities</code>. Con una scena corrente, <code>engine.addEntity</code> <strong>delega</strong> a <code>scenes.addEntity</code>: gli spawn finiscono sulla scena, non sulla lista del motore. <code>engine.entities</code> resta per oggetti aggiunti <em>prima</em> del primo <code>change</code> (o senza scena).</p>
 
-            <div class="bee-code-block">game<span class="token punctuation">.</span>scenes<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token string">'menu'</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">BeeMenuScene</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-game<span class="token punctuation">.</span>scenes<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token string">'game'</span><span class="token punctuation">,</span> livello<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token comment">// a questo punto currentScene è ancora null: niente tick, niente draw</span></div>
+            <h3>📁 add / has — registra, non avvia</h3>
 
-            <h3>📁 change — replace, non stack</h3>
+            <p><code>add(name, scene)</code> mette l'oggetto nella <code>Map</code>, assegna <code>scene.engine = this.engine</code> e, se <code>scene.entities</code> non è un array, lo inizializza a <code>[]</code>. Non chiama enter. Ritorna <code>this</code> (fluent). Un secondo <code>add</code> con lo stesso nome sovrascrive la voce nella mappa; se quella era la scena corrente, <code>currentScene</code> resta l'oggetto vecchio finché non fai di nuovo <code>change</code>.</p>
+
+            <p>Guardie: nome <code>undefined</code> / <code>null</code> / <code>''</code> → <code>throw new Error('BeeSceneManager.add: name required')</code>. Scena falsy o non-oggetto → <code>throw new Error('BeeSceneManager.add: scene must be an object')</code>. Quindi <code>add(null)</code> e <code>add('menu', null)</code> non arrivano più a un <code>TypeError</code> su <code>.entities</code>.</p>
+
+            <p><code>has(name)</code> è <code>this.scenes.has(String(name ?? ''))</code>. Non lancia: <code>has(null)</code> è <code>false</code> a meno che tu abbia (impossibile via <code>add</code>) una chiave vuota.</p>
+
+            <div class="bee-code-block">game<span class="token punctuation">.</span>scenes<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token string">'menu'</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">BeeMenuScene</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token string">'game'</span><span class="token punctuation">,</span> livello<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token comment">// currentScene è ancora null: niente tick, niente draw</span>
+game<span class="token punctuation">.</span>scenes<span class="token punctuation">.</span><span class="token function">has</span><span class="token punctuation">(</span><span class="token string">'game'</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// true</span></div>
+
+            <h3>📁 change — replace, e stesso nome = restart</h3>
 
             <p>Ordine reale, se il nome esiste:</p>
 
-            <p><strong>1.</strong> Se c’è una corrente → <code>onExit</code> oppure <code>exit</code> (senza data).</p>
-            <p><strong>2.</strong> <code>currentScene</code> / <code>currentSceneName</code> puntano alla nuova. Copia anche su <code>engine.currentScene</code> (alias di compatibilità).</p>
-            <p><strong>3.</strong> Re-inietta <code>engine</code>, assicura <code>entities</code>.</p>
-            <p><strong>4.</strong> <code>onEnter(data)</code> oppure <code>enter(data)</code>.</p>
+            <p><strong>1.</strong> <code>#leave</code> sulla corrente (se c'è): <code>onExit</code> / <code>exit</code>, poi <code>#sweep</code> (destroy + svuota, salvo <code>persistEntities</code>).</p>
+            <p><strong>2.</strong> <code>currentScene</code> / <code>currentSceneName</code> puntano alla nuova. Copia anche su <code>engine.currentScene</code>.</p>
+            <p><strong>3.</strong> <code>#enter</code>: re-inietta <code>engine</code>, assicura <code>entities</code>, poi <code>onEnter(data)</code> / <code>enter(data)</code>.</p>
+            <p><strong>4.</strong> Se siamo dentro <code>scene.update</code>, alza <code>#changedDuringUpdate</code>: le entity della nuova scena partono al <strong>frame dopo</strong>.</p>
 
-            <p>Nome assente → <code>throw new Error('Scena non trovata: …')</code>. Stesso nome della corrente: esce e rientra lo stesso oggetto. Utile per un restart se in <code>onEnter</code> riallochii le entity; se non le pulisci, le trovi ancora lì.</p>
+            <p>Nome assente → <code>throw new Error('BeeSceneManager: scena non trovata: …')</code>. Nome vuoto → <code>name required</code>. Stesso nome della corrente: non è un no-op. È un restart dello stesso oggetto: esce, sweep, rientra. Utile per un retry se in <code>onEnter</code> riallochii le entity (dopo lo sweep la lista è vuota, a meno di <code>persistEntities</code>).</p>
 
             <p>Non esiste <code>push</code> / <code>pop</code>. Un menu di pausa “sopra” il livello non è supportato: o sostituisci, o gestisci la pausa fuori da questa classe (<code>engine.time.pause()</code>).</p>
 
             <div class="bee-code-block">game<span class="token punctuation">.</span>scenes<span class="token punctuation">.</span><span class="token function">change</span><span class="token punctuation">(</span><span class="token string">'game'</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> <span class="token property">level</span><span class="token punctuation">:</span> <span class="token number">3</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token comment">// onExit della precedente (se c'era) → onEnter({ level: 3 })</span>
+<span class="token comment">// leave precedente → enter({ level: 3 })</span>
 
 game<span class="token punctuation">.</span>scenes<span class="token punctuation">.</span><span class="token function">change</span><span class="token punctuation">(</span><span class="token string">'game'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token comment">// di nuovo exit + enter sullo stesso oggetto; data = null</span></div>
+<span class="token comment">// restart: exit + sweep + enter; data = null</span></div>
+
+            <h3>📁 change durante update</h3>
+
+            <p>Il flag <code>#inUpdate</code> è <code>true</code> solo mentre gira <code>scene.update</code>, non durante il tick entity.</p>
+
+            <p>Se <code>scene.update</code> chiama <code>change</code> (come <code>BeeMenuScene</code> su Invio), in quello stesso tick <code>onExit</code> / sweep / <code>onEnter</code> sono già corsi. Poi il manager vede <code>#changedDuringUpdate</code> e <strong>non</strong> chiama <code>#tickEntities</code>. Le entity della scena appena uscita non ricevono un ultimo tick; quelle della nuova partono al frame successivo. È il percorso coperto.</p>
+
+            <p>Se invece <code>change</code> parte da un <code>entity.update</code>, il flag è già spento. <code>#leave</code> fa sweep della lista che il compact loop sta scorrendo (<code>list.length = 0</code>). Le entity della nuova scena stanno su un altro array: in pratica non tickano in questo frame, ma non è lo stesso contratto documentato per <code>scene.update</code>. Su un restart dello stesso nome, <code>onEnter</code> può re-pushare sulla stessa lista e gli indici nuovi oltre <code>read</code> potrebbero ricevere un tick nello stesso frame. Preferisci <code>change</code> dall'hook della scena.</p>
+
+            <h3>📁 remove — toglie dalla Map</h3>
+
+            <p><code>remove(name)</code> è nuovo. Se la scena non c'è, no-op e ritorna <code>this</code>. Se è la corrente: <code>#leave</code> (exit + sweep), poi azzera <code>currentScene</code> / <code>currentSceneName</code> / <code>engine.currentScene</code>. Se non è la corrente: solo <code>#sweep</code> (niente <code>onExit</code>). In entrambi i casi <code>scenes.delete(id)</code>.</p>
+
+            <p>Nome vuoto lancia come gli altri metodi. <code>persistEntities</code> salva le entity dallo sweep, ma la scena esce comunque dalla mappa: restano riferimenti orfani se non le distruggi tu.</p>
+
+            <h3>📁 addEntity — lista della scena, con guardie</h3>
+
+            <p><code>scenes.addEntity(entity)</code> pusha su <code>currentScene.entities</code>, inietta <code>entity.engine</code> e <code>entity.scene</code>, evita i duplicati (<code>indexOf</code>). Ritorna sempre <code>entity</code>.</p>
+
+            <p>Guardie silenziose: <code>entity</code> nullo, già <code>destroyed</code>, o nessuna scena corrente → ritorna <code>entity</code> senza throw. Se <code>entities</code> non è un array, lo crea.</p>
+
+            <p><code>engine.addEntity</code> non è più una seconda lista parallela quando c'è una scena: delega a <code>scenes.addEntity</code>. Solo senza corrente fa push su <code>engine.entities</code>. <code>BeeEngine.setScene</code> svuota <code>engine.entities</code> e poi chiama <code>scenes.change</code> (che a sua volta fa leave/sweep della precedente).</p>
+
+            <div class="bee-code-block"><span class="token comment">// equivalente, se currentScene esiste:</span>
+game<span class="token punctuation">.</span><span class="token function">addEntity</span><span class="token punctuation">(</span>player<span class="token punctuation">)</span><span class="token punctuation">;</span>
+game<span class="token punctuation">.</span>scenes<span class="token punctuation">.</span><span class="token function">addEntity</span><span class="token punctuation">(</span>player<span class="token punctuation">)</span><span class="token punctuation">;</span></div>
 
             <h3>📁 Ciclo di vita nel loop: update poi draw</h3>
 
-            <p>Il motore, se non è in pausa, chiama <code>scenes.update(dt)</code> e poi <code>scenes.draw(ctx)</code>. Il secondo argomento che il loop passa a <code>update</code> (<code>this.input</code>) viene ignorato: il manager legge <code>this.engine.input</code>.</p>
+            <p>Il motore, se non è in pausa, chiama <code>scenes.update(dt, this.input)</code>. Il secondo argomento <strong>non</strong> è più ignorato: se lo ometti, il manager cade su <code>this.engine.input</code>.</p>
 
-            <p>Dentro <code>update</code>, se non c’è scena corrente, esce. Altrimenti:</p>
+            <p>Dentro <code>update</code>, se non c'è scena corrente, esce. Altrimenti:</p>
 
-            <p><strong>1. Hook della scena</strong> — <code>scene.update(dt, engine.input, engine)</code> parte <em>sempre</em>, anche con <code>dt &lt;= 0</code>. È il ramo che tiene vivo un menu mentre il mondo è fermo, <em>se</em> qualcuno chiama il manager con dt zero.</p>
-            <p><strong>2. Guardia dt</strong> — se <code>dt &lt;= 0</code> return: niente tick entity, niente filter.</p>
-            <p><strong>3. Entity</strong> — per ciascuna, se <code>active !== false</code> e ha <code>update</code>, la chiama con la stessa terna <code>(dt, input, engine)</code>.</p>
-            <p><strong>4. Sweep</strong> — <code>entities = entities.filter(e =&gt; !e.destroyed)</code>. Alloca un array nuovo ogni frame in cui il tick entity gira. Non chiama <code>destroy()</code> sulle entity: toglie solo quelle già marcate.</p>
+            <p><strong>1. Hook della scena</strong> — <code>scene.update(dt, input, engine)</code> parte <em>sempre</em>, anche con <code>dt &lt;= 0</code>. Tiene vivo un menu mentre il mondo è fermo, <em>se</em> qualcuno chiama il manager con dt zero.</p>
+            <p><strong>2. Cambio a metà tick</strong> — se <code>change</code> è partito da quell'hook, return: niente tick entity.</p>
+            <p><strong>3. Guardia dt</strong> — se <code>dt &lt;= 0</code> return: niente tick entity, niente compact.</p>
+            <p><strong>4. Entity</strong> — <code>#tickEntities</code>: compact in-place (niente <code>filter</code> che alloca). Salta buchi e <code>destroyed</code>. Se <code>active !== false</code> e ha <code>update</code>, la chiama con <code>(dt, input, engine)</code>. Poi accorcia <code>list.length</code>.</p>
 
-            <p><strong>Pausa del motore.</strong> <code>BeeEngine.loop</code> non chiama affatto <code>scenes.update</code> quando <code>time.paused</code> è true. Il ramo “scena sì, entity no” del manager lo vedi solo se chiami <code>scenes.update(0)</code> tu, o se <code>dt</code> è zero senza passare da quella guardia del loop.</p>
+            <p><strong>Pausa del motore.</strong> <code>BeeEngine.loop</code> non chiama affatto <code>scenes.update</code> quando <code>time.paused</code> è true. Il ramo “scena sì, entity no” lo vedi solo se chiami <code>scenes.update(0)</code> tu, o se <code>dt</code> è zero senza passare da quella guardia del loop.</p>
 
-            <div class="bee-code-block">update<span class="token punctuation">(</span>dt<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+            <div class="bee-code-block">update<span class="token punctuation">(</span>dt<span class="token punctuation">,</span> input<span class="token punctuation">)</span> <span class="token punctuation">{</span>
     <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">this</span><span class="token punctuation">.</span>currentScene<span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>currentScene<span class="token punctuation">.</span>update<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>currentScene<span class="token punctuation">.</span><span class="token function">update</span><span class="token punctuation">(</span>dt<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>engine<span class="token punctuation">.</span>input<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>engine<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>#inUpdate <span class="token operator">=</span> <span class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>#changedDuringUpdate <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+    <span class="token keyword">const</span> scene <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>currentScene<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">typeof</span> scene<span class="token punctuation">.</span>update <span class="token operator">===</span> <span class="token string">'function'</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        scene<span class="token punctuation">.</span><span class="token function">update</span><span class="token punctuation">(</span>dt<span class="token punctuation">,</span> input <span class="token operator">??</span> <span class="token keyword">this</span><span class="token punctuation">.</span>engine<span class="token punctuation">.</span>input<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>engine<span class="token punctuation">)</span><span class="token punctuation">;</span>
     <span class="token punctuation">}</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>#inUpdate <span class="token operator">=</span> <span class="token boolean">false</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token keyword">this</span><span class="token punctuation">.</span>#changedDuringUpdate<span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
     <span class="token keyword">if</span> <span class="token punctuation">(</span>dt <span class="token operator">&lt;=</span> <span class="token number">0</span><span class="token punctuation">)</span> <span class="token keyword">return</span><span class="token punctuation">;</span>
-    <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">const</span> entity <span class="token keyword">of</span> <span class="token keyword">this</span><span class="token punctuation">.</span>currentScene<span class="token punctuation">.</span>entities<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">if</span> <span class="token punctuation">(</span>entity<span class="token punctuation">.</span>active <span class="token operator">!==</span> <span class="token boolean">false</span> <span class="token operator">&amp;&amp;</span> entity<span class="token punctuation">.</span>update<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            entity<span class="token punctuation">.</span><span class="token function">update</span><span class="token punctuation">(</span>dt<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>engine<span class="token punctuation">.</span>input<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>engine<span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-    <span class="token punctuation">}</span>
-    <span class="token keyword">this</span><span class="token punctuation">.</span>currentScene<span class="token punctuation">.</span>entities <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>currentScene<span class="token punctuation">.</span>entities<span class="token punctuation">.</span><span class="token function">filter</span><span class="token punctuation">(</span>
-        entity <span class="token operator">=&gt;</span> <span class="token operator">!</span>entity<span class="token punctuation">.</span>destroyed
-    <span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">#tickEntities</span><span class="token punctuation">(</span>dt<span class="token punctuation">,</span> input <span class="token operator">??</span> <span class="token keyword">this</span><span class="token punctuation">.</span>engine<span class="token punctuation">.</span>input<span class="token punctuation">)</span><span class="token punctuation">;</span>
 <span class="token punctuation">}</span></div>
 
-            <p><code>draw(ctx = this.ctx)</code>: no-op senza scena. Poi <code>scene.draw(ctx, engine)</code> se esiste, poi per ogni voce di <code>entities</code> chiama <code>engine.drawEntity</code> (lì il motore salta <code>visible === false</code> e <code>destroyed</code>, e attraversa i <code>children</code>).</p>
+            <p><code>draw(ctx = this.ctx)</code>: no-op senza scena. Poi <code>scene.draw(ctx, engine)</code> se è una funzione, poi per ogni voce di <code>entities</code> (salta <code>destroyed</code>) chiama <code>engine.drawEntity</code> (lì il motore salta anche <code>visible === false</code> e attraversa i <code>children</code>).</p>
 
-            <h3>📁 Due liste di entity — non mescolarle</h3>
+            <h3>📁 Sweep, persistEntities, destroy</h3>
 
-            <p><code>scenes.addEntity(entity)</code> pusha su <code>currentScene.entities</code>, inietta <code>entity.engine</code> e <code>entity.scene</code>. Senza scena corrente è un return silenzioso. <code>entity</code> nullo → TypeError sul primo assegnamento.</p>
+            <p><code>#sweep(scene)</code> è il teardown delle entity: per ciascuna, se non è già <code>destroyed</code> e ha <code>destroy</code>, la chiama; poi <code>list.length = 0</code>. Non dealloca listener del motore né i collision group: quello lo fa (o no) <code>entity.destroy</code>.</p>
 
-            <p><code>engine.addEntity</code> è un’altra lista: <code>engine.entities</code>. Il loop del motore aggiorna e disegna quella in parallelo. <code>BeeEngine.setScene</code> svuota <code>engine.entities</code> e <code>physics</code>, poi chiama <code>scenes.change</code>: <strong>non</strong> svuota <code>scene.entities</code>.</p>
+            <p><code>scene.persistEntities === true</code> fa return immediato: le entity sopravvivono a <code>change</code>, <code>remove</code> e anche a <code>manager.destroy()</code>. Usalo per un hub che deve restare vivo sotto un menu; altrimenti le ritrovi duplicate al re-enter se <code>onEnter</code> le rialloca.</p>
 
-            <p>Se in <code>scene.update</code> / <code>scene.draw</code> iteri già <code>this.entities</code>, il manager le ritocca nello stesso frame: doppio update e doppio draw. Il demo in-tree cade in questa trappola. La regola pratica: o la scena possiede il loop, o lo lascia al manager. Non entrambi.</p>
-
-            <h3>📁 change dentro update — cosa succede davvero</h3>
-
-            <p>Se <code>scene.update</code> chiama <code>change</code> (come <code>BeeMenuScene</code> su Invio), in quello stesso tick <code>onExit</code> / <code>onEnter</code> sono già corsi. Il for sulle entity e il filter girano sulla <strong>nuova</strong> scena, non sulla vecchia. Le entity della scena appena uscita non ricevono un ultimo tick.</p>
-
-            <p>Se invece <code>change</code> parte da un <code>entity.update</code>, il <code>for…of</code> continua sull’array già aperto (quello vecchio); il <code>filter</code> finale è sulla scena nuova. Non è uno stack sicuro: è un replace a metà tick.</p>
-
-            <h3>📁 Memoria, destroy, scene nulle</h3>
-
-            <p>Non c’è <code>remove</code>, non c’è <code>destroy</code> sul manager. Uscire da una scena non azzera <code>entities</code> e non chiama <code>entity.destroy()</code>. Tornare su <code>'game'</code> dopo il menu ritrova player, nemici e listener che c’erano, a meno che tu li pulisca in <code>onExit</code> o li riallochii in <code>onEnter</code>.</p>
-
-            <p><code>engine.destroy()</code> ferma il loop e svuota <code>engine.entities</code>: non chiama <code>onExit</code> e non svuota la <code>Map</code> delle scene. I riferimenti scena → engine restano.</p>
+            <p><code>destroy()</code> sul manager: <code>#leave</code> della corrente, poi sweep di <strong>tutte</strong> le scene ancora in mappa, <code>scenes.clear()</code>, puntatori a <code>null</code> (anche <code>engine.currentScene</code>). Ritorna <code>this</code>. <code>BeeEngine.destroy()</code> lo chiama, poi svuota <code>engine.entities</code>.</p>
 
             <p>Senza scena corrente, <code>update</code>, <code>draw</code> e <code>addEntity</code> sono no-op. Non esiste <code>start()</code> sul manager: il “doppio start” è di <code>BeeEngine.start()</code> (se <code>isRunning</code> è già true, ritorna).</p>
 
-            <h3>📁 Esempio: menu → livello, senza doppio tick</h3>
+            <h3>📁 Esempio: menu → livello, owner unico</h3>
 
             <div class="bee-code-block"><span class="token keyword">import</span> <span class="token punctuation">{</span> <span class="token class-name">BeeEngine</span><span class="token punctuation">,</span> <span class="token class-name">BeeMenuScene</span><span class="token punctuation">,</span> <span class="token class-name">BeePlayer</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'beeengine'</span><span class="token punctuation">;</span>
 
@@ -866,15 +899,12 @@ game<span class="token punctuation">.</span>scenes<span class="token punctuation
 <span class="token keyword">const</span> livello <span class="token operator">=</span> <span class="token punctuation">{</span>
     entities<span class="token punctuation">:</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">,</span>
     <span class="token function">onEnter</span><span class="token punctuation">(</span>data<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>entities <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
-        game<span class="token punctuation">.</span>scenes<span class="token punctuation">.</span><span class="token function">addEntity</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">BeePlayer</span><span class="token punctuation">(</span><span class="token number">80</span><span class="token punctuation">,</span> <span class="token number">400</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        game<span class="token punctuation">.</span><span class="token function">addEntity</span><span class="token punctuation">(</span><span class="token keyword">new</span> <span class="token class-name">BeePlayer</span><span class="token punctuation">(</span><span class="token number">80</span><span class="token punctuation">,</span> <span class="token number">400</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
         <span class="token comment">// data?.level — payload di change(), o null</span>
+        <span class="token comment">// niente this.entities = []: lo sweep in leave ha già svuotato</span>
     <span class="token punctuation">}</span><span class="token punctuation">,</span>
     <span class="token function">onExit</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
-        <span class="token keyword">for</span> <span class="token punctuation">(</span><span class="token keyword">const</span> e <span class="token keyword">of</span> <span class="token keyword">this</span><span class="token punctuation">.</span>entities<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-            <span class="token keyword">if</span> <span class="token punctuation">(</span>e<span class="token punctuation">.</span>destroy<span class="token punctuation">)</span> e<span class="token punctuation">.</span><span class="token function">destroy</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-        <span class="token punctuation">}</span>
-        <span class="token keyword">this</span><span class="token punctuation">.</span>entities <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+        <span class="token comment">// opzionale: musica, listener di scena. Le entity le distrugge #sweep</span>
     <span class="token punctuation">}</span><span class="token punctuation">,</span>
     <span class="token function">update</span><span class="token punctuation">(</span>dt<span class="token punctuation">,</span> input<span class="token punctuation">,</span> engine<span class="token punctuation">)</span> <span class="token punctuation">{</span>
         <span class="token comment">// collisioni / win: NON iterare this.entities, lo fa il manager</span>
@@ -887,18 +917,18 @@ game<span class="token punctuation">.</span>scenes<span class="token punctuation
     <span class="token punctuation">}</span>
 <span class="token punctuation">}</span><span class="token punctuation">;</span>
 
-game<span class="token punctuation">.</span>scenes<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token string">'menu'</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">BeeMenuScene</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-game<span class="token punctuation">.</span>scenes<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token string">'game'</span><span class="token punctuation">,</span> livello<span class="token punctuation">)</span><span class="token punctuation">;</span>
-game<span class="token punctuation">.</span>scenes<span class="token punctuation">.</span><span class="token function">change</span><span class="token punctuation">(</span><span class="token string">'menu'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+game<span class="token punctuation">.</span>scenes<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token string">'menu'</span><span class="token punctuation">,</span> <span class="token keyword">new</span> <span class="token class-name">BeeMenuScene</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token string">'game'</span><span class="token punctuation">,</span> livello<span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">change</span><span class="token punctuation">(</span><span class="token string">'menu'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 game<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></div>
 
             <h3>📁 Note per chi integra</h3>
 
-            <p><strong>Scegli un solo owner del loop entity.</strong> O <code>scene.update</code>/<code>draw</code> le scorrono, o lo fa il manager. Il secondo passaggio non è un opt-in: è sempre acceso se <code>dt &gt; 0</code>.</p>
+            <p><strong>Un solo owner del loop entity.</strong> Il manager ticka sempre se <code>dt &gt; 0</code> e non c'è stato un <code>change</code> in <code>scene.update</code>. Non iterare <code>this.entities</code> negli hook della scena.</p>
 
-            <p><strong>Pulisci in exit/enter.</strong> Il replace non è un teardown. Listener, collision groups, musica e <code>entities</code> sopravvivono al cambio di schermata.</p>
+            <p><strong>Restart = <code>change</code> sullo stesso nome.</strong> Lo sweep ha già distrutto le entity: in <code>onEnter</code> rialloca, non “pulire a mano” a meno che tu abbia messo <code>persistEntities</code>.</p>
 
-            <p><strong>Non usare <code>engine.addEntity</code> per oggetti di scena</strong> se ti aspetti che spariscano con <code>change</code>. Quella lista è del motore, e <code>setScene</code> la svuota senza toccare la lista della scena.</p>
+            <p><strong>Spawn via <code>engine.addEntity</code></strong> dopo il primo <code>change</code> finiscono sulla scena. Prima del <code>change</code> restano su <code>engine.entities</code> e il loop del motore le ticka a parte.</p>
 
             <p><strong>Nessuna transizione.</strong> Fade, wipe, load async: tu, prima di <code>change</code> o dentro <code>onEnter</code>. Il manager è sincrono e immediato.</p>
         </div>
@@ -917,7 +947,7 @@ game<span class="token punctuation">.</span><span class="token function">start</
                     <tr>
                         <td><code>constructor(engine)</code></td>
                         <td><code>BeeSceneManager</code></td>
-                        <td>Salva <code>engine</code> e <code>engine.ctx</code>. Map vuota, corrente <code>null</code>.</td>
+                        <td>Salva <code>engine</code> e <code>engine.ctx</code>. Map vuota, corrente <code>null</code>. Throw se <code>engine</code> è falsy.</td>
                     </tr>
                     <tr>
                         <td><code>scenes</code></td>
@@ -927,7 +957,7 @@ game<span class="token punctuation">.</span><span class="token function">start</
                     <tr>
                         <td><code>currentScene</code></td>
                         <td><code>object | null</code></td>
-                        <td>Oggetto attivo, o <code>null</code> prima del primo <code>change</code>.</td>
+                        <td>Oggetto attivo, o <code>null</code> prima del primo <code>change</code> / dopo <code>remove</code> della corrente.</td>
                     </tr>
                     <tr>
                         <td><code>currentSceneName</code></td>
@@ -936,28 +966,38 @@ game<span class="token punctuation">.</span><span class="token function">start</
                     </tr>
                     <tr>
                         <td><code>add(name, scene)</code></td>
-                        <td><code>void</code></td>
-                        <td>Registra. Inietta <code>engine</code>, crea <code>entities</code> se manca. Non entra.</td>
+                        <td><code>this</code></td>
+                        <td>Registra. Inietta <code>engine</code>, crea <code>entities</code> se manca. Non entra. Throw su nome vuoto o scena non-oggetto.</td>
+                    </tr>
+                    <tr>
+                        <td><code>has(name)</code></td>
+                        <td><code>boolean</code></td>
+                        <td>Presenza in mappa. Non lancia. Coerce con <code>String(name ?? '')</code>.</td>
                     </tr>
                     <tr>
                         <td><code>change(name, data = null)</code></td>
-                        <td><code>void</code></td>
-                        <td>Replace: exit → swap → enter. Throw se il nome non è in mappa.</td>
+                        <td><code>this</code></td>
+                        <td>Replace: leave (exit + sweep) → swap → enter. Stesso nome = restart. Throw se assente. Da <code>scene.update</code>, skip tick entity in questo frame.</td>
+                    </tr>
+                    <tr>
+                        <td><code>remove(name)</code></td>
+                        <td><code>this</code></td>
+                        <td>Se corrente: leave e azzera i puntatori. Altrimenti solo sweep. Poi delete dalla Map.</td>
                     </tr>
                     <tr>
                         <td><code>addEntity(entity)</code></td>
-                        <td><code>void</code></td>
-                        <td>Push su <code>currentScene.entities</code>. No-op senza scena. Non tocca <code>engine.entities</code>.</td>
+                        <td><code>entity</code></td>
+                        <td>Push su <code>currentScene.entities</code> (dedup). No-op se nullo, <code>destroyed</code> o senza scena. Non tocca <code>engine.entities</code>.</td>
                     </tr>
                     <tr>
-                        <td><code>update(dt)</code></td>
+                        <td><code>update(dt, input)</code></td>
                         <td><code>void</code></td>
-                        <td>Hook scena, poi (se <code>dt &gt; 0</code>) tick entity e filter <code>destroyed</code>.</td>
+                        <td>Hook scena, poi (se niente change in-hook e <code>dt &gt; 0</code>) compact-tick delle entity. <code>input</code> default <code>engine.input</code>.</td>
                     </tr>
                     <tr>
                         <td><code>draw(ctx = this.ctx)</code></td>
                         <td><code>void</code></td>
-                        <td>Hook scena, poi <code>engine.drawEntity</code> su ogni entity.</td>
+                        <td>Hook scena, poi <code>engine.drawEntity</code> su ogni entity non <code>destroyed</code>.</td>
                     </tr>
                     <tr>
                         <td><code>getCurrentScene()</code></td>
@@ -969,13 +1009,21 @@ game<span class="token punctuation">.</span><span class="token function">start</
                         <td><code>string | null</code></td>
                         <td>Alias di <code>currentSceneName</code>.</td>
                     </tr>
+                    <tr>
+                        <td><code>destroy()</code></td>
+                        <td><code>this</code></td>
+                        <td>Leave della corrente, sweep di tutte le scene, Map vuota, puntatori null. Chiamato da <code>engine.destroy()</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>persistEntities</code> (sullo scene object)</td>
+                        <td><code>boolean</code></td>
+                        <td>Se <code>true</code>, <code>#sweep</code> è un no-op. Non è un metodo del manager.</td>
+                    </tr>
                 </tbody>
             </table>
         </div>
 
     </main>
-
-
 </div>
 
 <!-- PULSANTE "COPIA CODICE" (auto-applicato a .bee-code-block e <pre><code>) -->
