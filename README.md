@@ -14,6 +14,7 @@ Questo spazio raccoglie le guide, gli esempi pratici e le spiegazioni di tutti i
 * **🎮 Gameplay & Scena:** Gestione di entità, oggetti collezionabili, nemici e piattaforme.
 * **🎨 Grafica & Animation:** Utilizzo di sprite, fogli sprite (`SpriteSheet`), mappe a tessere (`Tilemap`) e sistemi particellari.
 * **🐞 BeeLadybug (v2.4.0):** Il modulo dedicato al debug visivo e alle metriche in tempo reale (accessibile tramite i tasti di scelta rapida `F2`, `F3`, `F4`).
+* **⏱ BeeTime:** Orologio unico del core loop (`src/core/BeeTime.html`): `dt` di simulazione, `unscaledDt` reale, pausa/F4, `timeScale`, accumulator per `BeePhysicsWorld`.
 * **⚙️ Fisica & Input:** Gestione dei comandi e rilevamento delle collisioni.
 
 ---

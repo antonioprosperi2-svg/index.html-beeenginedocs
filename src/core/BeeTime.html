@@ -618,7 +618,7 @@
 <!-- HEADER FISSA -->
 <header class="bee-docs-header">
     <a href="#" class="bee-header-logo">
-        <span class="bee-header-title">Documentazione mettere la classe</span>
+        <span class="bee-header-title">BeeTime</span>
     </a>
     <span class="bee-header-badge">v2.2.0</span>
 </header>
@@ -649,9 +649,9 @@
                 <li><a href="#BeeAssetManager">BeeAssetManager .js</a></li>
                 <li><a href="#BeeEntity">BeeEntity.js</a></li>
                 <li><a href="#BeeGrid">BeeGrid.js</a></li>
-                <li><a href="#BeeSave" class="is-current">BeeSave.js</a></li>
+                <li><a href="#BeeSave">BeeSave.js</a></li>
                 <li><a href="#BeeSceneManager">BeeSceneManager.js</a></li>
-                <li><a href="#Beetime">Beetime.js</a></li>
+                <li><a href="#BeeTime" class="is-current">BeeTime.js</a></li>
                 <li><a href="#BeeTimer">BeeTimer.js</a></li>
                 <li><a href="#BeeTransform">BeeTransform.js</a></li>
             </ul>
@@ -716,94 +716,334 @@
     <!-- AREA CONTENUTI (TUTTI I MODULI VANNO QUI DENTRO) -->
     <main class="bee-docs-content">
 
-        <!-- SEZIONE 1 -->
-        <h2 class="bee-section-title"></h2>
+        <div
+            style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
+            <div>
+                <h2 class="bee-section-title" style="margin: 0;">BeeTime — Documentazione Tecnica</h2>
+                <p style="margin-top: 5px;">Orologio unico del core loop: un tick per frame, due assi temporali (simulazione e tempo reale)</p>
+            </div>
+            <img src="https://beeenginejs.com/wp-content/uploads/2026/09/Gemini_Generated_Image_bg7xjjbg7xjjbg7x-1-1.jpg"
+                alt="BeeEngine Mascot" width="80" height="80" style="width: 80px; height: auto; flex-shrink: 0;">
+        </div>
 
-        <div class="bee-class-card" id="radme">****>>>>>>>> mettere id >>>>>>>>>>*****
-            <h3> </h3>
+        <div class="bee-class-card" id="BeeTime">
 
-            <p></p>
+            <h3>📁 Panoramica</h3>
 
-            <p> </p>
+            <p><code>BeeTime</code> è l'orologio del motore. Vive in <code>src/core/BeeTime.js</code>, il barrel lo re-esporta, e <code>BeeEngine</code> ne crea <strong>uno</strong> nel costruttore: <code>this.time = new BeeTime()</code>. Non ce n'è un secondo per le scene. Ogni frame il loop chiama <code>time.tick(timestamp)</code> <em>una sola volta</em>, anche in pausa: da quel tick nascono due delta, non due loop.</p>
 
-            <p>📁 </p>
+            <p>Quello che <strong>non</strong> è: un scheduler di eventi, un tween, un clock di rete. Non conosce le scene, le entity, la fisica. Espone numeri. Chi avanza il mondo (scene, entity, <code>BeePhysicsWorld</code>, <code>BeeTimer</code>) legge quei numeri. Il freeze di Ladybug (F4) non è un secondo orologio: è <code>togglePause()</code> sullo stesso oggetto.</p>
 
-            <div class="bee-code-block"></div>
+            <div class="bee-code-block"><span class="token keyword">import</span> <span class="token punctuation">{</span> <span class="token class-name">BeeEngine</span><span class="token punctuation">,</span> <span class="token class-name">BeeTimer</span><span class="token punctuation">,</span> <span class="token constant">BEE_TIME_DEFAULTS</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'beeengine'</span><span class="token punctuation">;</span>
 
-            <p>📁</p>
+<span class="token keyword">const</span> gioco <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeeEngine</span><span class="token punctuation">(</span><span class="token string">'testCanvas'</span><span class="token punctuation">,</span> <span class="token number">800</span><span class="token punctuation">,</span> <span class="token number">600</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+gioco<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-            <div class="bee-code-block"></div>
+gioco<span class="token punctuation">.</span><span class="token function">pause</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>              <span class="token comment">// mondo fermo, HUD vivo, rAF continua</span>
+gioco<span class="token punctuation">.</span><span class="token function">resume</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+gioco<span class="token punctuation">.</span><span class="token function">setTimeScale</span><span class="token punctuation">(</span><span class="token number">0.25</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// slow-motion</span>
+gioco<span class="token punctuation">.</span>time<span class="token punctuation">.</span><span class="token function">togglePause</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>  <span class="token comment">// stesso meccanismo di F4</span></div>
 
-            <p>📁</p>
+            <h3>📁 Due assi: scaled e unscaled</h3>
 
-            <div class="bee-code-block"> </div>
+            <p>Un frame, due orologi. Non mescolarli.</p>
 
-            <p>📁</p>
+            <table class="bee-api-table">
+                <thead>
+                    <tr>
+                        <th>Asse</th>
+                        <th>Campi</th>
+                        <th>Pausa</th>
+                        <th>timeScale</th>
+                        <th>Uso</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Simulazione</td>
+                        <td><code>dt</code> / <code>elapsed</code> / alias <code>scaledDt</code></td>
+                        <td>sì: <code>dt = 0</code></td>
+                        <td>sì: <code>unscaledDt * timeScale</code></td>
+                        <td>fisica di gameplay, AI, sprite, <code>BeeTimer</code> di default</td>
+                    </tr>
+                    <tr>
+                        <td>Reale</td>
+                        <td><code>unscaledDt</code> / <code>unscaledElapsed</code> / alias <code>realDt</code></td>
+                        <td>no</td>
+                        <td>no</td>
+                        <td>HUD, UI, mixer audio, fade di pausa, timer di interfaccia</td>
+                    </tr>
+                </tbody>
+            </table>
 
-            <div class="bee-code-block"></div>
+            <p><code>rawDelta</code> è il delta grezzo in secondi, <em>prima</em> del clamp. <code>unscaledDt = min(rawDelta, maxDelta)</code>. Poi <code>dt</code> è zero se <code>paused</code>, altrimenti <code>unscaledDt * timeScale</code>. <code>delta(false)</code> torna <code>dt</code>; <code>delta(true)</code> torna <code>unscaledDt</code>. Gli alias <code>scaledDt</code> e <code>realDt</code> sono getter sullo stesso dato: non esiste un terzo asse.</p>
 
-            <p>📁</p>
+            <div class="bee-code-block"><span class="token keyword">const</span> dt <span class="token operator">=</span> gioco<span class="token punctuation">.</span>time<span class="token punctuation">.</span>dt<span class="token punctuation">;</span>                 <span class="token comment">// simulazione (0 in pausa)</span>
+<span class="token keyword">const</span> real <span class="token operator">=</span> gioco<span class="token punctuation">.</span>time<span class="token punctuation">.</span>unscaledDt<span class="token punctuation">;</span>     <span class="token comment">// HUD / audio dello stesso frame</span>
+gioco<span class="token punctuation">.</span>time<span class="token punctuation">.</span><span class="token function">delta</span><span class="token punctuation">(</span><span class="token boolean">true</span><span class="token punctuation">)</span><span class="token punctuation">;</span>                 <span class="token comment">// identico a unscaledDt</span></div>
 
-            <div class="bee-code-block"></div>
+            <h3>📁 tick — una volta per frame, sempre</h3>
 
-            <p>📁 </p>
+            <p>Contratto: il loop chiama <code>tick(timestamp)</code> con il timestamp di <code>requestAnimationFrame</code> (millisecondi). Dentro, la differenza viene divisa per <code>1000</code>: i campi pubblici sono in <strong>secondi</strong>. Chiamarlo due volte nello stesso frame avanza elapsed due volte. Non farlo.</p>
 
-            <div class="bee-class-card"></div>
+            <p>Il primo tick (o il primo dopo un <code>reset(0)</code>) è un allineamento: azzera i delta, memorizza il timestamp, <strong>non</strong> incrementa <code>frameCount</code> / <code>elapsed</code>. Evita lo spike da <code>lastTimestamp = 0</code>. I tick successivi calcolano, clampano, aggiornano FPS e (se non in pausa) l'accumulatore fisso.</p>
 
-            <p>📁 </p>
+            <p><code>frameCount</code> e <code>unscaledElapsed</code> avanzano anche in pausa: stai contando frame disegnati e tempo reale. <code>elapsed</code> no (<code>dt</code> è zero). <code>fps</code> campiona su <code>unscaledDt</code> in una finestra di <code>fpsSampleWindow</code> (default 0,5 s): per mezzo secondo all'avvio resta <code>0</code>, poi è <code>frames / secondiReali</code>, senza EMA.</p>
 
-            <div class="bee-class-card"></div>
+            <p><strong>Timestamp obbligatorio.</strong> Il loop passa sempre l'argomento di rAF. Se chiami <code>tick()</code> senza numero, <code>rawDelta</code> diventa <code>NaN</code> e da lì <code>dt</code> / <code>elapsed</code> restano avvelenati. Non c'è un fallback su <code>performance.now()</code> dentro <code>tick</code> (quel fallback esiste in <code>now()</code> e nel default di <code>begin</code>).</p>
 
-            <p> 📁 </p>
+            <h3>📁 maxDelta — clamp sul tempo reale, non sul dt scalato</h3>
 
-            <div class="bee-class-card"></div>
+            <p>Default <code>0.05</code> (50 ms). È il tetto di <code>unscaledDt</code>. Serve per un tab in background o un hitch: senza clamp, un raw di 2 secondi teletrasporterebbe tutto. <code>Math.max(0, …)</code> sul raw evita delta negativi se l'orologio salta indietro.</p>
 
-            <p> 📁 </p>
+            <p>Il clamp sta <em>prima</em> di <code>timeScale</code>. Quindi:</p>
 
-            <div class="bee-class-card"></div>
+            <p><code>dt = min(raw, 0.05) * timeScale</code> — non <code>min(raw * timeScale, 0.05)</code>.</p>
 
-            <p>📁 </p>
+            <p>A scala 1, il tetto di simulazione è 50 ms. A scala 2, un hitch già clampato diventa <code>dt = 0.10</code>. A scala 16, <code>dt</code> può arrivare a <code>0.80</code> s su un singolo frame variabile. È voluto per il fast-forward; non è un secondo clamp. I campi <code>maxDelta</code>, <code>minTimeScale</code>, <code>maxTimeScale</code>, <code>fixedDelta</code>, <code>maxFixedSteps</code>, <code>fpsSampleWindow</code> sono pubblici e mutabili a caldo: non c'è un setter che ricalcola lo stato interno.</p>
 
-            <div class="bee-class-card"> </div>
+            <h3>📁 timeScale — slow-mo e fast-forward</h3>
 
-            <p>📁 </p>
+            <p>Default <code>1</code>. <code>0.25</code> = slow-motion, <code>2</code> = fast-forward. Il setter <code>timeScale = x</code> delega a <code>setScale(x)</code>: <code>Number(value)</code>, se non è finito ripiega su <code>#defaultScale</code> (la scala passata al costruttore), poi clamp tra <code>minTimeScale</code> (0) e <code>maxTimeScale</code> (16). Ritorna <code>this</code>. <code>BeeEngine.setTimeScale</code> è lo stesso metodo.</p>
 
-            <div class="bee-class-card"></div>
+            <p><code>timeScale = 0</code> non alza il flag <code>paused</code>. <code>dt</code> è zero, ma il loop del motore <em>non</em> è in pausa: chiama ancora <code>scenes.update(0)</code> e <code>updateEntities(0)</code>. Il manager, con <code>dt &lt;= 0</code>, salta il tick delle entity. È un “mondo fermo, scena ancora interrogata”. <code>pause()</code> invece salta l'intero blocco scene/entity/fisica. Non sono equivalenti: per un menu di pausa usa <code>pause()</code> (o F4), non la scala a zero, a meno che tu voglia proprio l'hook della scena con dt zero.</p>
 
-            <p>📁</p>
+            <p><strong>Costruttore:</strong> <code>setScale</code> clamp-a, il costruttore no. <code>new BeeTime({ timeScale: 99 })</code> parte a 99 fino al primo <code>setScale</code> / assegnamento. <code>#defaultScale</code> resta quel valore: un <code>reset()</code> lo ripristina, un <code>setScale(NaN)</code> ci ricade.</p>
 
-            <div class="bee-class-card"> </div>
+            <h3>📁 pause, freeze, resume, stop — tre livelli, non uno</h3>
 
-            <p>📁 </p>
+            <p><code>pause()</code> / <code>resume()</code> / <code>togglePause()</code> toccano solo <code>#paused</code>. Non azzerano elapsed, non chiamano <code>begin</code>, non fermano rAF. In pausa l'accumulatore fisso <strong>non</strong> cresce (il residuo resta lì). Ladybug F4 è <code>time.togglePause()</code>: freeze e pausa sono la stessa bandiera. L'overlay dice RUN/FREEZE; l'API dice <code>paused</code>.</p>
 
-            <div class="bee-class-card"> </div>
+            <p>Il loop di <code>BeeEngine</code>, se <code>time.paused</code>:</p>
 
-            <p> 📁 </p>
+            <p><strong>1.</strong> Chiama comunque <code>tick</code> (HUD reale, FPS, overlay).</p>
+            <p><strong>2.</strong> <strong>Non</strong> chiama <code>scenes.update</code>, <code>updateEntities</code>, <code>consumeFixedSteps</code> → fisica ferma, entity ferme, hook <code>scene.update</code> <em>non parte</em>.</p>
+            <p><strong>3.</strong> Chiama comunque <code>this.update(dt, input, time)</code> se l'hai passato a <code>start</code> — con <code>dt = 0</code>. Qui vive un menu di pausa che deve leggere l'input mentre il mondo è fermo.</p>
+            <p><strong>4.</strong> Disegna sempre: scene, entity, Ladybug, touch. Puoi ispezionare le hitbox da fermo.</p>
 
-            <div class="bee-code-block"></div>
+            <p><code>engine.isPaused</code> è getter/setter su <code>time.paused</code>. <code>engine.pause()</code> è <code>time.pause()</code>: il loop resta <code>isRunning</code>.</p>
 
-            <p>📁</p>
+            <p><code>engine.stop()</code> è un altro livello: <code>isRunning = false</code>, <code>time.pause()</code>, <code>cancelAnimationFrame</code>. Niente tick, niente draw. <code>start()</code> (e <code>resume()</code> se il loop era spento) chiama <code>time.resume()</code> + <code>time.begin(performance.now())</code> e riaggancia rAF. <code>resume()</code> a loop già acceso <strong>non</strong> chiama <code>begin</code>: il prossimo frame ha un delta normale, non uno spike. È il percorso pausa/F4.</p>
 
-            <div class="bee-code-block"></div>
+            <div class="bee-code-block">gioco<span class="token punctuation">.</span><span class="token function">pause</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// simulazione ferma, canvas vivo</span>
+gioco<span class="token punctuation">.</span><span class="token function">stop</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>    <span class="token comment">// niente rAF: schermata congelata sul ultimo frame</span>
+gioco<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>   <span class="token comment">// begin() + resume + rAF</span></div>
 
+            <h3>📁 begin e reset</h3>
 
-            <p>📁 </p>
+            <p><code>begin(timestamp = performance.now())</code> allinea <code>#lastTimestamp</code>, marca <code>#hasTimestamp</code>, azzera <code>rawDelta</code> / <code>unscaledDt</code> / <code>dt</code> / accumulatore / <code>alpha</code>. <strong>Non</strong> tocca elapsed, scale, pausa, FPS, frameCount. È il “non spike-are dopo start, dopo stop, o dopo un buco”. Il motore lo chiama in <code>start</code> e nel <code>resume</code> che riaccende il loop.</p>
 
-            <div class="bee-code-block"> </div>
+            <p><code>reset(timestamp = 0)</code> è una nuova sessione: <code>paused = false</code>, scala tornata a <code>#defaultScale</code>, contatori a zero, accumulatore a zero. Se passi <code>0</code> (default), <code>#hasTimestamp</code> è false: il prossimo <code>tick</code> è di nuovo un allineamento. Se passi un timestamp &gt; 0, il prossimo tick calcola già un delta.</p>
 
-            <p>📁 </p>
+            <p>Il setter di <code>lastTimestamp</code> (e l'alias motore <code>engine.lastTime</code>) forza <code>#hasTimestamp = true</code> anche con <code>0</code>. Usalo solo se stai innestando un clock esterno. Per un riavvio pulito, <code>begin</code> o <code>reset</code>.</p>
 
-            <div class="bee-code-block"></div>
+            <h3>📁 Accumulator, passi fissi, alpha</h3>
 
-            <p> 📁</p>
+            <p><code>fixedDelta</code> default <code>1/60</code>. <code>maxFixedSteps</code> default <code>5</code>. In <code>tick</code>, se non sei in pausa, <code>#fixedAccumulator += dt</code> e poi viene tapato a <code>fixedDelta * maxFixedSteps</code> (~83 ms di simulazione fissa). L'eccesso si butta: è la protezione spiral-of-death, non un debito da saldare dopo.</p>
 
-            <div class="bee-code-block"> </div>
+            <p><code>consumeFixedSteps(callback)</code> esegue <code>callback(fixedDelta)</code> finché l'accumulatore copre un passo, sottrae, conta. Ritorna il numero di step. Poi ricalcola <code>alpha = residuo / fixedDelta</code> (in <code>[0, 1)</code> se hai consumato). Se la callback non è una funzione, o <code>fixedDelta &lt;= 0</code>, ritorna <code>0</code> senza toccare nulla.</p>
 
+            <p>Il loop V2.4 <strong>lo chiama già</strong>:</p>
 
+            <div class="bee-code-block"><span class="token keyword">this</span><span class="token punctuation">.</span>time<span class="token punctuation">.</span><span class="token function">tick</span><span class="token punctuation">(</span>timestamp<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> dt <span class="token operator">=</span> <span class="token keyword">this</span><span class="token punctuation">.</span>time<span class="token punctuation">.</span>dt<span class="token punctuation">;</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span><span class="token operator">!</span><span class="token keyword">this</span><span class="token punctuation">.</span>time<span class="token punctuation">.</span>paused<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>scenes<span class="token punctuation">.</span><span class="token function">update</span><span class="token punctuation">(</span>dt<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>input<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span><span class="token function">updateEntities</span><span class="token punctuation">(</span>dt<span class="token punctuation">,</span> <span class="token keyword">this</span><span class="token punctuation">.</span>input<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">this</span><span class="token punctuation">.</span>time<span class="token punctuation">.</span><span class="token function">consumeFixedSteps</span><span class="token punctuation">(</span><span class="token punctuation">(</span>fixedDt<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token keyword">this</span><span class="token punctuation">.</span>physics<span class="token punctuation">.</span><span class="token function">step</span><span class="token punctuation">(</span>fixedDt<span class="token punctuation">)</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></div>
 
+            <p>Due timestep nello stesso frame: le entity senza <code>body</code> si muovono con <code>dt</code> variabile; <code>BeePhysicsWorld</code> cammina a passi da 1/60. Se l'entità ha un rigid body, <code>integrate()</code> non si muove da sola — lo fa il solver. <code>alpha</code> è lì per interpolare il draw sul residuo; il renderer di stock non lo usa. Dopo <code>tick</code> e <em>prima</em> di <code>consumeFixedSteps</code>, <code>alpha</code> può essere &gt; 1 (accumulatore pieno di più passi). Leggilo dopo il consume, se ti serve per l'interpolazione.</p>
 
+            <p><strong>Disallineamento a scala alta.</strong> Il cap dell'accumulatore è ~5 passi (~83 ms). Un <code>dt</code> variabile a <code>timeScale</code> 16 può essere 0,8 s: le entity “veloci” avanzano di 0,8 s, la fisica ne simula al massimo ~0,08 s e butta il resto. Non è un bug del clamp: è il tetto <code>maxFixedSteps</code> che non scala con <code>timeScale</code>. Fast-forward estremo e hitch lunghi desincronizzano body e sprite a dt variabile. A scala 1 e hitch già clampati a 50 ms stai dentro il cap (50 ms &lt; 83 ms): un passo o due, niente drop.</p>
+
+            <h3>📁 Integrazione: BeeEngine, scene, timer, Ladybug</h3>
+
+            <p><code>BeeEngine</code> è l'unico owner del tick. Non chiamare <code>time.tick</code> dalla scena. Non costruire un secondo <code>BeeTime</code> “per il menu”: usa <code>unscaledDt</code> sullo stesso orologio, o un <code>BeeTimer</code> con <code>useUnscaledTime: true</code>.</p>
+
+            <p><code>BeeSceneManager.update(dt)</code> parte solo se il motore <em>non</em> è in pausa. Un HUD animato messo in <code>scene.update</code> si ferma con F4. Mettilo in <code>scene.draw</code> (il draw gira sempre) oppure nel callback <code>engine.update</code>, e avanza i tween con <code>time.unscaledDt</code>.</p>
+
+            <p><code>BeeTimer</code> di default somma <code>time.dt</code> (pausa e slow-mo lo fermano / lo rallentano). Con <code>{ useUnscaledTime: true }</code> somma <code>unscaledDt</code>. Devi comunque chiamare <code>timer.update(gioco.time)</code> tu: il loop non aggiorna i timer da solo. Se il timer vive in <code>scene.update</code>, in pausa non viene chiamato — l'opzione unscaled non basta se nessuno invoca <code>update</code>.</p>
+
+            <div class="bee-code-block"><span class="token keyword">const</span> hudTick <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeeTimer</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span><span class="token punctuation">}</span><span class="token punctuation">,</span> <span class="token boolean">true</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> <span class="token property">useUnscaledTime</span><span class="token punctuation">:</span> <span class="token boolean">true</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+hudTick<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token comment">// nel callback start(update), che gira anche in pausa:</span>
+gioco<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">(</span>dt<span class="token punctuation">,</span> input<span class="token punctuation">,</span> time<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    hudTick<span class="token punctuation">.</span><span class="token function">update</span><span class="token punctuation">(</span>time<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></div>
+
+            <p>Non esiste <code>engine.togglePause</code>: chiama <code>gioco.time.togglePause()</code> oppure <code>gioco.pause()</code> / <code>gioco.resume()</code>. Ladybug: F3 alterna <code>slowScale</code> (default 0,25) e <code>1</code> (se eri in freeze, prima fa <code>resume</code>); F4 freeze; overlay FPS legge <code>time.fps</code>, durata ciclo <code>unscaledDt</code> in ms, <code>timeScale</code>, stato pausa.</p>
+
+            <h3>📁 Esempio: scena, slow-mo, HUD immune</h3>
+
+            <div class="bee-code-block"><span class="token keyword">import</span> <span class="token punctuation">{</span> <span class="token class-name">BeeEngine</span><span class="token punctuation">,</span> <span class="token class-name">BeeTimer</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'beeengine'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> gioco <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeeEngine</span><span class="token punctuation">(</span><span class="token string">'testCanvas'</span><span class="token punctuation">,</span> <span class="token number">800</span><span class="token punctuation">,</span> <span class="token number">600</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+gioco<span class="token punctuation">.</span><span class="token function">enableLadybug</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> fadePausa <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeeTimer</span><span class="token punctuation">(</span><span class="token number">0.25</span><span class="token punctuation">,</span> <span class="token boolean">null</span><span class="token punctuation">,</span> <span class="token boolean">false</span><span class="token punctuation">,</span> <span class="token punctuation">{</span>
+    <span class="token property">useUnscaledTime</span><span class="token punctuation">:</span> <span class="token boolean">true</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> livello <span class="token operator">=</span> <span class="token punctuation">{</span>
+    <span class="token function">onEnter</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span> <span class="token comment">/* spawn */</span> <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token function">update</span><span class="token punctuation">(</span>dt<span class="token punctuation">,</span> input<span class="token punctuation">,</span> engine<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token comment">// qui dt è di simulazione; in freeze questo hook NON parte</span>
+        <span class="token keyword">if</span> <span class="token punctuation">(</span>input<span class="token punctuation">.</span><span class="token function">wasPressed</span><span class="token punctuation">(</span><span class="token string">'KeyP'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> engine<span class="token punctuation">.</span><span class="token function">setTimeScale</span><span class="token punctuation">(</span><span class="token number">0.25</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token function">draw</span><span class="token punctuation">(</span>ctx<span class="token punctuation">,</span> engine<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        ctx<span class="token punctuation">.</span>fillStyle <span class="token operator">=</span> <span class="token string">'#e2e8f0'</span><span class="token punctuation">;</span>
+        ctx<span class="token punctuation">.</span><span class="token function">fillText</span><span class="token punctuation">(</span><span class="token string">'game '</span> <span class="token operator">+</span> engine<span class="token punctuation">.</span>time<span class="token punctuation">.</span>elapsed<span class="token punctuation">.</span><span class="token function">toFixed</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">'s'</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">,</span> <span class="token number">24</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        ctx<span class="token punctuation">.</span><span class="token function">fillText</span><span class="token punctuation">(</span><span class="token string">'real '</span> <span class="token operator">+</span> engine<span class="token punctuation">.</span>time<span class="token punctuation">.</span>unscaledElapsed<span class="token punctuation">.</span><span class="token function">toFixed</span><span class="token punctuation">(</span><span class="token number">1</span><span class="token punctuation">)</span> <span class="token operator">+</span> <span class="token string">'s'</span><span class="token punctuation">,</span> <span class="token number">16</span><span class="token punctuation">,</span> <span class="token number">44</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
+
+gioco<span class="token punctuation">.</span>scenes<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token string">'game'</span><span class="token punctuation">,</span> livello<span class="token punctuation">)</span><span class="token punctuation">.</span><span class="token function">change</span><span class="token punctuation">(</span><span class="token string">'game'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+gioco<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">(</span>dt<span class="token punctuation">,</span> input<span class="token punctuation">,</span> time<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    fadePausa<span class="token punctuation">.</span><span class="token function">update</span><span class="token punctuation">(</span>time<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>input<span class="token punctuation">.</span><span class="token function">wasPressed</span><span class="token punctuation">(</span><span class="token string">'Escape'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+        time<span class="token punctuation">.</span><span class="token function">togglePause</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+        fadePausa<span class="token punctuation">.</span><span class="token function">start</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span></div>
+
+            <h3>📁 Note per chi integra — cosa è chiuso e cosa no</h3>
+
+            <p><strong>Un tick, un owner.</strong> Il timestamp entra da rAF. Non sommare un tuo <code>dt</code> calcolato a mano a <code>elapsed</code>: useresti due orologi.</p>
+
+            <p><strong>Pausa ≠ stop ≠ scala 0.</strong> Pausa: simulazione ferma, canvas vivo, <code>scene.update</code> saltato. Stop: niente frame. Scala 0: <code>dt</code> zero ma il blocco scene/entity del loop parte lo stesso.</p>
+
+            <p><strong>Menu di pausa.</strong> Non metterlo in <code>scene.update</code>: F4 lo spegne. Callback <code>engine.update</code> + <code>unscaledDt</code>, oppure input letto nel draw (peggio: mescoli logica e canvas).</p>
+
+            <p><strong>Nessun interpolatore nel renderer.</strong> <code>alpha</code> è il residuo del solver, non un lerp applicato agli sprite. Se interpoli, fallo tu dopo <code>consumeFixedSteps</code>.</p>
+
+            <p><strong>Nessun clamp sul dt scalato.</strong> <code>maxDelta</code> taglia il tempo reale. La scala può moltiplicare oltre 50 ms. Il cap fisso (5 passi) può allora droppare fisica rispetto alle entity a dt variabile.</p>
+
+            <p><strong>Costruttore e NaN.</strong> Options <code>timeScale</code> non clampate. <code>tick</code> senza timestamp avvelena i float. Sono limiti, non “si sistema da solo”.</p>
+
+            <p><strong>Non è un clock di rete / audio thread.</strong> <code>now()</code> è <code>performance.now()</code> sul main thread. Per l'audio usa l'asse unscaled, non un secondo <code>BeeTime</code>.</p>
+        </div>
+
+        <div class="bee-class-card" id="BeeTime-api">
+            <h3>📁 Riepilogo API</h3>
+            <p>Fluent: <code>setScale</code>, <code>pause</code>, <code>resume</code>, <code>togglePause</code>, <code>begin</code>, <code>reset</code>, <code>tick</code> ritornano <code>this</code>. I default sono in <code>BEE_TIME_DEFAULTS</code> (oggetto frozen); l'istanza ne tiene copie mutabili.</p>
+            <table class="bee-api-table">
+                <thead>
+                    <tr>
+                        <th>Membro</th>
+                        <th>Ritorna</th>
+                        <th>Scopo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>BEE_TIME_DEFAULTS</code></td>
+                        <td>oggetto frozen</td>
+                        <td><code>maxDelta</code> 0,05 · <code>timeScale</code> 1 · <code>minTimeScale</code> 0 · <code>maxTimeScale</code> 16 · <code>fixedDelta</code> 1/60 · <code>maxFixedSteps</code> 5 · <code>fpsSampleWindow</code> 0,5.</td>
+                    </tr>
+                    <tr>
+                        <td><code>new BeeTime(options)</code></td>
+                        <td><code>BeeTime</code></td>
+                        <td>Copia i default + options. Non clamp-a <code>timeScale</code> al construct.</td>
+                    </tr>
+                    <tr>
+                        <td><code>dt</code> / <code>scaledDt</code></td>
+                        <td><code>number</code></td>
+                        <td>Delta di simulazione (s). 0 se <code>paused</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>unscaledDt</code> / <code>realDt</code></td>
+                        <td><code>number</code></td>
+                        <td>Delta reale clampato a <code>maxDelta</code>. Vive in pausa.</td>
+                    </tr>
+                    <tr>
+                        <td><code>rawDelta</code></td>
+                        <td><code>number</code></td>
+                        <td>Delta grezzo in secondi, prima del clamp. Mai negativo.</td>
+                    </tr>
+                    <tr>
+                        <td><code>elapsed</code> / <code>unscaledElapsed</code></td>
+                        <td><code>number</code></td>
+                        <td>Tempo accumulato di simulazione vs reale.</td>
+                    </tr>
+                    <tr>
+                        <td><code>frameCount</code> / <code>fps</code></td>
+                        <td><code>number</code></td>
+                        <td>Frame da <code>reset</code>. FPS su finestra di tempo reale (0 finché la finestra non è piena).</td>
+                    </tr>
+                    <tr>
+                        <td><code>alpha</code></td>
+                        <td><code>number</code></td>
+                        <td>Residuo / <code>fixedDelta</code>. Utile dopo <code>consumeFixedSteps</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>timeScale</code></td>
+                        <td><code>number</code></td>
+                        <td>Getter/setter. Il setter è <code>setScale</code> (clamp + fallback sul default).</td>
+                    </tr>
+                    <tr>
+                        <td><code>paused</code></td>
+                        <td><code>boolean</code> (readonly)</td>
+                        <td>Solo via <code>pause</code> / <code>resume</code> / <code>togglePause</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>lastTimestamp</code></td>
+                        <td><code>number</code></td>
+                        <td>Ultimo timestamp rAF (ms). Il setter marca l'orologio come già allineato.</td>
+                    </tr>
+                    <tr>
+                        <td><code>delta(unscaled = false)</code></td>
+                        <td><code>number</code></td>
+                        <td><code>true</code> → unscaled, <code>false</code> → dt.</td>
+                    </tr>
+                    <tr>
+                        <td><code>setScale(value)</code></td>
+                        <td><code>this</code></td>
+                        <td>Clamp <code>[minTimeScale, maxTimeScale]</code>. Non finito → <code>#defaultScale</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>pause()</code> / <code>resume()</code> / <code>togglePause()</code></td>
+                        <td><code>this</code></td>
+                        <td>Flag simulazione. Non fermano rAF. F4 = toggle.</td>
+                    </tr>
+                    <tr>
+                        <td><code>now()</code></td>
+                        <td><code>number</code></td>
+                        <td><code>performance.now()</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>begin(timestamp?)</code></td>
+                        <td><code>this</code></td>
+                        <td>Allinea senza azzerare elapsed/scala. Default: <code>performance.now()</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>reset(timestamp = 0)</code></td>
+                        <td><code>this</code></td>
+                        <td>Nuova sessione: contatori a zero, scala di default, unpause.</td>
+                    </tr>
+                    <tr>
+                        <td><code>tick(timestamp)</code></td>
+                        <td><code>this</code></td>
+                        <td>Un frame. Timestamp in ms. Chiamare sempre, anche in pausa.</td>
+                    </tr>
+                    <tr>
+                        <td><code>consumeFixedSteps(fn)</code></td>
+                        <td><code>number</code></td>
+                        <td>Esegue <code>fn(fixedDelta)</code> N volte. Il loop lo usa su <code>physics.step</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>maxDelta</code> / <code>fixedDelta</code> / <code>maxFixedSteps</code></td>
+                        <td><code>number</code></td>
+                        <td>Pubblici, mutabili. Il cap fisso è <code>fixedDelta * maxFixedSteps</code>.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
     </main>
+
 
 </div>
 
