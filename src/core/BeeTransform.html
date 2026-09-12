@@ -613,14 +613,107 @@
             white-space: nowrap;
         }
     }
+
+    /* ==========================================
+       5. FLUSSO DIRTY (solo questa pagina)
+       ========================================== */
+    .bee-flow {
+        margin: 16px 0 4px 0;
+        padding: 16px 16px 14px 16px;
+        background: var(--bee-surface-2);
+        border: 1px solid var(--bee-line);
+        border-left: 4px solid var(--bee-honey);
+        border-radius: 10px;
+    }
+
+    .bee-flow-caption {
+        color: var(--bee-text-dim);
+        font-size: 13.5px;
+        line-height: 1.55;
+        margin: 0 0 12px 0;
+    }
+
+    .bee-flow-row {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: stretch;
+        gap: 8px 0;
+        margin: 0;
+        padding: 0;
+    }
+
+    .bee-flow-step {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        max-width: 100%;
+    }
+
+    .bee-flow-box {
+        display: block;
+        min-width: 7.5rem;
+        max-width: 14rem;
+        padding: 10px 12px;
+        background: var(--bee-surface);
+        border: 1px solid var(--bee-line-honey);
+        border-radius: 8px;
+        color: var(--bee-text);
+        font-size: 13.5px;
+        line-height: 1.45;
+    }
+
+    .bee-flow-box strong {
+        display: block;
+        color: var(--bee-honey);
+        font-family: var(--bee-mono);
+        font-size: 12.5px;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+        margin-bottom: 4px;
+    }
+
+    .bee-flow-box.bee-flow-read {
+        border-color: rgba(239, 68, 68, 0.45);
+    }
+
+    .bee-flow-box.bee-flow-read strong {
+        color: #ff8f8f;
+    }
+
+    .bee-flow-box code {
+        font-family: var(--bee-mono);
+        font-size: 12.5px;
+        color: #fcd34d;
+    }
+
+    .bee-flow-arrow {
+        color: var(--bee-honey);
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1;
+        padding: 0 6px;
+        flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+        .bee-flow-step {
+            width: 100%;
+        }
+
+        .bee-flow-box {
+            max-width: none;
+            flex-grow: 1;
+        }
+    }
 </style>
 
 <!-- HEADER FISSA -->
 <header class="bee-docs-header">
     <a href="#" class="bee-header-logo">
-        <span class="bee-header-title">Documentazione mettere la classe</span>
+        <span class="bee-header-title">BeeTransform</span>
     </a>
-    <span class="bee-header-badge">v2.2.0</span>
+    <span class="bee-header-badge">v2.5.0</span>
 </header>
 
 <!-- CONTENITORE PRINCIPALE -->
@@ -648,12 +741,12 @@
             <ul>
                 <li><a href="#BeeAssetManager">BeeAssetManager .js</a></li>
                 <li><a href="#BeeEntity">BeeEntity.js</a></li>
+                <li><a href="#BeeTransform" class="is-current">BeeTransform.js</a></li>
                 <li><a href="#BeeGrid">BeeGrid.js</a></li>
-                <li><a href="#BeeSave" class="is-current">BeeSave.js</a></li>
+                <li><a href="#BeeSave">BeeSave.js</a></li>
                 <li><a href="#BeeSceneManager">BeeSceneManager.js</a></li>
-                <li><a href="#Beetime">Beetime.js</a></li>
+                <li><a href="#BeeTime">BeeTime.js</a></li>
                 <li><a href="#BeeTimer">BeeTimer.js</a></li>
-                <li><a href="#BeeTransform">BeeTransform.js</a></li>
             </ul>
         </details>
         <details>
@@ -716,94 +809,365 @@
     <!-- AREA CONTENUTI (TUTTI I MODULI VANNO QUI DENTRO) -->
     <main class="bee-docs-content">
 
-        <!-- SEZIONE 1 -->
-        <h2 class="bee-section-title"></h2>
+        <div
+            style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
+            <div>
+                <h2 class="bee-section-title" style="margin: 0;">BeeTransform — Documentazione Tecnica</h2>
+                <p style="margin-top: 5px;">Trasformata 2D affine (TRS + pivot): locali vs mondo, cache dirty, grafo parent/child</p>
+            </div>
+            <img src="https://beeenginejs.com/wp-content/uploads/2026/09/Gemini_Generated_Image_bg7xjjbg7xjjbg7x-1-1.jpg"
+                alt="BeeEngine Mascot" width="80" height="80" style="width: 80px; height: auto; flex-shrink: 0;">
+        </div>
 
-        <div class="bee-class-card" id="radme">****>>>>>>>> mettere id >>>>>>>>>>*****
-            <h3> </h3>
+        <div class="bee-class-card" id="BeeTransform">
 
-            <p></p>
+            <h3>📁 Panoramica</h3>
 
-            <p> </p>
+            <p><code>BeeTransform</code> è la geometria. Vive in <code>src/core/BeeTransform.js</code>, il barrel la re-esporta con <code>BEE_TRANSFORM_DEFAULTS</code>. <code>BeeEntity</code> ne possiede una (<code>entity.transform</code>) e inoltra <code>x</code>/<code>y</code>/<code>worldX</code>/<code>rotation</code>/<code>scale</code>. Non è un offset anni '90 (<code>world = parent.x + x</code>): è una matrice affine</p>
 
-            <p>📁 </p>
+            <p><code>T(pos) · R · S · T(-pivot)</code>, composta col parent: <code>world = parentWorld · local</code>.</p>
 
-            <div class="bee-code-block"></div>
+            <p>Quello che <strong>non</strong> è: un nodo di scena, un body, un renderer. Non ha <code>update</code>, non conosce il canvas oltre <code>applyWorldTo(ctx)</code>, non integra velocità. Tiene posa, cache e albero di trasformate. La world matrix è <em>lazy</em>: si ricalcola solo se dirty, senza allocare oggetti nuovi nel tick.</p>
 
-            <p>📁</p>
+            <div class="bee-code-block"><span class="token keyword">import</span> <span class="token punctuation">{</span> <span class="token class-name">BeeTransform</span><span class="token punctuation">,</span> <span class="token constant">BEE_TRANSFORM_DEFAULTS</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'beeengine'</span><span class="token punctuation">;</span>
 
-            <div class="bee-code-block"></div>
+<span class="token keyword">const</span> hub <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeeTransform</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token property">x</span><span class="token punctuation">:</span> <span class="token number">200</span><span class="token punctuation">,</span> <span class="token property">y</span><span class="token punctuation">:</span> <span class="token number">160</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> satellite <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeeTransform</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token property">x</span><span class="token punctuation">:</span> <span class="token number">48</span><span class="token punctuation">,</span> <span class="token property">y</span><span class="token punctuation">:</span> <span class="token number">0</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+satellite<span class="token punctuation">.</span><span class="token function">setParent</span><span class="token punctuation">(</span>hub<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-            <p>📁</p>
+ctx<span class="token punctuation">.</span><span class="token function">save</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+hub<span class="token punctuation">.</span><span class="token function">applyWorldTo</span><span class="token punctuation">(</span>ctx<span class="token punctuation">)</span><span class="token punctuation">;</span>
+ctx<span class="token punctuation">.</span><span class="token function">fillRect</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">32</span><span class="token punctuation">,</span> <span class="token number">32</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+ctx<span class="token punctuation">.</span><span class="token function">restore</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></div>
 
-            <div class="bee-code-block"> </div>
+            <h3>📁 Locali vs mondo — il contratto</h3>
 
-            <p>📁</p>
+            <p><code>x</code>, <code>y</code>, <code>rotation</code> (radianti), <code>scaleX</code>/<code>scaleY</code>, <code>pivotX</code>/<code>pivotY</code> sono <strong>sempre locali al parent</strong>. <code>x</code>/<code>y</code> sono la posizione del <em>pivot</em> nello spazio del parent, non necessariamente lo spigolo in alto a sinistra.</p>
 
-            <div class="bee-code-block"></div>
+            <p><code>worldX</code> / <code>worldY</code> sono <code>tx</code>/<code>ty</code> della world matrix: il punto mondo in cui cade l'origine locale <code>(0, 0)</code>. Se il pivot non è zero, <code>worldX</code> <strong>non</strong> è la posizione mondo del pivot. Quella si ottiene con <code>transformPoint(pivotX, pivotY)</code>.</p>
 
-            <p>📁</p>
+            <table class="bee-api-table">
+                <thead>
+                    <tr>
+                        <th>Spazio</th>
+                        <th>Campi</th>
+                        <th>Significato</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Locale</td>
+                        <td><code>x</code> <code>y</code> <code>rotation</code> <code>scaleX/Y</code> <code>pivotX/Y</code></td>
+                        <td>Scrittura: marca dirty. <code>x</code>/<code>y</code> = posa del pivot nel parent</td>
+                    </tr>
+                    <tr>
+                        <td>Mondo</td>
+                        <td><code>worldX</code> <code>worldY</code> <code>worldRotation</code> <code>worldScaleX/Y</code></td>
+                        <td>Lettura lazy. <code>worldX/Y</code> = origine locale <code>(0, 0)</code> in mondo</td>
+                    </tr>
+                </tbody>
+            </table>
 
-            <div class="bee-code-block"></div>
+            <p>Scrivere <code>worldX</code> / <code>worldY</code> (o <code>setWorldOrigin</code>) <em>non</em> fa <code>x = world - parent.x</code>. Inverte la catena del parent e poi ricava i locali tenendo conto di rotazione, scala e pivot.</p>
 
-            <p>📁 </p>
+            <div class="bee-flow" role="region" aria-label="Flusso: scrittura locale, invalidazione, sync mondo alla lettura">
+                <p class="bee-flow-caption">Un solo pezzo del contratto: la scrittura non ricalcola il mondo. Lo fa la prima lettura dopo che la catena è sporca.</p>
+                <ol class="bee-flow-row">
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>1. set x / y</strong> Assegna i locali. Se il valore è uguale, esce.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>2. markDirty</strong> Flag mondo + inversa. Propaga ai figli. Chiama <code>onDirty</code>.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>3. nessun sync</strong> La matrix mondo resta vecchia finché nessuno la chiede.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box bee-flow-read"><strong>4. get worldX</strong> Prima lettura: <code>#syncWorld</code> dal parent in giù, poi cache.</span>
+                    </li>
+                </ol>
+            </div>
 
-            <div class="bee-class-card"></div>
+            <div class="bee-code-block"><span class="token keyword">const</span> padre <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeeTransform</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token property">x</span><span class="token punctuation">:</span> <span class="token number">100</span><span class="token punctuation">,</span> <span class="token property">y</span><span class="token punctuation">:</span> <span class="token number">50</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> figlio <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeeTransform</span><span class="token punctuation">(</span><span class="token punctuation">{</span> <span class="token property">x</span><span class="token punctuation">:</span> <span class="token number">10</span><span class="token punctuation">,</span> <span class="token property">y</span><span class="token punctuation">:</span> <span class="token number">5</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+figlio<span class="token punctuation">.</span><span class="token function">setParent</span><span class="token punctuation">(</span>padre<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-            <p>📁 </p>
+figlio<span class="token punctuation">.</span>x<span class="token punctuation">;</span>       <span class="token comment">// 10 — locale</span>
+figlio<span class="token punctuation">.</span>worldX<span class="token punctuation">;</span>  <span class="token comment">// 110 se R/S sono identità (pivot 0)</span>
 
-            <div class="bee-class-card"></div>
+padre<span class="token punctuation">.</span>rotation <span class="token operator">=</span> <span class="token class-name">Math</span><span class="token punctuation">.</span>PI <span class="token operator">/</span> <span class="token number">2</span><span class="token punctuation">;</span>
+figlio<span class="token punctuation">.</span>worldX<span class="token punctuation">;</span>  <span class="token comment">// NON è più 110: il parent ha ruotato</span>
 
-            <p> 📁 </p>
+figlio<span class="token punctuation">.</span>worldX <span class="token operator">=</span> <span class="token number">130</span><span class="token punctuation">;</span> <span class="token comment">// inverte il parent, riscrive x locale</span></div>
 
-            <div class="bee-class-card"></div>
+            <h3>📁 BEE_TRANSFORM_DEFAULTS</h3>
 
-            <p> 📁 </p>
+            <p>Oggetto frozen. Il costruttore fa <code>{ ...defaults, ...options }</code>. <code>zIndex</code> è l'unico campo pubblico senza cache: non entra nella matrice.</p>
 
-            <div class="bee-class-card"></div>
+            <table class="bee-api-table">
+                <thead>
+                    <tr>
+                        <th>Parametro</th>
+                        <th>Default</th>
+                        <th>Significato</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>x</code> / <code>y</code></td>
+                        <td><code>0</code></td>
+                        <td>Posizione del pivot nello spazio del parent</td>
+                    </tr>
+                    <tr>
+                        <td><code>rotation</code></td>
+                        <td><code>0</code></td>
+                        <td>Radianti. Alias pratico: <code>rotationDegrees</code></td>
+                    </tr>
+                    <tr>
+                        <td><code>scaleX</code> / <code>scaleY</code></td>
+                        <td><code>1</code></td>
+                        <td>Scala locale. <code>0</code> e negativi (flip) sono ammessi</td>
+                    </tr>
+                    <tr>
+                        <td><code>pivotX</code> / <code>pivotY</code></td>
+                        <td><code>0</code></td>
+                        <td>Punto locale attorno a cui ruoti e scali</td>
+                    </tr>
+                    <tr>
+                        <td><code>zIndex</code></td>
+                        <td><code>0</code></td>
+                        <td>Ordinamento; la classe non lo usa in <code>#syncWorld</code></td>
+                    </tr>
+                </tbody>
+            </table>
 
-            <p>📁 </p>
+            <h3>📁 Dirty cache — tre flag, zero alloc</h3>
 
-            <div class="bee-class-card"> </div>
+            <p>Tre sporcizie, non una. <code>#worldDirty</code> per la world matrix, <code>#inverseDirty</code> per l'inversa (pick, <code>setWorldOrigin</code>), <code>#trigDirty</code> per <code>cos</code>/<code>sin</code> della sola rotazione. <code>#local</code>, <code>#world</code>, <code>#inverse</code>, <code>#point</code>, <code>#aabb</code> sono oggetti riutilizzati: nel tick non nasce nulla.</p>
 
-            <p>📁 </p>
+            <p><code>markDirty()</code> esce subito se era già sporco — non ripercorre lo stesso ramo, e <strong>non</strong> richiama <code>onDirty</code>. Poi marca sé, l'inversa, i figli della <em>transform</em>, e (se è una funzione) <code>onDirty</code>. <code>BeeEntity</code> ci aggancia <code>#cascadeDirty</code>: marca i <code>transform</code> dei figli <em>entity</em>. Se i due alberi sono allineati, i figli ricevono due <code>markDirty</code>; il secondo è no-op.</p>
 
-            <div class="bee-class-card"></div>
+            <p>La local matrix <strong>non</strong> ha un flag proprio: <code>#writeLocal</code> la riscrive ogni volta che serve (sync mondo o getter <code>localMatrix</code>). Costa quattro float e due trig cache-ati. Non mutare l'oggetto restituito da <code>localMatrix</code> / <code>worldMatrix</code>: è lo stesso buffer interno, e il prossimo sync lo sovrascrive.</p>
 
-            <p>📁</p>
+            <h3>📁 Parent / child</h3>
 
-            <div class="bee-class-card"> </div>
+            <p><code>setParent(transform)</code> è difensivo: ignora sé stesso, è idempotente se il parent è già quello, rifiuta i cicli (<code>#hasAncestor</code>). Stacca dal parent precedente, aggancia, <code>markDirty</code>, ritorna <code>this</code>. <code>setParent(null)</code> stacca. Non esiste <code>detach()</code> sulla transform: quello sta su <code>BeeEntity</code>.</p>
 
-            <p>📁 </p>
+            <p><code>parent</code> e <code>children</code> sono getter. <code>children</code> è l'<strong>array interno vivo</strong>, non una copia. Push/splice a mano aggirano stacco, anti-ciclo e dirty. Per cambiare il grafo usa sempre <code>setParent</code>.</p>
 
-            <div class="bee-class-card"> </div>
+            <p>Due alberi. <code>BeeEntity.addChild</code> aggiorna <em>entrambi</em> (<code>entity.#parent</code> + <code>transform.setParent</code>). Se chiami solo <code>entity.transform.setParent</code>, il mondo segue la transform, ma <code>update</code> cammina i figli entity: i grafi divergono.</p>
 
-            <p> 📁 </p>
+            <div class="bee-code-block"><span class="token comment">// Grafo geometria da solo</span>
+satellite<span class="token punctuation">.</span><span class="token function">setParent</span><span class="token punctuation">(</span>hub<span class="token punctuation">)</span><span class="token punctuation">;</span>
+satellite<span class="token punctuation">.</span><span class="token function">setParent</span><span class="token punctuation">(</span><span class="token keyword">null</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-            <div class="bee-code-block"></div>
+<span class="token comment">// Con le entity: un solo addChild, due alberi allineati</span>
+hubEntity<span class="token punctuation">.</span><span class="token function">addChild</span><span class="token punctuation">(</span>satEntity<span class="token punctuation">)</span><span class="token punctuation">;</span>
+satEntity<span class="token punctuation">.</span><span class="token function">detach</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span></div>
 
-            <p>📁</p>
+            <h3>📁 setWorldOrigin e i setter mondo</h3>
 
-            <div class="bee-code-block"></div>
+            <p>Contratto dichiarato nel sorgente: posiziona l'origine locale <code>(0, 0)</code> in un punto mondo. Se c'è un parent, <code>parent.inverseTransformPoint</code> porta il target in spazio parent; poi i locali assorbono il pivot (<code>x = origin + local · pivot</code>).</p>
 
+            <p><code>worldX = v</code> è <code>setWorldOrigin(v, this.worldY)</code>. Legge <code>worldY</code> prima (sync), poi scrive. Due assegnamenti separati vanno bene; non è un set atomico <code>(x, y)</code> se in mezzo muovi il parent.</p>
 
-            <p>📁 </p>
+            <p>Se la world matrix è singolare (scala 0, o parent schiacciato), <code>invert</code> fallisce in silenzio e lascia l'identità. <code>setWorldOrigin</code> / <code>inverseTransformPoint</code> trattano allora il mondo come se fosse già locale: i numeri tornano, la posa no. È un limite, non un throw.</p>
 
-            <div class="bee-code-block"> </div>
+            <h3>📁 Punti, AABB, canvas, lookAt</h3>
 
-            <p>📁 </p>
+            <p><code>transformPoint(localX, localY, out?)</code> applica la world. <code>inverseTransformPoint</code> l'inversa, ricalcolata solo se <code>#inverseDirty</code>. Default <code>out</code> è <code>#point</code> condiviso: tieni le coordinate, non il riferimento.</p>
 
-            <div class="bee-code-block"></div>
+            <p><code>getWorldAABB(width, height, out?)</code> è l'AABB mondo del rettangolo locale <code>(0, 0)–(width, height)</code> dopo rotazione/scala (i quattro spigoli). Default <code>out</code> è <code>#aabb</code> condiviso. Ladybug usa questi bounds per l'OBB; il culling anche.</p>
 
-            <p> 📁</p>
+            <p><code>applyWorldTo(ctx)</code> chiama <code>ctx.transform(...)</code> — <strong>moltiplica</strong> la CTM, non la sostituisce. Serve <code>save</code>/<code>restore</code>. Non è <code>setTransform</code>.</p>
 
-            <div class="bee-code-block"> </div>
+            <p><code>lookAt(worldX, worldY)</code> punta l'asse locale X dal <em>pivot</em> (non da <code>(0, 0)</code>) verso il target mondo, e scrive <code>rotation</code> in radianti.</p>
 
+            <div class="bee-code-block"><span class="token keyword">const</span> p <span class="token operator">=</span> t<span class="token punctuation">.</span><span class="token function">transformPoint</span><span class="token punctuation">(</span>t<span class="token punctuation">.</span>pivotX<span class="token punctuation">,</span> t<span class="token punctuation">.</span>pivotY<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// copia .x/.y subito</span>
+<span class="token keyword">const</span> box <span class="token operator">=</span> t<span class="token punctuation">.</span><span class="token function">getWorldAABB</span><span class="token punctuation">(</span><span class="token number">32</span><span class="token punctuation">,</span> <span class="token number">48</span><span class="token punctuation">,</span> <span class="token punctuation">{</span> <span class="token property">x</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token property">y</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token property">width</span><span class="token punctuation">:</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token property">height</span><span class="token punctuation">:</span> <span class="token number">0</span> <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
+t<span class="token punctuation">.</span><span class="token function">lookAt</span><span class="token punctuation">(</span>nemico<span class="token punctuation">.</span>worldX<span class="token punctuation">,</span> nemico<span class="token punctuation">.</span>worldY<span class="token punctuation">)</span><span class="token punctuation">;</span>
+t<span class="token punctuation">.</span><span class="token function">setPivotNormalized</span><span class="token punctuation">(</span><span class="token number">0.5</span><span class="token punctuation">,</span> <span class="token number">0.5</span><span class="token punctuation">,</span> <span class="token number">32</span><span class="token punctuation">,</span> <span class="token number">32</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// centro sprite</span>
+t<span class="token punctuation">.</span><span class="token function">setScale</span><span class="token punctuation">(</span><span class="token operator">-</span><span class="token number">1</span><span class="token punctuation">,</span> <span class="token number">1</span><span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// flip X</span></div>
 
+            <h3>📁 Integrazione BeeEntity</h3>
 
+            <p>Nel costruttore: <code>this.transform = new BeeTransform({ x, y })</code> e <code>onDirty = () =&gt; this.#cascadeDirty()</code>. I getter/setter di posa dell'entity sono proxy. <code>getWorldAABB()</code> dell'entity, se non c'è <code>body</code>, delega a <code>transform.getWorldAABB(width, height)</code>. <code>applyWorldTransform(ctx)</code> è <code>applyWorldTo</code>. <code>integrate</code> scrive <code>transform.x/y/rotation</code> (setter → dirty). <code>destroy</code> azzera <code>onDirty</code> e <code>setParent(null)</code> sui figli.</p>
+
+            <p>Il solver piattaforme scrive <code>worldX</code>/<code>worldY</code> usando <code>width</code>/<code>height</code> grezzi, non l'AABB ruotata e non il pivot. Con pivot ≠ 0 o rotazione non nulla l'atterraggio “<code>worldY = py - height</code>” non coincide più col bordo visivo. Limite del solver, non della matrice.</p>
+
+            <p>Sovrascrivere <code>transform.onDirty</code> dopo la construct spegne la cascata entity. Se ti serve un hook, incatena: chiama prima il callback esistente.</p>
+        </div>
+
+        <div class="bee-class-card bee-ladybug" id="BeeTransform-note">
+            <h3>📁 Dove è facile sbagliare</h3>
+
+            <p><strong>Locali vs mondo.</strong> <code>x</code> è il pivot nel parent. <code>worldX</code> è l'origine <code>(0, 0)</code> in mondo. Con pivot al centro dello sprite i due numeri non coincidono. Per “dove sta il centro” usa <code>transformPoint(pivotX, pivotY)</code>.</p>
+
+            <p><strong>Non è più <code>parent.x + x</code>.</strong> Appena il parent ruota o scala, <code>worldX</code> non è una somma. I figli orbitano. Se ti aspetti l'offset anni '90, stai leggendo la classe sbagliata (o una docs di <code>BeeEntity</code> precedente alla 2.5).</p>
+
+            <p><strong>Dirty ≠ sync.</strong> Dopo <code>x = …</code> la world matrix è invalida, non aggiornata. Va bene: il costo sta sulla lettura. Non cache-are tu un <code>worldX</code> letto all'inizio del frame se poi muovi il parent.</p>
+
+            <p><strong>Due grafi.</strong> Parentare solo la transform (o solo l'entity) le desincronizza. Per i nodi di gioco: <code>addChild</code> / <code>detach</code>.</p>
+
+            <p><strong><code>children</code> vivo, matrici vive, <code>#point</code> vivo.</strong> Non mutare quegli array/oggetti. Copia i numeri. Passa un <code>out</code> tuo a <code>getWorldAABB</code> se tieni il box oltre la prossima chiamata.</p>
+
+            <p><strong><code>applyWorldTo</code> moltiplica.</strong> Senza <code>save</code>/<code>restore</code> la CTM si accumula ogni sprite.</p>
+
+            <p><strong>Decomposizione mondo.</strong> <code>worldScaleX/Y</code> sono lunghezze di colonna (sempre ≥ 0): il flip si perde. <code>worldRotation</code> è <code>atan2(b, a)</code>: con scala negativa o shear (parent non uniforme + figlio ruotato) non ricostruisce TRS in modo unico.</p>
+
+            <p><strong>Inversa singolare.</strong> Scala 0 → inversa = identità, senza errore. <code>Number(value) || 0</code> su <code>x/y/rotation/pivot</code> normalizza i falsy a 0; la scala invece accetta 0 perché usa <code>Number.isFinite</code>.</p>
+        </div>
+
+        <div class="bee-class-card" id="BeeTransform-esempio">
+            <h3>📁 Esempio: hub, satellite, draw locale</h3>
+
+            <div class="bee-code-block"><span class="token keyword">import</span> <span class="token punctuation">{</span> <span class="token class-name">BeeEntity</span> <span class="token punctuation">}</span> <span class="token keyword">from</span> <span class="token string">'beeengine'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> hub <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeeEntity</span><span class="token punctuation">(</span><span class="token number">220</span><span class="token punctuation">,</span> <span class="token number">180</span><span class="token punctuation">,</span> <span class="token number">72</span><span class="token punctuation">,</span> <span class="token number">72</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+hub<span class="token punctuation">.</span>transform<span class="token punctuation">.</span><span class="token function">setPivot</span><span class="token punctuation">(</span><span class="token number">36</span><span class="token punctuation">,</span> <span class="token number">36</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+hub<span class="token punctuation">.</span>angularVelocity <span class="token operator">=</span> <span class="token number">0.8</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> satellite <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeeEntity</span><span class="token punctuation">(</span><span class="token number">56</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">20</span><span class="token punctuation">,</span> <span class="token number">20</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+hub<span class="token punctuation">.</span><span class="token function">addChild</span><span class="token punctuation">(</span>satellite<span class="token punctuation">)</span><span class="token punctuation">;</span> <span class="token comment">// x/y restano locali</span>
+
+<span class="token function">function</span> <span class="token function">draw</span><span class="token punctuation">(</span>ctx<span class="token punctuation">,</span> entity<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    ctx<span class="token punctuation">.</span><span class="token function">save</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    entity<span class="token punctuation">.</span><span class="token function">applyWorldTransform</span><span class="token punctuation">(</span>ctx<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    ctx<span class="token punctuation">.</span><span class="token function">fillRect</span><span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">,</span> <span class="token number">0</span><span class="token punctuation">,</span> entity<span class="token punctuation">.</span>width<span class="token punctuation">,</span> entity<span class="token punctuation">.</span>height<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    ctx<span class="token punctuation">.</span><span class="token function">restore</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span>
+
+satellite<span class="token punctuation">.</span>worldX<span class="token punctuation">;</span> <span class="token comment">// segue il hub senza codice extra</span>
+satellite<span class="token punctuation">.</span>worldX <span class="token operator">=</span> <span class="token number">400</span><span class="token punctuation">;</span> <span class="token comment">// tiene il world; ricalcola il locale</span></div>
+        </div>
+
+        <div class="bee-class-card" id="BeeTransform-api">
+            <h3>📁 Riepilogo API</h3>
+            <p>Fluent: <code>setScale</code>, <code>setPivot</code>, <code>setPivotNormalized</code>, <code>setParent</code>, <code>setWorldOrigin</code>, <code>applyWorldTo</code>, <code>lookAt</code> ritornano <code>this</code>. I default sono in <code>BEE_TRANSFORM_DEFAULTS</code> (frozen).</p>
+            <table class="bee-api-table">
+                <thead>
+                    <tr>
+                        <th>Membro</th>
+                        <th>Ritorna</th>
+                        <th>Scopo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>BEE_TRANSFORM_DEFAULTS</code></td>
+                        <td>oggetto frozen</td>
+                        <td><code>x/y</code> 0 · <code>rotation</code> 0 · <code>scaleX/Y</code> 1 · <code>pivotX/Y</code> 0 · <code>zIndex</code> 0.</td>
+                    </tr>
+                    <tr>
+                        <td><code>new BeeTransform(options)</code></td>
+                        <td><code>BeeTransform</code></td>
+                        <td>Copia default + options. Parte già dirty. <code>onDirty</code> è <code>null</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>x</code> / <code>y</code></td>
+                        <td><code>number</code></td>
+                        <td>Locali (pivot nel parent). Setter: <code>Number(value) || 0</code>, poi <code>markDirty</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>rotation</code> / <code>rotationDegrees</code></td>
+                        <td><code>number</code></td>
+                        <td>Radianti / gradi. Il setter gradi scrive <code>rotation</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>scaleX</code> / <code>scaleY</code> / <code>setScale(x, y = x)</code></td>
+                        <td><code>number</code> / <code>this</code></td>
+                        <td>Scala locale. Non finito → 1. Accetta 0 e negativi.</td>
+                    </tr>
+                    <tr>
+                        <td><code>pivotX</code> / <code>pivotY</code> / <code>setPivot(x, y)</code></td>
+                        <td><code>number</code> / <code>this</code></td>
+                        <td>Punto locale di rotazione/scala.</td>
+                    </tr>
+                    <tr>
+                        <td><code>setPivotNormalized(nx, ny, w, h)</code></td>
+                        <td><code>this</code></td>
+                        <td><code>pivot = (nx * w, ny * h)</code>. Centro sprite: <code>(0.5, 0.5, width, height)</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>parent</code> / <code>children</code></td>
+                        <td><code>BeeTransform|null</code> / array</td>
+                        <td>Sola lettura. <code>children</code> è l'array vivo.</td>
+                    </tr>
+                    <tr>
+                        <td><code>setParent(transform)</code></td>
+                        <td><code>this</code></td>
+                        <td>Reparent + anti-ciclo. <code>null</code> stacca.</td>
+                    </tr>
+                    <tr>
+                        <td><code>markDirty()</code></td>
+                        <td><code>void</code></td>
+                        <td>Invalida mondo/inversa, cascata figli, <code>onDirty</code>. No-op se già dirty.</td>
+                    </tr>
+                    <tr>
+                        <td><code>onDirty</code></td>
+                        <td><code>function|null</code></td>
+                        <td>Hook pubblico. BeeEntity lo sovrascrive con la cascata entity.</td>
+                    </tr>
+                    <tr>
+                        <td><code>localMatrix</code> / <code>worldMatrix</code></td>
+                        <td>oggetto <code>{a,b,c,d,tx,ty}</code></td>
+                        <td>Buffer interni. La world sync-a prima. Non mutarli.</td>
+                    </tr>
+                    <tr>
+                        <td><code>worldX</code> / <code>worldY</code></td>
+                        <td><code>number</code></td>
+                        <td>Origine locale in mondo. I setter chiamano <code>setWorldOrigin</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>worldRotation</code> / <code>worldScaleX</code> / <code>worldScaleY</code></td>
+                        <td><code>number</code></td>
+                        <td>Solo lettura. Scala = <code>hypot</code> delle colonne (senza segno di flip).</td>
+                    </tr>
+                    <tr>
+                        <td><code>setWorldOrigin(worldX, worldY)</code></td>
+                        <td><code>this</code></td>
+                        <td>Mette <code>(0, 0)</code> locale su un punto mondo. Inverte il parent, non sottrae.</td>
+                    </tr>
+                    <tr>
+                        <td><code>transformPoint(lx, ly, out?)</code></td>
+                        <td><code>{x, y}</code></td>
+                        <td>Locale → mondo. Default <code>out</code> = <code>#point</code> condiviso.</td>
+                    </tr>
+                    <tr>
+                        <td><code>inverseTransformPoint(wx, wy, out?)</code></td>
+                        <td><code>{x, y}</code></td>
+                        <td>Mondo → locale. Inversa lazy. Matrice singolare → identità.</td>
+                    </tr>
+                    <tr>
+                        <td><code>getWorldAABB(w, h, out?)</code></td>
+                        <td><code>{x, y, width, height}</code></td>
+                        <td>AABB mondo del rettangolo locale. Default <code>out</code> = <code>#aabb</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>applyWorldTo(ctx)</code></td>
+                        <td><code>this</code></td>
+                        <td><code>ctx.transform</code> (multiply). Abbinalo a <code>save</code>/<code>restore</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>lookAt(worldX, worldY)</code></td>
+                        <td><code>this</code></td>
+                        <td>Orienta l'asse X locale dal pivot verso il target mondo.</td>
+                    </tr>
+                    <tr>
+                        <td><code>zIndex</code></td>
+                        <td><code>number</code></td>
+                        <td>Pubblico, senza dirty. La classe non ordina il draw.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
     </main>
+
 
 </div>
 
