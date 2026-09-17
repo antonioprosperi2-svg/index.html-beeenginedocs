@@ -1,0 +1,1345 @@
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Documentazione - BeeEngine</title>
+
+<style>
+    /* ==========================================
+       0. PALETTE BRAND (BeeEngine + BeeLadybug)
+       ========================================== */
+    :root {
+        /* Sfondi scuri desaturati (niente nero puro) */
+        --bee-bg: #12131c;
+        --bee-surface: #1a1b26;
+        --bee-surface-2: #20222f;
+        --bee-code-bg: #0f1018;
+
+        /* Testo */
+        --bee-text: #e2e8f0;
+        --bee-text-dim: #9aa4ba;
+
+        /* Giallo/Arancione Ape */
+        --bee-honey: #f59e0b;
+        --bee-honey-light: #eab308;
+
+        /* Rosso Coccinella */
+        --bee-ladybug: #ef4444;
+        --bee-ladybug-deep: #dc2626;
+
+        /* Linee e raggi */
+        --bee-line: rgba(226, 232, 240, 0.09);
+        --bee-line-honey: rgba(245, 158, 11, 0.22);
+        --bee-radius: 12px;
+
+        --bee-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, 'Cascadia Code', Consolas, 'Courier New', monospace;
+    }
+
+    /* ==========================================
+       RESET E BASE PAGINA
+       (reset limitato al sottoalbero docs:
+        su WordPress non tocca il tema)
+       ========================================== */
+    .bee-docs-header,
+    .bee-docs-header *,
+    .bee-ladybug-banner,
+    .bee-ladybug-banner *,
+    .bee-docs-container,
+    .bee-docs-container * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+    }
+
+    body {
+        background-color: var(--bee-bg);
+        background-image:
+            radial-gradient(900px 420px at 12% -8%, rgba(245, 158, 11, 0.07), transparent 60%),
+            radial-gradient(760px 380px at 92% 0%, rgba(239, 68, 68, 0.06), transparent 62%);
+        background-attachment: fixed;
+        color: var(--bee-text);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        padding-top: 80px;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+    }
+
+    /* ==========================================
+       1. BARRA HEADER FISSA IN ALTO
+       ========================================== */
+    .bee-docs-header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 70px;
+        background: linear-gradient(180deg, #1c1e2b 0%, #16171f 100%);
+        border-bottom: 1px solid var(--bee-line);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 25px;
+        z-index: 1000;
+        box-shadow: 0 6px 24px rgba(8, 8, 12, 0.55);
+    }
+
+    /* Filo giallo/rosso brand sotto la header */
+    .bee-docs-header::after {
+        content: "";
+        position: absolute;
+        left: 0;
+        right: 0;
+        bottom: -2px;
+        height: 2px;
+        background: linear-gradient(90deg,
+                var(--bee-honey) 0%,
+                var(--bee-honey-light) 42%,
+                var(--bee-ladybug) 100%);
+        opacity: 0.9;
+    }
+
+    .bee-header-logo {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        text-decoration: none;
+    }
+
+    .bee-header-title {
+        color: var(--bee-honey);
+        font-size: 20px;
+        font-weight: bold;
+        font-family: var(--bee-mono);
+        letter-spacing: 1px;
+    }
+
+    /* Badge versione = Rosso Coccinella */
+    .bee-header-badge {
+        background: rgba(239, 68, 68, 0.14);
+        color: #ffb4b4;
+        padding: 5px 11px;
+        border-radius: 999px;
+        font-size: 13px;
+        border: 1px solid rgba(239, 68, 68, 0.38);
+        font-family: var(--bee-mono);
+        letter-spacing: 0.5px;
+    }
+
+    /* ==========================================
+       1b. BANNER COCCINELLA (predisposizione)
+       ========================================== */
+    .bee-ladybug-banner {
+        max-width: 1400px;
+        margin: 0 auto 18px auto;
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 18px;
+        border-radius: var(--bee-radius);
+        background: linear-gradient(135deg, rgba(220, 38, 38, 0.18), rgba(26, 27, 38, 0.9));
+        border: 1px solid rgba(239, 68, 68, 0.32);
+        border-left: 4px solid var(--bee-ladybug);
+        color: var(--bee-text);
+        font-size: 14.5px;
+        line-height: 1.5;
+    }
+
+    .bee-ladybug-banner strong {
+        color: #ff8f8f;
+    }
+
+    .bee-ladybug-banner img {
+        width: 42px;
+        height: 42px;
+        border-radius: 50%;
+        flex-shrink: 0;
+    }
+
+    /* ==========================================
+       2. CONTENITORE DOCUMENTAZIONE
+       ========================================== */
+    .bee-docs-container {
+        position: relative;
+        z-index: 5;
+        display: flex;
+        gap: 25px;
+        background-color: rgba(26, 27, 38, 0.82);
+        backdrop-filter: blur(8px);
+        color: var(--bee-text);
+        padding: 22px;
+        border-radius: var(--bee-radius);
+        border: 1px solid var(--bee-line);
+        max-width: 1400px;
+        margin: 0 auto 40px auto;
+        box-shadow: 0 18px 50px rgba(8, 8, 12, 0.35);
+    }
+
+    .bee-docs-sidebar {
+        width: 250px;
+        flex-shrink: 0;
+        border-right: 1px solid var(--bee-line);
+        padding-right: 15px;
+        position: sticky;
+        top: 90px;
+        max-height: calc(100vh - 110px);
+        overflow-y: auto;
+        scrollbar-width: thin;
+        scrollbar-color: rgba(245, 158, 11, 0.35) transparent;
+    }
+
+    .bee-docs-sidebar::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    .bee-docs-sidebar::-webkit-scrollbar-thumb {
+        background: rgba(245, 158, 11, 0.3);
+        border-radius: 8px;
+    }
+
+    .bee-sidebar-title {
+        color: var(--bee-honey);
+        font-size: 18px;
+        font-weight: bold;
+        margin-bottom: 14px;
+        border-bottom: 1px solid var(--bee-line-honey);
+        padding-bottom: 8px;
+        letter-spacing: 0.4px;
+    }
+
+    .bee-docs-sidebar details {
+        margin-bottom: 10px;
+        background: var(--bee-surface-2);
+        border-radius: 8px;
+        border: 1px solid var(--bee-line);
+        overflow: hidden;
+    }
+
+    .bee-docs-sidebar details[open] {
+        border-color: var(--bee-line-honey);
+    }
+
+    .bee-docs-sidebar summary {
+        padding: 10px 12px;
+        font-weight: 600;
+        font-size: 15px;
+        color: var(--bee-text);
+        cursor: pointer;
+        transition: color .15s ease, background .15s ease;
+    }
+
+    .bee-docs-sidebar summary:hover {
+        color: var(--bee-honey);
+        background: rgba(245, 158, 11, 0.06);
+    }
+
+    .bee-docs-sidebar ul {
+        list-style: none;
+        padding: 5px 12px 10px 12px;
+        margin: 0;
+    }
+
+    .bee-docs-sidebar li {
+        margin: 6px 0;
+    }
+
+    .bee-docs-sidebar a {
+        color: var(--bee-text-dim);
+        text-decoration: none;
+        font-size: 14px;
+        font-family: var(--bee-mono);
+        display: block;
+        padding: 4px 8px;
+        border-left: 2px solid transparent;
+        border-radius: 4px;
+        transition: color .15s ease, border-color .15s ease, background .15s ease;
+    }
+
+    .bee-docs-sidebar a:hover {
+        color: var(--bee-honey);
+        background: rgba(245, 158, 11, 0.07);
+        border-left-color: var(--bee-honey);
+    }
+
+    /* Pagina corrente = bordo attivo rosso coccinella */
+    .bee-docs-sidebar a.is-current {
+        color: #ffb4b4;
+        border-left-color: var(--bee-ladybug);
+        background: rgba(239, 68, 68, 0.08);
+    }
+
+    /* Area Contenuto */
+    .bee-docs-content {
+        flex-grow: 1;
+        min-width: 0;
+    }
+
+    .bee-section-title {
+        color: var(--bee-honey);
+        font-size: 23px;
+        letter-spacing: 0.2px;
+        border-bottom: 1px solid var(--bee-line-honey);
+        padding-bottom: 10px;
+        margin: 34px 0 16px 0;
+    }
+
+    .bee-section-title:first-of-type {
+        margin-top: 0;
+    }
+
+    /* Scheda normale */
+    .bee-class-card {
+        background: var(--bee-surface);
+        border: 1px solid var(--bee-line);
+        border-left: 4px solid var(--bee-honey);
+        padding: 22px;
+        margin-bottom: 20px;
+        border-radius: 10px;
+        scroll-margin-top: 90px;
+        transition: border-color .18s ease, box-shadow .18s ease;
+    }
+
+    /* Sezioni BeeLadybug / Debug */
+    .bee-class-card.bee-debug,
+    .bee-class-card.bee-ladybug {
+        border-left-color: var(--bee-ladybug);
+        background: linear-gradient(180deg, rgba(220, 38, 38, 0.07), rgba(26, 27, 38, 0.95));
+    }
+
+    .bee-class-card.bee-debug h3,
+    .bee-class-card.bee-ladybug h3 {
+        color: #ff8f8f !important;
+    }
+
+    /* Bordo attivo (ancora selezionata) = rosso coccinella */
+    .bee-class-card:target {
+        background: var(--bee-surface-2);
+        border-left-color: var(--bee-ladybug);
+        box-shadow: 0 0 0 1px rgba(239, 68, 68, 0.25), 0 0 26px rgba(239, 68, 68, 0.16);
+    }
+
+    .bee-class-card h3 {
+        color: var(--bee-honey-light) !important;
+        margin-top: 0;
+        font-size: 18px;
+        font-family: var(--bee-mono);
+        margin-bottom: 10px;
+        letter-spacing: 0.2px;
+    }
+
+    .bee-class-card p {
+        line-height: 1.72;
+        color: var(--bee-text) !important;
+        font-size: 15px;
+        word-wrap: break-word;
+        margin-bottom: 12px;
+        font-weight: 400;
+    }
+
+    /* Codice inline dentro i paragrafi */
+    .bee-class-card p code,
+    .bee-inline-code {
+        font-family: var(--bee-mono);
+        font-size: 13.5px;
+        background: rgba(245, 158, 11, 0.1);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+        color: #fcd34d;
+        padding: 1px 6px;
+        border-radius: 5px;
+    }
+
+    /* ==========================================
+       3. BLOCCO DI CODICE GLOBALE (stile Prism)
+       ========================================== */
+    .bee-code-wrap {
+        position: relative;
+        margin: 0 0 20px 0;
+    }
+
+    .bee-code-block,
+    .bee-docs-content pre {
+        background: var(--bee-code-bg) !important;
+        border: 1px solid var(--bee-line) !important;
+        border-top: 2px solid rgba(245, 158, 11, 0.35) !important;
+        padding: 18px 18px 18px 18px !important;
+        border-radius: 10px !important;
+        font-family: var(--bee-mono) !important;
+        font-size: 13.5px !important;
+        color: #cbd5e1 !important;
+        line-height: 1.75 !important;
+        white-space: pre !important;
+        overflow-x: auto !important;
+        word-break: normal !important;
+        width: 100% !important;
+        tab-size: 2;
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.02);
+    }
+
+    .bee-code-block.bee-has-copy,
+    .bee-docs-content pre.bee-has-copy {
+        padding-top: 46px !important;
+    }
+
+    .bee-code-block::-webkit-scrollbar,
+    .bee-docs-content pre::-webkit-scrollbar {
+        height: 9px;
+    }
+
+    .bee-code-block::-webkit-scrollbar-thumb,
+    .bee-docs-content pre::-webkit-scrollbar-thumb {
+        background: rgba(245, 158, 11, 0.28);
+        border-radius: 8px;
+    }
+
+    /* Pulsante "Copia codice" */
+    .bee-copy-btn {
+        position: absolute;
+        top: 9px;
+        right: 10px;
+        z-index: 3;
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        font-family: var(--bee-mono);
+        font-size: 12px;
+        line-height: 1;
+        padding: 7px 11px;
+        cursor: pointer;
+        color: var(--bee-honey);
+        background: rgba(245, 158, 11, 0.1);
+        border: 1px solid rgba(245, 158, 11, 0.34);
+        border-radius: 7px;
+        transition: background .15s ease, color .15s ease, border-color .15s ease;
+    }
+
+    .bee-copy-btn:hover {
+        background: rgba(245, 158, 11, 0.2);
+        color: #fde68a;
+        border-color: var(--bee-honey);
+    }
+
+    .bee-copy-btn.bee-copied {
+        color: #86efac;
+        background: rgba(34, 197, 94, 0.14);
+        border-color: rgba(34, 197, 94, 0.45);
+    }
+
+    /* ==========================================
+       3b. SYNTAX HIGHLIGHTING (token Prism.js)
+       ========================================== */
+    /* Commenti Prism e token speciali */
+    .bee-code-block .token.comment,
+    .bee-docs-content pre .token.comment,
+    .bee-code-block .token.prolog,
+    .bee-code-block .token.doctype,
+    .bee-code-block .token.cdata {
+        color: #94a3b8;
+        /* Cambiato da #6b7590 a #94a3b8 per contrasto > 4.5:1 */
+        font-style: italic;
+    }
+
+    .bee-code-block .token.punctuation,
+    .bee-docs-content pre .token.punctuation {
+        color: #cbd5e1;
+        /* Leggermente schiarito da #94a3b8 a #cbd5e1 */
+    }
+
+    .bee-code-block .token.keyword,
+    .bee-docs-content pre .token.keyword,
+    .bee-code-block .token.control,
+    .bee-code-block .token.important {
+        color: var(--bee-honey-light);
+        font-weight: 600;
+    }
+
+    .bee-code-block .token.string,
+    .bee-docs-content pre .token.string,
+    .bee-code-block .token.char,
+    .bee-code-block .token.attr-value {
+        color: #7ee0b0;
+    }
+
+    .bee-code-block .token.number,
+    .bee-docs-content pre .token.number,
+    .bee-code-block .token.boolean,
+    .bee-code-block .token.constant,
+    .bee-code-block .token.symbol {
+        color: var(--bee-honey);
+    }
+
+    .bee-code-block .token.function,
+    .bee-docs-content pre .token.function,
+    .bee-code-block .token.method {
+        color: #7dd3fc;
+    }
+
+    .bee-code-block .token.class-name,
+    .bee-docs-content pre .token.class-name {
+        color: #fcd34d;
+    }
+
+    .bee-code-block .token.operator,
+    .bee-docs-content pre .token.operator,
+    .bee-code-block .token.entity,
+    .bee-code-block .token.url {
+        color: #c4b5fd;
+    }
+
+    .bee-code-block .token.property,
+    .bee-docs-content pre .token.property,
+    .bee-code-block .token.tag,
+    .bee-code-block .token.attr-name {
+        color: #f0abfc;
+    }
+
+    .bee-code-block .token.deleted,
+    .bee-docs-content pre .token.deleted {
+        color: var(--bee-ladybug);
+    }
+
+    /* Commenti/percorsi negli alberi di cartelle */
+    .bee-code-block .bee-cm {
+        color: #94a3b8;
+        font-style: italic;
+    }
+
+    .bee-code-block .bee-new {
+        color: var(--bee-ladybug);
+        font-weight: 600;
+    }
+
+    /* ==========================================
+       3c. TABELLA API
+       ========================================== */
+    .bee-api-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 0 0 20px 0;
+        font-size: 14px;
+        background: var(--bee-surface-2);
+        border: 1px solid var(--bee-line);
+        border-radius: 10px;
+        overflow: hidden;
+    }
+
+    .bee-api-table thead th {
+        background: rgba(245, 158, 11, 0.1);
+        color: var(--bee-honey);
+        text-align: left;
+        font-family: var(--bee-mono);
+        font-size: 13px;
+        letter-spacing: 0.4px;
+        padding: 11px 14px;
+        border-bottom: 1px solid var(--bee-line-honey);
+    }
+
+    .bee-api-table tbody td {
+        padding: 11px 14px;
+        border-top: 1px solid var(--bee-line);
+        color: var(--bee-text);
+        line-height: 1.6;
+        vertical-align: top;
+    }
+
+    .bee-api-table tbody tr:hover td {
+        background: rgba(245, 158, 11, 0.05);
+    }
+
+    .bee-api-table code {
+        font-family: var(--bee-mono);
+        font-size: 13px;
+        color: #fcd34d;
+        background: rgba(245, 158, 11, 0.1);
+        border: 1px solid rgba(245, 158, 11, 0.2);
+        padding: 1px 6px;
+        border-radius: 5px;
+    }
+
+    /* ==========================================
+       4. REGOLE SPECIFICHE PER TELEFONO (MOBILE)
+       ========================================== */
+    @media (max-width: 768px) {
+        body {
+            padding-top: 75px;
+        }
+
+        .bee-docs-header {
+            padding: 0 15px;
+            height: 60px;
+        }
+
+        .bee-header-title {
+            font-size: 16px;
+        }
+
+        .bee-docs-container {
+            flex-direction: column;
+            padding: 14px;
+            gap: 15px;
+        }
+
+        .bee-docs-sidebar {
+            width: 100%;
+            position: relative;
+            top: 0;
+            max-height: none;
+            border-right: none;
+            border-bottom: 1px solid var(--bee-line);
+            padding-right: 0;
+            padding-bottom: 15px;
+        }
+
+        /* Leggibilita' su mobile: piu' corpo e contrasto,
+           SENZA azzerare il syntax highlighting */
+        .bee-code-block,
+        .bee-docs-content pre {
+            font-size: 14px !important;
+            letter-spacing: 0.2px !important;
+            line-height: 1.8 !important;
+            padding: 15px !important;
+            color: #dbe4f0 !important;
+        }
+
+        .bee-code-block.bee-has-copy,
+        .bee-docs-content pre.bee-has-copy {
+            padding-top: 44px !important;
+        }
+
+        .bee-copy-btn {
+            font-size: 11px;
+            padding: 6px 9px;
+        }
+
+        .bee-api-table {
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+    }
+
+    /* ==========================================
+       5. FLUSSO DIRTY (solo questa pagina)
+       ========================================== */
+    .bee-flow {
+        margin: 16px 0 4px 0;
+        padding: 16px 16px 14px 16px;
+        background: var(--bee-surface-2);
+        border: 1px solid var(--bee-line);
+        border-left: 4px solid var(--bee-honey);
+        border-radius: 10px;
+    }
+
+    .bee-flow-caption {
+        color: var(--bee-text-dim);
+        font-size: 13.5px;
+        line-height: 1.55;
+        margin: 0 0 12px 0;
+    }
+
+    .bee-flow-row {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: stretch;
+        gap: 8px 0;
+        margin: 0;
+        padding: 0;
+    }
+
+    .bee-flow-step {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        max-width: 100%;
+    }
+
+    .bee-flow-box {
+        display: block;
+        min-width: 7.5rem;
+        max-width: 14rem;
+        padding: 10px 12px;
+        background: var(--bee-surface);
+        border: 1px solid var(--bee-line-honey);
+        border-radius: 8px;
+        color: var(--bee-text);
+        font-size: 13.5px;
+        line-height: 1.45;
+    }
+
+    .bee-flow-box strong {
+        display: block;
+        color: var(--bee-honey);
+        font-family: var(--bee-mono);
+        font-size: 12.5px;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+        margin-bottom: 4px;
+    }
+
+    .bee-flow-box.bee-flow-read {
+        border-color: rgba(239, 68, 68, 0.45);
+    }
+
+    .bee-flow-box.bee-flow-read strong {
+        color: #ff8f8f;
+    }
+
+    .bee-flow-box code {
+        font-family: var(--bee-mono);
+        font-size: 12.5px;
+        color: #fcd34d;
+    }
+
+    .bee-flow-arrow {
+        color: var(--bee-honey);
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1;
+        padding: 0 6px;
+        flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+        .bee-flow-step {
+            width: 100%;
+        }
+
+        .bee-flow-box {
+            max-width: none;
+            flex-grow: 1;
+        }
+    }
+</style>
+
+<!-- HEADER FISSA -->
+<header class="bee-docs-header">
+    <a href="#" class="bee-header-logo">
+        <span class="bee-header-title">BeePool</span>
+    </a>
+    <span class="bee-header-badge">v2.6.0</span>
+</header>
+
+<!-- CONTENITORE PRINCIPALE -->
+<div class="bee-docs-container">
+
+    <!-- SIDEBAR (UNICA PER TUTTA LA PAGINA) -->
+    <aside class="bee-docs-sidebar">
+        <div class="bee-sidebar-title">BeeEngine V2.2</div>
+
+        <details>
+            <summary>🌐 Link Utili</summary>
+            <ul>
+                <li><a href="https://github.com/antonioprosperi2-svg/PLAYCOMBO" target="_blank"
+                        rel="noopener noreferrer">🐙
+                        GitHub</a></li>
+                <li><a href="https://www.npmjs.com/package/beeengine" target="_blank" rel="noopener noreferrer">📦
+                        npm
+                        Registry</a></li>
+            </ul>
+        </details>
+
+        <details>
+
+            <summary>📁 Core </summary>
+            <ul>
+                <li><a href="#BeeAssetManager">BeeAssetManager .js</a></li>
+                <li><a href="#BeeEntity">BeeEntity.js</a></li>
+                <li><a href="#BeeGrid">BeeGrid.js</a></li>
+                <li><a href="#BeePool" class="is-current">BeePool.js</a></li>
+                <li><a href="#BeeSave">BeeSave.js</a></li>
+                <li><a href="#BeeSceneManager">BeeSceneManager.js</a></li>
+                <li><a href="#BeeTime">BeeTime.js</a></li>
+                <li><a href="#BeeTimer">BeeTimer.js</a></li>
+                <li><a href="#BeeTransform">BeeTransform.js</a></li>
+            </ul>
+        </details>
+        <details>
+            <summary>📁 Debug</summary>
+            <ul>
+                <li><a href="#BeeDebug">BeeDebug.js</a></li>
+
+            </ul>
+        </details>
+
+        <details>
+            <summary>📁 gameplay</summary>
+            <ul>
+                <li><a href="#BeeCollectible">BeeCollectible.js</a></li>
+                <li><a href="#BeeEnemyShooter">BeeEnemyShooter.js</a></li>
+
+                <li><a href="#BeeMenuScene">BeeMenuScene.js</a></li>
+                <li><a href="#BeeNemico">BeeNemico.js</a></li>
+                <li><a href="#BeePlatform">BeePlatform.js</a></li>
+                <li><a href="#BeePlayer">BeePlayer.js</a></li>
+            </ul>
+        </details>
+
+        <details>
+            <summary>📁 graphics</summary>
+            <ul>
+                <li><a href="#BeeAnimatedSprite">BeeAnimatedSprite.js</a></li>
+                <li><a href="#BeeCamera">BeeCamera.js</a></li>
+                <li><a href="#BeeParticleSystem">BeeParticleSystem.js</a></li>
+                <li><a href="#BeeSprite">BeeSprite.js</a></li>
+                <li><a href="#BeeSpriteSheet">BeeSpriteSheet.js</a></li>
+                <li><a href="#BeeText">BeeText.js</a></li>
+                <li><a href="#BeeTilemap">BeeTilemap.js</a></li>
+                <li><a href="#BeeTilemapLoade">BeeTilemapLoade.js</a></li>
+            </ul>
+        </details>
+        <details>
+            <summary>📁 input</summary>
+            <ul>
+                <li><a href="#BeeButton">BeeButton.js</a></li>
+                <li><a href="#BeeInput">BeeInput.js</a></li>
+                <li><a href="#BeeJoystick">BeeJoystick.js</a></li>
+                <li><a href="#BeeTouchButton">BeeTouchButton.js</a></li>
+                <li><a href="#BeeTouchControls">BeeTouchControls.js</a></li>
+                <li><a href="#BeeVirtualDPad">BeeVirtualDPad.js</a></li>
+            </ul>
+        </details>
+
+        <details>
+            <summary>📁 physics</summary>
+            <ul>
+                <li><a href="#BeeBullet">BeeBullet.js</a></li>
+                <li><a href="#BeeCollisionSystem">BeeCollisionSystem.js</a></li>
+                <li><a href="#BeeRectCollider">BeeRectCollider.js</a></li>
+            </ul>
+        </details>
+    </aside>
+
+
+    <!-- AREA CONTENUTI (TUTTI I MODULI VANNO QUI DENTRO) -->
+    <main class="bee-docs-content">
+
+        <div
+            style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
+            <div>
+                <h2 class="bee-section-title" style="margin: 0;">BeePool — Documentazione Tecnica</h2>
+                <p style="margin-top: 5px;">Object pool: prealloca, <code class="bee-inline-code">acquire</code>/<code
+                        class="bee-inline-code">release</code>, grow fino a <code class="bee-inline-code">max</code>,
+                    reclaim del più vecchio</p>
+            </div>
+            <img src="https://beeenginejs.com/wp-content/uploads/2026/09/Gemini_Generated_Image_bg7xjjbg7xjjbg7x-1-1.jpg"
+                alt="BeeEngine Mascot" width="80" height="80" style="width: 80px; height: auto; flex-shrink: 0;">
+        </div>
+
+        <div class="bee-class-card" id="BeePool">
+
+            <h3>📁 Panoramica</h3>
+
+            <p><code>BeePool</code> è la pila. Vive in <code>src/core/BeePool.js</code>, il barrel la re-esporta con
+                <code>BEE_POOL_DEFAULTS</code>. Non è un allocator tipizzato, non è un generational GC, non è un
+                <code>filter()</code> sull'array delle entity. Tiene tre collezioni private: <code>#free</code> (stack),
+                <code>#live</code> (Set), <code>#order</code> (FIFO dei vivi, per il reclaim). Serve a non fare
+                <code>new</code>/<code>destroy</code> a ogni sparo: quello è il hitch GC più comune su Canvas.</p>
+
+            <p>Quello che <strong>non</strong> è: un manager di scena, un sistema di fisica, un despawner automatico.
+                Non conosce <code>BeeEngine.entities</code>. Chi chiama <code>acquire</code> deve anche
+                <code>addEntity</code> (o usare <code>gioco.spawn</code>). Chi chiama <code>release</code> (di solito
+                <code>entity.destroy()</code> se l'oggetto è pooled) deve accettare che transform e body restano montati:
+                il teardown vero è <code>dispose()</code> / <code>clear()</code>.</p>
+
+            <div class="bee-code-block"><span class="token keyword">import</span> <span
+                    class="token punctuation">{</span> <span class="token class-name">BeePool</span><span
+                    class="token punctuation">,</span> <span class="token constant">BEE_POOL_DEFAULTS</span> <span
+                    class="token punctuation">}</span> <span class="token keyword">from</span> <span
+                    class="token string">'beeengine'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> sparks <span class="token operator">=</span> <span
+                    class="token keyword">new</span> <span class="token class-name">BeePool</span><span
+                    class="token punctuation">(</span><span class="token punctuation">{</span>
+    <span class="token function">create</span><span class="token punctuation">(</span><span
+                    class="token punctuation">)</span> <span class="token punctuation">{</span>
+        <span class="token keyword">return</span> <span class="token punctuation">{</span> <span
+                    class="token property">life</span><span class="token punctuation">:</span> <span
+                    class="token number">0</span> <span class="token punctuation">}</span><span
+                    class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token function">reset</span><span class="token punctuation">(</span>item<span
+                    class="token punctuation">,</span> life<span class="token punctuation">)</span> <span
+                    class="token punctuation">{</span>
+        item<span class="token punctuation">.</span>life <span class="token operator">=</span> life<span
+                    class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token property">initial</span><span class="token punctuation">:</span> <span
+                    class="token number">16</span><span class="token punctuation">,</span>
+    <span class="token property">max</span><span class="token punctuation">:</span> <span
+                    class="token number">64</span><span class="token punctuation">,</span>
+    <span class="token property">reclaim</span><span class="token punctuation">:</span> <span
+                    class="token boolean">false</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+
+<span class="token keyword">const</span> spark <span class="token operator">=</span> sparks<span
+                    class="token punctuation">.</span><span class="token function">acquire</span><span
+                    class="token punctuation">(</span><span class="token number">0.4</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
+sparks<span class="token punctuation">.</span><span class="token function">release</span><span
+                    class="token punctuation">(</span>spark<span class="token punctuation">)</span><span
+                    class="token punctuation">;</span></div>
+
+            <h3>📁 Acquire → release — il contratto</h3>
+
+            <p><code>acquire(...args)</code> esce sempre con un item, oppure <code>null</code>. Non lancia. L'ordine è
+                fisso: pila libera, poi grow, poi reclaim, poi nulla.</p>
+
+            <div class="bee-flow" role="region" aria-label="Flusso acquire poi release">
+                <p class="bee-flow-caption">Un ciclo: prendi, resetta, usa, rimetti in pila. Se la pila è vuota e
+                    <code>size</code> ha già toccato <code>max</code>, o rubi il più vecchio vivo o torni
+                    <code>null</code>.</p>
+                <ol class="bee-flow-row">
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>1. acquire</strong>Pop da <code>#free</code>, altrimenti
+                            <code>create</code> se <code>size &lt; max</code>, altrimenti reclaim.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>2. reset + live</strong><code>#wake</code>, poi
+                            <code>reset(item, ...args)</code>. Entra in <code>#live</code> e in
+                            <code>#order</code>.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>3. uso</strong>L'oggetto è tuo. Il pool non lo aggiorna e non
+                            lo toglie dalla scena.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box bee-flow-read"><strong>4. release</strong>Esce da live, <code>#sleep</code>,
+                            push su <code>#free</code>. Double-release è no-op.</span>
+                    </li>
+                </ol>
+            </div>
+
+            <p><code>release(item)</code> ignora <code>null</code> e ignora chi non è in <code>#live</code>. Ritorna
+                <code>this</code>. <code>releaseAll()</code> rilascia una snapshot di <code>#order</code> (non muta la
+                coda mentre ci cammina). <code>clear()</code> svuota tutto e chiama dispose: dopo, <code>size</code> è
+                0.</p>
+
+            <h3>📁 BEE_POOL_DEFAULTS</h3>
+
+            <p>Oggetto frozen. Il costruttore <strong>non</strong> fa spread dei default: legge i campi uno a uno.
+                Senza <code>create</code> (funzione) lancia <code>BeePool: serve create()</code>.</p>
+
+            <table class="bee-api-table">
+                <thead>
+                    <tr>
+                        <th>Parametro</th>
+                        <th>Default</th>
+                        <th>Significato</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>create</code></td>
+                        <td>obbligatorio</td>
+                        <td>Factory. In grow riceve gli stessi <code>...args</code> di <code>acquire</code>. In
+                            <code>prewarm</code> è chiamata senza argomenti.</td>
+                    </tr>
+                    <tr>
+                        <td><code>reset</code></td>
+                        <td><code>null</code></td>
+                        <td>Se manca, <code>acquire</code> prova <code>item.reset(...args)</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>dispose</code></td>
+                        <td><code>null</code></td>
+                        <td>Solo <code>clear()</code>. Fallback: <code>item.dispose</code>, poi
+                            <code>item.destroy</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>initial</code></td>
+                        <td><code>0</code></td>
+                        <td>Se <code>&gt; 0</code>, il costruttore chiama <code>prewarm(initial)</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>max</code></td>
+                        <td><code>256</code></td>
+                        <td>Tetto di <code>size</code>. Non finito → 256. Zero e negativi sono accettati (pool sterile).
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><code>reclaim</code></td>
+                        <td><code>true</code></td>
+                        <td>Qualsiasi valore diverso da <code>false</code> è true. Pieno + reclaim = ruba il più
+                            vecchio vivo.</td>
+                    </tr>
+                </tbody>
+            </table>
+
+            <h3>📁 Grow, max, reclaim</h3>
+
+            <p><code>size</code> è <code>available + inUse</code> (<code>#free.length + #live.size</code>). Non cresce
+                oltre <code>max</code>: <code>prewarm</code> esce al tetto, <code>acquire</code> non chiama
+                <code>create</code> se <code>size &gt;= max</code>.</p>
+
+            <p><code>prewarm(count)</code> alloca N item dormienti: <code>create()</code> senza args,
+                <code>#bind</code>, <code>#sleep</code>, push su <code>#free</code>. Fluent. Utile a boot per evitare il
+                primo hitch. Il pool di default <code>gioco.bullets</code> fa <code>initial: 32</code>,
+                <code>max: 256</code>.</p>
+
+            <p>Reclaim (default acceso): se <code>#free</code> è vuoto e sei al max, <code>#order.shift()</code> prende
+                il vivo più vecchio, lo toglie da <code>#live</code>, lo addormenta, poi lo riwake e lo resetta come un
+                acquire normale. L'oggetto è lo stesso reference: chi lo teneva in mano vede i campi cambiare sotto.
+                Con <code>reclaim: false</code> (come <code>BeeParticleSystem.particlePool</code>) <code>acquire</code>
+                torna <code>null</code> e l'emit salta quella particella.</p>
+
+            <p><code>max</code> è pubblico e mutabile a caldo. Alzarlo sblocca nuovo grow. Abbassarlo <strong>non</strong>
+                uccide i vivi in eccesso: il tetto vale solo sulle allocazioni successive.</p>
+
+            <h3>📁 Factory: create, reset, dispose</h3>
+
+            <p>Tre hook, tre momenti. <code>create</code> nasce l'istanza. <code>reset</code> la riavvolge a ogni
+                <code>acquire</code> (anche la prima volta dopo grow: <code>create(...args)</code> <em>e</em>
+                <code>reset(...args)</code>). <code>dispose</code> la smonta solo in <code>clear()</code>.</p>
+
+            <p>Se non passi <code>reset</code> ma l'item ha <code>item.reset</code>, quello viene chiamato. Stesso schema
+                in <code>clear</code>: callback <code>dispose</code>, altrimenti <code>item.dispose</code>, altrimenti
+                <code>item.destroy</code>. Prima di disporre, <code>clear</code> scrive <code>item.pool = null</code>
+                così un <code>BeeEntity.destroy</code> di fallback non rientra in <code>release</code>.</p>
+
+            <div class="bee-code-block"><span class="token comment">// gioco.bullets — factory + reset sul tipo</span>
+gioco<span class="token punctuation">.</span>bullets<span class="token punctuation">;</span> <span
+                    class="token comment">// BeePool, initial 32, max 256, reclaim true</span>
+
+<span class="token keyword">const</span> colpo <span class="token operator">=</span> gioco<span
+                    class="token punctuation">.</span>bullets<span class="token punctuation">.</span><span
+                    class="token function">acquire</span><span class="token punctuation">(</span>x<span
+                    class="token punctuation">,</span> y<span class="token punctuation">,</span> <span
+                    class="token number">0</span><span class="token punctuation">,</span> <span
+                    class="token number">280</span><span class="token punctuation">,</span> <span
+                    class="token number">10</span><span class="token punctuation">,</span> <span
+                    class="token number">10</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+gioco<span class="token punctuation">.</span><span class="token function">addEntity</span><span
+                    class="token punctuation">(</span>colpo<span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+colpo<span class="token punctuation">.</span><span class="token function">destroy</span><span
+                    class="token punctuation">(</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span> <span class="token comment">// release, non #teardown</span>
+
+gioco<span class="token punctuation">.</span><span class="token function">spawn</span><span
+                    class="token punctuation">(</span><span class="token string">'bullet'</span><span
+                    class="token punctuation">,</span> x<span class="token punctuation">,</span> y<span
+                    class="token punctuation">,</span> <span class="token number">0</span><span
+                    class="token punctuation">,</span> <span class="token number">280</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span> <span
+                    class="token comment">// acquire + addEntity se ha update</span></div>
+
+            <h3>📁 Bind, wake, sleep — il pool marca gli oggetti</h3>
+
+            <p>Non è un pool “puro”: muta i campi sull'item. <code>#bind</code> scrive <code>item.pool = this</code> se
+                è un object. <code>#wake</code> mette <code>destroyed = false</code>, <code>active = true</code>, e
+                <code>visible = true</code> solo se <code>'visible' in item</code>. <code>#sleep</code> inverte:
+                <code>destroyed = true</code>, <code>active = false</code>, nasconde se c'è <code>visible</code>, poi
+                chiama <code>detach()</code> e <code>recycle()</code> se esistono.</p>
+
+            <p>I primitivi (un <code>create</code> che torna un number) passano dal Set ma skip-ano bind/wake/sleep.
+                Una factory che torna <code>null</code> / <code>undefined</code> / <code>0</code> è un buco: l'item
+                falsy viene comunque messo in live. Non farlo.</p>
+
+            <h3>📁 Integrazione BeeEntity e BeeEngine</h3>
+
+            <p>Ogni <code>BeeEntity</code> nasce con <code>this.pool = null</code>. Il pool, all'acquire, ci scrive sé
+                stesso. Da quel momento <code>entity.destroy()</code> <strong>non</strong> chiama
+                <code>#teardown</code>: fa <code>this.pool.release(this)</code> e basta. Transform, parent (già staccato
+                da <code>#sleep → detach</code>), collider e <code>body</code> restano. Hook vuoto
+                <code>recycle()</code> sulla entity; <code>BeeBullet.recycle</code> azzera <code>age</code>/<code>vx</code>/<code>vy</code>
+                prima del <code>reset</code> dell'acquire successivo.</p>
+
+            <p>Per smontare davvero un pooled: <code>entity.dispose()</code> (azzera <code>pool</code> e teardown) oppure
+                <code>pool.clear()</code> / <code>engine.destroy()</code> che gira <code>clear</code> su ogni pool della
+                Map. Un secondo <code>destroy()</code> su un item già in pila è no-op (<code>release</code> guarda
+                <code>#live</code>).</p>
+
+            <p><code>BeeEngine</code> tiene <code>this.pools</code> (Map) e crea in costruttore
+                <code>this.bullets = createPool('bullet', { create: () =&gt; new BeeBullet(), reset: … })</code>.
+                <code>createPool(name, options)</code> accetta anche un <code>BeePool</code> già fatto.
+                <code>pool(name)</code> torna l'istanza o <code>null</code>. <code>spawn(name, ...args)</code> è
+                acquire + <code>addEntity</code> se l'item ha <code>update</code>. <code>addEntity</code> rifiuta i
+                <code>destroyed</code> e non duplica il reference già in lista: un reclaim su un bullet ancora in scena
+                lo teletrasporta, non lo pusha due volte.</p>
+
+            <p><code>BeeEnemyShooter</code> spara con <code>engine.bullets.acquire</code> + <code>addEntity</code>.
+                <code>BeeParticleSystem</code> ha un pool interno di POJO, <code>reclaim: false</code>, e compatta
+                l'array live senza <code>filter</code>.</p>
+
+            <h3>📁 Leak — cosa tiene vivo, cosa no</h3>
+
+            <p>Dimenticare <code>release</code> <strong>non</strong> è un leak JS classico: l'oggetto resta in
+                <code>#live</code> / <code>#order</code>, il pool lo ancora. È starvation della pila libera. Con
+                <code>reclaim: true</code> il più vecchio viene riciclato comunque (i “vivi dimenticati” spariscono di
+                colpo). Con <code>reclaim: false</code> a tetto <code>acquire</code> torna <code>null</code>.</p>
+
+            <p>Il leak vero sta fuori dal pool: un <code>body</code> lasciato in <code>BeePhysicsWorld</code> perché
+                <code>destroy()</code> pooled non chiama <code>body.destroy()</code>; un listener; un figlio entity non
+                staccato se hai bypassato <code>#sleep</code>. <code>recycle()</code> è il posto per azzerare lo stato
+                volatile. <code>clear()</code> è il posto per i teardown.</p>
+
+            <p><code>release</code> fa <code>#order.indexOf</code> + <code>splice</code>: O(n) sui vivi. A 256 è
+                accettabile. Non è un anello compatto.</p>
+        </div>
+
+        <div class="bee-class-card bee-ladybug" id="BeePool-note">
+            <h3>📁 Dove è facile sbagliare</h3>
+
+            <p><strong>Acquire senza addEntity.</strong> Il pool non iscrive l'oggetto al loop. O
+                <code>gioco.addEntity</code>, o <code>gioco.spawn('bullet', …)</code>. Un POJO senza
+                <code>update</code> non viene aggiunto nemmeno da <code>spawn</code>.</p>
+
+            <p><strong>Destroy pooled ≠ teardown.</strong> <code>colpo.destroy()</code> lo rimette in pila. Transform e
+                body restano. Per ucciderlo di vero: <code>dispose()</code> o <code>pool.clear()</code>. Non azzerare
+                <code>item.pool</code> a mano e poi aspettarti il recycle.</p>
+
+            <p><strong>Reclaim teletrasporta.</strong> Al max, il vivo più vecchio diventa il nuovo sparo. Chi aveva
+                ancora quel reference (array tuo, tween, collisione in corso) vede posizione e flag cambiare nello
+                stesso frame. Se il “mai rubare i vivi” ti serve, <code>reclaim: false</code> e gestisci il
+                <code>null</code>.</p>
+
+            <p><strong><code>create</code> deve tornare istanze distinte.</strong> Due acquire con lo stesso object
+                desincronizzano Set e <code>#order</code>. Factory che torna falsy sporca live con
+                <code>null</code>.</p>
+
+            <p><strong>Reset vs recycle.</strong> Sleep chiama <code>recycle</code> (rilascio). Acquire chiama
+                <code>reset</code> (rinascita). Non mettere in <code>recycle</code> la posa del prossimo sparo: non hai
+                ancora gli args.</p>
+
+            <p><strong>Prewarm senza args.</strong> <code>create()</code> a boot deve stare in piedi da sola. I parametri
+                dello spawn arrivano al <code>reset</code>.</p>
+        </div>
+
+        <div class="bee-class-card" id="BeePool-esempio">
+            <h3>📁 Esempio: pool custom e bullets di stock</h3>
+
+            <div class="bee-code-block"><span class="token keyword">import</span> <span
+                    class="token punctuation">{</span> <span class="token class-name">BeeEngine</span> <span
+                    class="token punctuation">}</span> <span class="token keyword">from</span> <span
+                    class="token string">'beeengine'</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> gioco <span class="token operator">=</span> <span
+                    class="token keyword">new</span> <span class="token class-name">BeeEngine</span><span
+                    class="token punctuation">(</span><span class="token string">'testCanvas'</span><span
+                    class="token punctuation">,</span> <span class="token number">800</span><span
+                    class="token punctuation">,</span> <span class="token number">600</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
+
+<span class="token keyword">const</span> colpo <span class="token operator">=</span> gioco<span
+                    class="token punctuation">.</span>bullets<span class="token punctuation">.</span><span
+                    class="token function">acquire</span><span class="token punctuation">(</span><span
+                    class="token number">40</span><span class="token punctuation">,</span> <span
+                    class="token number">80</span><span class="token punctuation">,</span> <span
+                    class="token number">0</span><span class="token punctuation">,</span> <span
+                    class="token number">280</span><span class="token punctuation">,</span> <span
+                    class="token number">10</span><span class="token punctuation">,</span> <span
+                    class="token number">10</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+gioco<span class="token punctuation">.</span><span class="token function">addEntity</span><span
+                    class="token punctuation">(</span>colpo<span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+
+gioco<span class="token punctuation">.</span><span class="token function">createPool</span><span
+                    class="token punctuation">(</span><span class="token string">'spark'</span><span
+                    class="token punctuation">,</span> <span class="token punctuation">{</span>
+    <span class="token function">create</span><span class="token punctuation">(</span><span
+                    class="token punctuation">)</span> <span class="token punctuation">{</span> <span
+                    class="token keyword">return</span> <span class="token punctuation">{</span> <span
+                    class="token property">life</span><span class="token punctuation">:</span> <span
+                    class="token number">0</span> <span class="token punctuation">}</span><span
+                    class="token punctuation">;</span> <span class="token punctuation">}</span><span
+                    class="token punctuation">,</span>
+    <span class="token function">reset</span><span class="token punctuation">(</span>item<span
+                    class="token punctuation">,</span> life<span class="token punctuation">)</span> <span
+                    class="token punctuation">{</span> item<span class="token punctuation">.</span>life <span
+                    class="token operator">=</span> life<span class="token punctuation">;</span> <span
+                    class="token punctuation">}</span><span class="token punctuation">,</span>
+    <span class="token property">initial</span><span class="token punctuation">:</span> <span
+                    class="token number">16</span><span class="token punctuation">,</span>
+    <span class="token property">max</span><span class="token punctuation">:</span> <span
+                    class="token number">64</span><span class="token punctuation">,</span>
+    <span class="token property">reclaim</span><span class="token punctuation">:</span> <span
+                    class="token boolean">false</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+
+gioco<span class="token punctuation">.</span>bullets<span class="token punctuation">.</span>inUse<span
+                    class="token punctuation">;</span>      <span class="token comment">// vivi</span>
+gioco<span class="token punctuation">.</span>bullets<span class="token punctuation">.</span>available<span
+                    class="token punctuation">;</span>  <span class="token comment">// dormienti in pila</span>
+gioco<span class="token punctuation">.</span>bullets<span class="token punctuation">.</span>size<span
+                    class="token punctuation">;</span>       <span class="token comment">// somma, tetto 256</span></div>
+        </div>
+
+        <div class="bee-class-card" id="BeePool-api">
+            <h3>📁 Riepilogo API</h3>
+            <p>Fluent: <code>prewarm</code>, <code>release</code>, <code>releaseAll</code>, <code>clear</code>
+                ritornano <code>this</code>. I default sono in <code>BEE_POOL_DEFAULTS</code> (frozen).
+                <code>create</code> / <code>reset</code> / <code>dispose</code> / <code>max</code> /
+                <code>reclaim</code> sull'istanza sono pubblici.</p>
+            <table class="bee-api-table">
+                <thead>
+                    <tr>
+                        <th>Membro</th>
+                        <th>Ritorna</th>
+                        <th>Scopo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>BEE_POOL_DEFAULTS</code></td>
+                        <td>oggetto frozen</td>
+                        <td><code>initial</code> 0 · <code>max</code> 256 · <code>reclaim</code> true.</td>
+                    </tr>
+                    <tr>
+                        <td><code>new BeePool(options)</code></td>
+                        <td><code>BeePool</code></td>
+                        <td>Richiede <code>create</code>. Prewarm se <code>initial &gt; 0</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>available</code></td>
+                        <td><code>number</code></td>
+                        <td>Lunghezza di <code>#free</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>inUse</code></td>
+                        <td><code>number</code></td>
+                        <td><code>#live.size</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>size</code></td>
+                        <td><code>number</code></td>
+                        <td><code>available + inUse</code>. Tetto pratico: <code>max</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>prewarm(count)</code></td>
+                        <td><code>this</code></td>
+                        <td>Alloca dormienti con <code>create()</code> senza args, fino a <code>max</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>acquire(...args)</code></td>
+                        <td>item o <code>null</code></td>
+                        <td>Pop / grow / reclaim. Poi bind, wake, reset. <code>null</code> se pieno e non reclaim.</td>
+                    </tr>
+                    <tr>
+                        <td><code>release(item)</code></td>
+                        <td><code>this</code></td>
+                        <td>No-op se non è live. Sleep + push free. O(n) su <code>#order</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>releaseAll()</code></td>
+                        <td><code>this</code></td>
+                        <td>Rilascia tutti i vivi (snapshot di <code>#order</code>).</td>
+                    </tr>
+                    <tr>
+                        <td><code>clear()</code></td>
+                        <td><code>this</code></td>
+                        <td><code>pool = null</code> + dispose/destroy di ogni item. Size a zero.</td>
+                    </tr>
+                    <tr>
+                        <td><code>create</code> / <code>reset</code> / <code>dispose</code></td>
+                        <td>funzione / <code>null</code></td>
+                        <td>Hook pubblici. <code>reset</code>/<code>dispose</code> sono <code>null</code> se non passati.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><code>max</code> / <code>reclaim</code></td>
+                        <td><code>number</code> / <code>boolean</code></td>
+                        <td>Pubblici, mutabili. Abbassare <code>max</code> non uccide i vivi extra.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+    </main>
+
+
+</div>
+
+<!-- PULSANTE "COPIA CODICE" (auto-applicato a .bee-code-block e <pre><code>) -->
+<script>
+    (function () {
+        if (window.__beeDocsCopyInit) return;
+        window.__beeDocsCopyInit = true;
+
+        function copyText(text, btn) {
+            var done = function () {
+                btn.textContent = '✔ Copiato';
+                btn.classList.add('bee-copied');
+                setTimeout(function () {
+                    btn.textContent = '⧉ Copia codice';
+                    btn.classList.remove('bee-copied');
+                }, 1600);
+            };
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(text).then(done, function () { fallback(text, done); });
+            } else {
+                fallback(text, done);
+            }
+        }
+
+        function fallback(text, done) {
+            var ta = document.createElement('textarea');
+            ta.value = text;
+            ta.setAttribute('readonly', '');
+            ta.style.position = 'fixed';
+            ta.style.top = '-1000px';
+            document.body.appendChild(ta);
+            ta.select();
+            try { document.execCommand('copy'); done(); } catch (e) { }
+            document.body.removeChild(ta);
+        }
+
+        /* Rimuove il rientro comune ereditato dall'indentazione dell'HTML,
+           senza toccare la struttura relativa del codice */
+        function dedent(block) {
+            var lines = block.innerHTML.split('\n');
+            if (lines.length < 2) return;
+
+            var min = Infinity;
+            for (var i = 1; i < lines.length; i++) {
+                if (!lines[i].trim()) continue;
+                var pad = lines[i].match(/^[ \t]*/)[0].length;
+                if (pad < min) min = pad;
+            }
+            if (!min || min === Infinity) return;
+
+            var re = new RegExp('^[ \\t]{0,' + min + '}');
+            for (var j = 1; j < lines.length; j++) lines[j] = lines[j].replace(re, '');
+            block.innerHTML = lines.join('\n').replace(/^\s*\n/, '').replace(/\s+$/, '');
+        }
+
+        function enhance(block) {
+            if (block.dataset.beeCopy === '1') return;
+            block.dataset.beeCopy = '1';
+            dedent(block);
+
+            var wrap = document.createElement('div');
+            wrap.className = 'bee-code-wrap';
+            block.parentNode.insertBefore(wrap, block);
+            wrap.appendChild(block);
+
+            var btn = document.createElement('button');
+            btn.type = 'button';
+            btn.className = 'bee-copy-btn';
+            btn.textContent = '⧉ Copia codice';
+            btn.setAttribute('aria-label', 'Copia il codice');
+            btn.addEventListener('click', function () {
+                copyText(block.innerText.replace(/^\s*\n/, '').replace(/\s+$/, ''), btn);
+            });
+            wrap.appendChild(btn);
+            block.classList.add('bee-has-copy');
+        }
+
+        function init() {
+            var blocks = document.querySelectorAll('.bee-code-block');
+            for (var i = 0; i < blocks.length; i++) enhance(blocks[i]);
+
+            var codes = document.querySelectorAll('.bee-docs-content pre > code');
+            for (var j = 0; j < codes.length; j++) enhance(codes[j].parentNode);
+        }
+
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', init);
+        } else {
+            init();
+        }
+    })();
+</script>
