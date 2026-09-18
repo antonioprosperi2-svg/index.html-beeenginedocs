@@ -16,6 +16,7 @@ Questo spazio raccoglie le guide, gli esempi pratici e le spiegazioni di tutti i
 * **🐞 BeeLadybug (v2.4.0):** Il modulo dedicato al debug visivo e alle metriche in tempo reale (accessibile tramite i tasti di scelta rapida `F2`, `F3`, `F4`).
 * **⏱ BeeTime:** Orologio unico del core loop (`src/core/BeeTime.html`): `dt` di simulazione, `unscaledDt` reale, pausa/F4, `timeScale`, accumulator per `BeePhysicsWorld`.
 * **⏱ BeeTimer:** Cooldown e loop di evento (`src/core/BeeTimer.html`): `gioco.after` / `gioco.every`, clock `gioco.timers`, assi scaled/unscaled.
+* **🎞 BeeTimeline:** Sequenze di tween (`src/core/BeeTimeline.html`): `to`/`wait`/`call`, `at` per i paralleli, clock `gioco.tweens`.
 * **🧭 BeeTransform:** Trasformata 2D affine (`src/core/BeeTransform.html`): `x`/`y` locali, world lazy, parent/child, `setWorldOrigin`.
 * **♻️ BeePool:** Object pool (`src/core/BeePool.html`): `acquire`/`release`, grow fino a `max`, `reclaim` del più vecchio, factory `create`/`reset`.
 * **⚙️ Fisica & Input:** Gestione dei comandi e rilevamento delle collisioni.
