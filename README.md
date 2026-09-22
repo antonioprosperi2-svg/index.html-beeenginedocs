@@ -21,6 +21,7 @@ Questo spazio raccoglie le guide, gli esempi pratici e le spiegazioni di tutti i
 * **🧭 BeeTransform:** Trasformata 2D affine (`src/core/BeeTransform.html`): `x`/`y` locali, world lazy, parent/child, `setWorldOrigin`.
 * **♻️ BeePool:** Object pool (`src/core/BeePool.html`): `acquire`/`release`, grow fino a `max`, `reclaim` del più vecchio, factory `create`/`reset`.
 * **🧱 BeePrefab:** Catalogo di ricette (`src/core/BeePrefab.html`): `define`/`spawn`, `extend`, wave e oggetti Tiled, catalogo `gioco.prefabs`.
+* **🧭 BeePathfinder:** A* e flow field su griglia (`src/core/BeePathfinder.html`): `find`/`track`/`follow`/`chase`, ostacoli `setBlocked`, catalogo `gioco.pathfinder`.
 * **⚙️ Fisica & Input:** Gestione dei comandi e rilevamento delle collisioni.
 
 ---
