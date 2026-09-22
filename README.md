@@ -20,6 +20,7 @@ Questo spazio raccoglie le guide, gli esempi pratici e le spiegazioni di tutti i
 * **🎞 BeeTimeline:** Sequenze di tween (`src/core/BeeTimeline.html`): `to`/`wait`/`call`, `at` per i paralleli, clock `gioco.tweens`.
 * **🧭 BeeTransform:** Trasformata 2D affine (`src/core/BeeTransform.html`): `x`/`y` locali, world lazy, parent/child, `setWorldOrigin`.
 * **♻️ BeePool:** Object pool (`src/core/BeePool.html`): `acquire`/`release`, grow fino a `max`, `reclaim` del più vecchio, factory `create`/`reset`.
+* **🧱 BeePrefab:** Catalogo di ricette (`src/core/BeePrefab.html`): `define`/`spawn`, `extend`, wave e oggetti Tiled, catalogo `gioco.prefabs`.
 * **⚙️ Fisica & Input:** Gestione dei comandi e rilevamento delle collisioni.
 
 ---
