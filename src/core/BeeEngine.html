@@ -834,12 +834,12 @@
 
             <h3>📁 Panoramica</h3>
 
-            <p><code>BeeEngine</code> è la facciata. Vive in <code>BeeEngine.js</code> (radice del package),
+            <p><code>BeeEngine</code> è la facciata. Vive in <code>BeeEngine.js</code> (radice del package);
                 <code>index.js</code> è solo <code>export * from './BeeEngine.js'</code>. Non è una scena, non è
-                un'entity, non è il collision system. Costruisce i sottosistemi, tiene il canvas, e fa girare
+                un'entity, non è il collision system. Costruisce i sottosistemi, tiene il canvas e fa girare
                 <strong>un</strong> <code>requestAnimationFrame</code>. I moduli (time, scenes, tweens, timers,
                 physics, pools, prefabs, pathfinder, ladybug) non si auto-avviano: li chiama il loop, in un
-                ordine fisso.</p>
+                ordine fisso — oppure li chiami tu.</p>
 
             <p>Quello che <strong>non</strong> è: un ECS, un scene graph proprietario, un runner di
                 <code>collisions.run()</code>. Le entity stanno in due liste (motore o scena). Il disegno lo
@@ -888,8 +888,9 @@ gioco<span class="token punctuation">.</span><span class="token function">start<
 
             <div class="bee-flow" role="region" aria-label="Flusso del loop">
                 <p class="bee-flow-caption">Ordine reale di <code>loop(timestamp)</code>. La pausa ferma
-                    scene, entity e fisica. Non ferma time/timers/tweens/audio, né il callback
-                    <code>update</code>, né il draw.</p>
+                    scene, entity e fisica. I clock vengono comunque <code>tick</code>-ati: i timer/tween
+                    scalati vedono <code>dt = 0</code>, quelli <code>unscaled</code> no. Il callback
+                    <code>update</code> e il draw girano sempre.</p>
                 <ol class="bee-flow-row">
                     <li class="bee-flow-step">
                         <span class="bee-flow-box"><strong>1. orologi</strong><code>time.tick</code> →
@@ -1017,8 +1018,8 @@ gioco<span class="token punctuation">.</span><span class="token function">start<
                 disgiunte. Se pushti a mano nello stesso array due volte, o in tutte e due le
                 liste, l'entity prende due <code>update</code> nello stesso frame.</p>
 
-            <p><code>setScene(name, data)</code> fa <code>this.entities.length = 0</code>
-                <strong>senza</strong> <code>destroy</code> sulle entity del motore, poi
+            <p><code>setScene(name, data)</code> chiama <code>destroy()</code> su ogni entity
+                di <code>engine.entities</code> che lo espone, poi svuota l'array, poi
                 <code>scenes.change</code>. <code>change</code> è replace: esce la vecchia
                 (sweep + <code>entity.destroy</code>, salvo <code>persistEntities</code>), entra
                 la nuova. Stesso nome = restart. Un <code>change</code> dentro
@@ -1052,8 +1053,9 @@ gioco<span class="token punctuation">.</span><span class="token function">start<
                 <code>canvas.width/height</code> né <code>ui</code>. Il backing store resta
                 800×600 (o quello del costruttore); <code>BeeInput.getCanvasPosition</code>
                 ricalcola dal <code>getBoundingClientRect</code>, quindi il click resta
-                allineato. Due chiamate di fila: il listener vecchio non viene rimosso (leak).
-                <code>destroy</code> toglie solo l'ultimo.</p>
+                allineato. Una seconda chiamata stacca il listener precedente e ne registra
+                uno nuovo (niente doppio resize). <code>destroy</code> toglie quello
+                corrente.</p>
 
             <h3>📁 Collisioni</h3>
 
@@ -1074,10 +1076,11 @@ gioco<span class="token punctuation">.</span><span class="token function">start<
 
             <p><code>destroy()</code> fa <code>stop</code>, poi
                 <code>scenes.destroy</code> (leave + sweep di tutte le scene),
-                <code>entities.length = 0</code> (niente <code>destroy</code> sulle entity
-                rimaste solo nel motore), <code>events = {}</code>. Stacca resize e unlock
-                audio, distrugge debug / audio / ui, <code>clear</code> su timers, tweens,
-                physics, pools. <code>bullets</code> diventa <code>null</code>.</p>
+                <code>entities.length = 0</code> <strong>senza</strong> <code>destroy</code>
+                sulle entity rimaste solo nel motore (diverso da <code>setScene</code>),
+                <code>events = {}</code>. Stacca resize e unlock audio, distrugge debug /
+                audio / ui, <code>clear</code> su timers, tweens, physics, pools.
+                <code>bullets</code> diventa <code>null</code>.</p>
 
             <p>Non tocca: listener di <code>BeeInput</code>,
                 <code>touchControls.destroy</code>, <code>collisions.clear</code>,
@@ -1176,20 +1179,22 @@ gioco<span class="token punctuation">.</span><span class="token function">start<
             <p><strong>Pausa ≠ stop.</strong> <code>pause</code> tiene il rAF e il callback
                 <code>update</code>. <code>stop</code> spegne il frame. Il menu di pausa va
                 nel callback utente (o in UI), non in <code>scene.update</code> — quello
-                viene saltato.</p>
+                viene saltato. Dopo <code>stop</code>, <code>resume()</code> riaccende il
+                loop da solo.</p>
 
             <p><strong>Due liste.</strong> Con scena corrente <code>addEntity</code> non
-                scrive <code>engine.entities</code>. <code>setScene</code> svuota la lista
-                motore senza <code>destroy</code>: le entity lì restano vive, orfane del
-                loop.</p>
+                scrive <code>engine.entities</code>. <code>setScene</code> distrugge e
+                svuota la lista motore; <code>destroy()</code> del motore, invece, svuota
+                senza <code>entity.destroy</code>.</p>
 
             <p><strong><code>start</code> mentre gira è muto.</strong> Per cambiare
                 update/render: <code>stop</code> poi <code>start(nuovo)</code>, oppure
                 assegna <code>gioco.update</code> a mano.</p>
 
-            <p><strong>Resize CSS.</strong> Letterbox, non cambio di risoluzione logica.
-                Due <code>enableAutoResize</code> = due listener. <code>destroy</code> non
-                stacca <code>BeeInput</code>.</p>
+            <p><strong>Resize CSS, input residuo.</strong> Letterbox, non cambio di
+                risoluzione logica. Una seconda <code>enableAutoResize</code> sostituisce
+                il listener. <code>destroy</code> non stacca <code>BeeInput</code> né
+                <code>touchControls</code>.</p>
         </div>
 
         <div class="bee-class-card" id="BeeEngine-esempio">
@@ -1213,11 +1218,12 @@ gioco<span class="token punctuation">.</span><span class="token function">enable
                     class="token punctuation">)</span><span class="token punctuation">;</span>
 gioco<span class="token punctuation">.</span><span class="token function">setGrid</span><span
                     class="token punctuation">(</span><span class="token keyword">new</span> <span
-                    class="token class-name">BeeGrid</span><span class="token punctuation">(</span><span
-                    class="token number">25</span><span class="token punctuation">,</span> <span
-                    class="token number">18</span><span class="token punctuation">,</span> <span
-                    class="token number">32</span><span class="token punctuation">)</span><span
-                    class="token punctuation">)</span><span class="token punctuation">;</span>
+                    class="token class-name">BeeGrid</span><span
+                    class="token punctuation">(</span><span class="token number">25</span><span
+                    class="token punctuation">,</span> <span class="token number">18</span><span
+                    class="token punctuation">,</span> <span class="token number">32</span><span
+                    class="token punctuation">)</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
 
 <span class="token keyword">const</span> main <span class="token operator">=</span> <span
                     class="token punctuation">{</span>
@@ -1348,7 +1354,8 @@ gioco<span class="token punctuation">.</span><span class="token function">start<
                     <tr>
                         <td><code>setScene(name, data?)</code></td>
                         <td>—</td>
-                        <td>Svuota <code>entities</code>, poi <code>scenes.change</code>.</td>
+                        <td>Distrugge le entity del motore, svuota la lista, poi
+                            <code>scenes.change</code>.</td>
                     </tr>
                     <tr>
                         <td><code>setGrid(grid)</code></td>
@@ -1381,7 +1388,8 @@ gioco<span class="token punctuation">.</span><span class="token function">start<
                         <td><code>enableAutoResize</code> / <code>enableTouchControls</code>
                             / <code>enableJoystick</code></td>
                         <td>void / overlay</td>
-                        <td>CSS letterbox; overlay touch. Joystick ignora options.</td>
+                        <td>CSS letterbox (listener sostituito se richiami);
+                            overlay touch. Joystick ignora options.</td>
                     </tr>
                     <tr>
                         <td><code>enableLadybug(options?)</code></td>
@@ -1407,8 +1415,9 @@ gioco<span class="token punctuation">.</span><span class="token function">start<
                     <tr>
                         <td><code>destroy()</code></td>
                         <td>—</td>
-                        <td>Stop + sweep scene + clear clock/physics/pools. Input resta
-                            agganciato.</td>
+                        <td>Stop + sweep scene + clear clock/physics/pools. Input e
+                            touch overlay restano agganciati. Entity solo-motore:
+                            array svuotato, niente <code>destroy</code>.</td>
                     </tr>
                     <tr>
                         <td><code>time</code> <code>scenes</code> <code>input</code>
