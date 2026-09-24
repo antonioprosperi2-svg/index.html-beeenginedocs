@@ -613,14 +613,107 @@
             white-space: nowrap;
         }
     }
+
+    /* ==========================================
+       5. FLUSSO (solo questa pagina)
+       ========================================== */
+    .bee-flow {
+        margin: 16px 0 4px 0;
+        padding: 16px 16px 14px 16px;
+        background: var(--bee-surface-2);
+        border: 1px solid var(--bee-line);
+        border-left: 4px solid var(--bee-honey);
+        border-radius: 10px;
+    }
+
+    .bee-flow-caption {
+        color: var(--bee-text-dim);
+        font-size: 13.5px;
+        line-height: 1.55;
+        margin: 0 0 12px 0;
+    }
+
+    .bee-flow-row {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: stretch;
+        gap: 8px 0;
+        margin: 0;
+        padding: 0;
+    }
+
+    .bee-flow-step {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        max-width: 100%;
+    }
+
+    .bee-flow-box {
+        display: block;
+        min-width: 7.5rem;
+        max-width: 14rem;
+        padding: 10px 12px;
+        background: var(--bee-surface);
+        border: 1px solid var(--bee-line-honey);
+        border-radius: 8px;
+        color: var(--bee-text);
+        font-size: 13.5px;
+        line-height: 1.45;
+    }
+
+    .bee-flow-box strong {
+        display: block;
+        color: var(--bee-honey);
+        font-family: var(--bee-mono);
+        font-size: 12.5px;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+        margin-bottom: 4px;
+    }
+
+    .bee-flow-box.bee-flow-read {
+        border-color: rgba(239, 68, 68, 0.45);
+    }
+
+    .bee-flow-box.bee-flow-read strong {
+        color: #ff8f8f;
+    }
+
+    .bee-flow-box code {
+        font-family: var(--bee-mono);
+        font-size: 12.5px;
+        color: #fcd34d;
+    }
+
+    .bee-flow-arrow {
+        color: var(--bee-honey);
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1;
+        padding: 0 6px;
+        flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+        .bee-flow-step {
+            width: 100%;
+        }
+
+        .bee-flow-box {
+            max-width: none;
+            flex-grow: 1;
+        }
+    }
 </style>
 
 <!-- HEADER FISSA -->
 <header class="bee-docs-header">
     <a href="#" class="bee-header-logo">
-        <span class="bee-header-title">Documentazione mettere la classe</span>
+        <span class="bee-header-title">BeeCollectible</span>
     </a>
-    <span class="bee-header-badge">v2.2.0</span>
+    <span class="bee-header-badge">v2.8.1</span>
 </header>
 
 <!-- CONTENITORE PRINCIPALE -->
@@ -646,11 +739,26 @@
 
                 <summary>📁 Core </summary>
                 <ul>
+                    <li><a href="#BeeEngine">BeeEngine.js</a></li>
                     <li><a href="#BeeAssetManager">BeeAssetManager .js</a></li>
+                    <li><a href="#BeeEntity">BeeEntity.js</a></li>
                     <li><a href="#BeeGrid">BeeGrid.js</a></li>
+                    <li><a href="#BeePathfinder">BeePathfinder.js</a></li>
+                    <li><a href="#BeePool">BeePool.js</a></li>
+                    <li><a href="#BeePrefab">BeePrefab.js</a></li>
                     <li><a href="#BeeSave">BeeSave.js</a></li>
                     <li><a href="#BeeSceneManager">BeeSceneManager.js</a></li>
+                    <li><a href="#BeeTime">BeeTime.js</a></li>
+                    <li><a href="#BeeTimeline">BeeTimeline.js</a></li>
                     <li><a href="#BeeTimer">BeeTimer.js</a></li>
+                    <li><a href="#BeeTween">BeeTween.js</a></li>
+                    <li><a href="#BeeTransform">BeeTransform.js</a></li>
+                </ul>
+            </details>
+            <details>
+                <summary>📁 Debug</summary>
+                <ul>
+                    <li><a href="#BeeLadybug">BeeLadybug.js</a></li>
                 </ul>
             </details>
 
@@ -659,7 +767,6 @@
                 <ul>
                     <li><a href="#BeeCollectible" class="is-current">BeeCollectible.js</a></li>
                     <li><a href="#BeeEnemyShooter">BeeEnemyShooter.js</a></li>
-                    <li><a href="#BeeEntity">BeeEntity.js</a></li>
                     <li><a href="#BeeMenuScene">BeeMenuScene.js</a></li>
                     <li><a href="#BeeNemico">BeeNemico.js</a></li>
                     <li><a href="#BeePlatform">BeePlatform.js</a></li>
@@ -706,92 +813,313 @@
     <!-- AREA CONTENUTI (TUTTI I MODULI VANNO QUI DENTRO) -->
     <main class="bee-docs-content">
 
-        <!-- SEZIONE 1 -->
-        <h2 class="bee-section-title"></h2>
+        <div
+            style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
+            <div>
+                <h2 class="bee-section-title" style="margin: 0;">BeeCollectible — Documentazione Tecnica</h2>
+                <p style="margin-top: 5px;">Bonus che cade:
+                    <code class="bee-inline-code">reset</code> /
+                    <code class="bee-inline-code">collect</code>,
+                    moto su <code class="bee-inline-code">worldY</code>
+                </p>
+            </div>
+            <img src="https://beeenginejs.com/wp-content/uploads/2026/09/Gemini_Generated_Image_bg7xjjbg7xjjbg7x-1-1.jpg"
+                alt="BeeEngine Mascot" width="80" height="80" style="width: 80px; height: auto; flex-shrink: 0;">
+        </div>
 
-        <div class="bee-class-card" id="radme">****>>>>>>>> mettere id >>>>>>>>>>*****
-            <h3> </h3>
+        <div class="bee-class-card" id="BeeCollectible">
 
-            <p></p>
+            <h3>📁 Panoramica</h3>
 
-            <p> </p>
+            <p><code>BeeCollectible</code> è un item che cade. Vive in
+                <code>src/gameplay/BeeCollectible.js</code>, estende
+                <code>BeeEntity</code>. Non è un collider, non è uno score
+                manager, non è un pool. Cade a <code>speed</code> costante
+                sullo <strong>asse mondo</strong>; se passa sotto
+                <code>canvasHeight</code> si ritela in cima
+                (<code>reset</code>). Se lo raccogli chiami
+                <code>collect(collector)</code>: parte <code>onCollect</code>,
+                poi <code>destroy()</code> (release se è pooled).</p>
 
-            <p>📁 </p>
+            <p>Quello che <strong>non</strong> è: un pickup automatico. La
+                scena deve vedere l'overlap (demo:
+                <code>collisions.overlap('player', 'loot', …)</code>) e
+                chiamare <code>collect</code>. <code>value</code> è solo un
+                numero: a incrementare lo score ci pensa
+                <code>onCollect</code> (o tu).</p>
 
-            <div class="bee-code-block"></div>
+            <p>v2.8.1: <code>collect</code>, moto su <code>worldY</code>,
+                <code>gravity/vx/vy</code> a zero così
+                <code>integrate()</code> non lo sposta. Test in
+                <code>scripts/test-beecollectible.mjs</code>.</p>
 
-            <p>📁</p>
+            <div class="bee-code-block"><span class="token keyword">import</span> <span
+                    class="token punctuation">{</span> <span class="token class-name">BeeEngine</span><span
+                    class="token punctuation">,</span> <span class="token class-name">BeeCollectible</span><span
+                    class="token punctuation">,</span> <span class="token class-name">BeePlayer</span> <span
+                    class="token punctuation">}</span> <span class="token keyword">from</span> <span
+                    class="token string">'beeengine'</span><span class="token punctuation">;</span>
 
-            <div class="bee-code-block"></div>
+<span class="token keyword">const</span> item <span class="token operator">=</span> <span
+                    class="token keyword">new</span> <span class="token class-name">BeeCollectible</span><span
+                    class="token punctuation">(</span><span class="token number">800</span><span
+                    class="token punctuation">,</span> <span class="token number">600</span><span
+                    class="token punctuation">,</span> <span class="token keyword">null</span><span
+                    class="token punctuation">,</span> <span class="token number">20</span><span
+                    class="token punctuation">,</span> <span class="token number">20</span><span
+                    class="token punctuation">,</span> <span class="token number">1</span><span
+                    class="token punctuation">,</span> <span class="token punctuation">(</span>it<span
+                    class="token punctuation">,</span> who<span class="token punctuation">)</span> <span
+                    class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>who<span
+                    class="token punctuation">.</span>addScore<span class="token punctuation">)</span> who<span
+                    class="token punctuation">.</span><span class="token function">addScore</span><span
+                    class="token punctuation">(</span>it<span class="token punctuation">.</span>value<span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
 
-            <p>📁</p>
+<span class="token comment">// nella scena, dopo collisions.run() / overlap:</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>player<span
+                    class="token punctuation">.</span><span class="token function">collidesWith</span><span
+                    class="token punctuation">(</span>item<span
+                    class="token punctuation">)</span><span class="token punctuation">)</span> item<span
+                    class="token punctuation">.</span><span class="token function">collect</span><span
+                    class="token punctuation">(</span>player<span
+                    class="token punctuation">)</span><span class="token punctuation">;</span></div>
 
-            <div class="bee-code-block"> </div>
+            <h3>📁 Due uscite: caduta e collect</h3>
 
-            <p>📁</p>
+            <div class="bee-flow" role="region" aria-label="Flusso Collectible">
+                <p class="bee-flow-caption">Non sono la stessa cosa. Sotto lo
+                    schermo si ritela. Collect toglie l'entity (o la
+                    rimette nel pool).</p>
+                <ol class="bee-flow-row">
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>1. cade</strong><code>worldY += speed * dt</code>.
+                            Early-return se destroyed o inactive.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>2a. fondo</strong>Se
+                            <code>worldY &gt; canvasHeight</code> →
+                            <code>reset()</code> (x random, y =
+                            <code>-height</code>, speed 100–250).</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box bee-flow-read"><strong>2b. collect</strong><code>onCollect(this, collector)</code>
+                            poi <code>destroy()</code>. No-op se spento.
+                            Non ritela.</span>
+                    </li>
+                </ol>
+            </div>
 
-            <div class="bee-code-block"></div>
+            <p>Il costruttore azzera <code>gravity</code>,
+                <code>vx</code>, <code>vy</code>. Il moto è solo
+                <code>speed</code>: <code>super.update</code> chiama
+                <code>integrate()</code> ma con quei tre a zero non
+                aggiunge spostamento. Con un parent,
+                <code>worldY</code> e <code>y</code> differiscono: il
+                test lo copre, usa sempre il mondo.</p>
 
-            <p>📁</p>
+            <h3>📁 Scena, collisioni, prefab</h3>
 
-            <div class="bee-code-block"></div>
+            <p>La demo <code>examples/demo.js</code> mette l'item nel
+                gruppo <code>loot</code> e fa:</p>
 
-            <p>📁 </p>
+            <div class="bee-code-block">game<span class="token punctuation">.</span>collisions<span
+                    class="token punctuation">.</span><span class="token function">overlap</span><span
+                    class="token punctuation">(</span><span class="token string">'player'</span><span
+                    class="token punctuation">,</span> <span class="token string">'loot'</span><span
+                    class="token punctuation">,</span> <span class="token punctuation">(</span>p<span
+                    class="token punctuation">,</span> item<span class="token punctuation">)</span> <span
+                    class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>item <span
+                    class="token operator">&amp;&amp;</span> <span class="token keyword">typeof</span> item<span
+                    class="token punctuation">.</span>collect <span class="token operator">===</span> <span
+                    class="token string">'function'</span><span class="token punctuation">)</span> item<span
+                    class="token punctuation">.</span><span class="token function">collect</span><span
+                    class="token punctuation">(</span>p<span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span></div>
 
-            <div class="bee-class-card"></div>
+            <p>Il prefab di stock <code>'collectible'</code> costruisce
+                così: canvas dal motore se manca,
+                <code>textureKey ?? sprite</code>,
+                <code>value ?? score ?? 1</code>,
+                <code>onCollect</code> opzionale. Non è
+                <code>gioco.spawn</code> (quello è il pool).</p>
 
-            <p>📁 </p>
+            <h3>📁 Pool</h3>
 
-            <div class="bee-class-card"></div>
+            <p><code>BeeEntity.destroy</code> con <code>item.pool</code>
+                fa <code>pool.release</code>. Il pool in
+                <code>#sleep</code> chiama <code>recycle()</code>
+                (hook vuoto: oggi non c'è stato volatile) e in
+                <code>acquire</code> chiama <code>item.reset()</code>
+                se non hai passato un <code>reset</code> al
+                <code>BeePool</code>. Quindi: collect → release →
+                prossimo <code>acquire</code> ritela in cima.</p>
+        </div>
 
-            <p> 📁 </p>
+        <div class="bee-class-card bee-ladybug" id="BeeCollectible-note">
+            <h3>📁 Dove è facile sbagliare</h3>
 
-            <div class="bee-class-card"></div>
+            <p><strong><code>collect</code> non è un reset.</strong>
+                Sotto lo schermo l'item ricompare. Raccoglilo e sparisce
+                (o torna a dormire nel pool). La demo ha un solo
+                collectible: dopo il pickup è finito, a meno di
+                <code>acquire</code> / <code>new</code> di nuovo.</p>
 
-            <p> 📁 </p>
+            <p><strong>Nessun auto-pickup.</strong> Senza
+                <code>overlap</code> o <code>collidesWith</code> +
+                <code>collect</code>, cade e basta. Ladybug può
+                colorarlo di rosso (AABB) senza che sia raccolto.</p>
 
-            <div class="bee-class-card"></div>
+            <p><strong><code>value</code> non incrementa lo score.</strong>
+                È un campo. <code>onCollect</code> deve chiamare
+                <code>collector.addScore(item.value)</code> (come la
+                demo) o fare altro.</p>
 
-            <p>📁 </p>
+            <p><strong>Canvas size è del costruttore.</strong>
+                <code>canvasWidth/Height</code> non seguono un resize
+                successivo. Il prefab legge
+                <code>engine.canvas</code> solo allo spawn.</p>
 
-            <div class="bee-class-card"> </div>
+            <p><strong>Non rimettere <code>gravity</code> / <code>vy</code>.</strong>
+                Il costruttore li azzera apposta. Se li riscrivi,
+                <code>integrate()</code> si somma a
+                <code>speed</code>: di nuovo il doppio moto.</p>
+        </div>
 
-            <p>📁 </p>
+        <div class="bee-class-card" id="BeeCollectible-esempio">
+            <h3>📁 Esempio: prefab + overlap</h3>
 
-            <div class="bee-class-card"></div>
+            <div class="bee-code-block"><span class="token keyword">const</span> gioco <span
+                    class="token operator">=</span> <span class="token keyword">new</span> <span
+                    class="token class-name">BeeEngine</span><span class="token punctuation">(</span><span
+                    class="token string">'testCanvas'</span><span class="token punctuation">,</span> <span
+                    class="token number">800</span><span class="token punctuation">,</span> <span
+                    class="token number">600</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
 
-            <p>📁</p>
+<span class="token keyword">const</span> item <span class="token operator">=</span> gioco<span
+                    class="token punctuation">.</span>prefabs<span class="token punctuation">.</span><span
+                    class="token function">spawn</span><span class="token punctuation">(</span><span
+                    class="token string">'collectible'</span><span class="token punctuation">,</span> <span
+                    class="token punctuation">{</span>
+    <span class="token property">value</span><span class="token punctuation">:</span> <span
+                    class="token number">5</span><span class="token punctuation">,</span>
+    <span class="token property">onCollect</span><span class="token punctuation">:</span> <span
+                    class="token punctuation">(</span>it<span class="token punctuation">,</span> who<span
+                    class="token punctuation">)</span> <span class="token operator">=&gt;</span> who<span
+                    class="token punctuation">.</span><span class="token function">addScore</span><span
+                    class="token punctuation">(</span>it<span class="token punctuation">.</span>value<span
+                    class="token punctuation">)</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
 
-            <div class="bee-class-card"> </div>
+gioco<span class="token punctuation">.</span>collisions<span class="token punctuation">.</span><span
+                    class="token function">setGroup</span><span class="token punctuation">(</span><span
+                    class="token string">'loot'</span><span class="token punctuation">,</span> <span
+                    class="token punctuation">[</span>item<span class="token punctuation">]</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
+gioco<span class="token punctuation">.</span>collisions<span class="token punctuation">.</span><span
+                    class="token function">overlap</span><span class="token punctuation">(</span><span
+                    class="token string">'player'</span><span class="token punctuation">,</span> <span
+                    class="token string">'loot'</span><span class="token punctuation">,</span> <span
+                    class="token punctuation">(</span>p<span class="token punctuation">,</span> it<span
+                    class="token punctuation">)</span> <span class="token operator">=&gt;</span> it<span
+                    class="token punctuation">.</span><span class="token function">collect</span><span
+                    class="token punctuation">(</span>p<span class="token punctuation">)</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span></div>
+        </div>
 
-            <p>📁 </p>
-
-            <div class="bee-class-card"> </div>
-
-            <p> 📁 </p>
-
-            <div class="bee-code-block"></div>
-
-            <p>📁</p>
-
-            <div class="bee-code-block"></div>
-
-
-            <p>📁 </p>
-
-            <div class="bee-code-block"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-code-block"></div>
-
-            <p> 📁</p>
-
-            <div class="bee-code-block"> </div>
-
-
-
-
+        <div class="bee-class-card" id="BeeCollectible-api">
+            <h3>📁 Riepilogo API</h3>
+            <p>Costruttore posizionale (non un options bag):
+                canvas, texture, size, value, onCollect. Fluent non c'è:
+                i metodi di vita tornano <code>undefined</code> tranne
+                quelli ereditati da <code>BeeEntity</code>.</p>
+            <table class="bee-api-table">
+                <thead>
+                    <tr>
+                        <th>Membro</th>
+                        <th>Ritorna</th>
+                        <th>Scopo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>new BeeCollectible(cw, ch, textureKey?, w?, h?, value?, onCollect?)</code></td>
+                        <td><code>BeeCollectible</code></td>
+                        <td>Default 800×600, 20×20, value 1.
+                            Azzera gravity/vx/vy e chiama
+                            <code>reset()</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>value</code> / <code>onCollect</code></td>
+                        <td><code>number</code> / fn o null</td>
+                        <td>Ricompensa e hook. Lo score lo fai tu
+                            nell'hook.</td>
+                    </tr>
+                    <tr>
+                        <td><code>speed</code></td>
+                        <td><code>number</code></td>
+                        <td>Pixel/secondo. <code>reset</code> la
+                            randomizza 100–250.</td>
+                    </tr>
+                    <tr>
+                        <td><code>canvasWidth</code> / <code>canvasHeight</code></td>
+                        <td><code>number</code></td>
+                        <td>Bound di spawn e di “sotto lo schermo”.
+                            Fissi al <code>new</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>reset()</code></td>
+                        <td>—</td>
+                        <td><code>worldX</code> random,
+                            <code>worldY = -height</code>, nuova
+                            speed.</td>
+                    </tr>
+                    <tr>
+                        <td><code>collect(collector)</code></td>
+                        <td>—</td>
+                        <td>No-op se destroyed / inactive. Altrimenti
+                            <code>onCollect(this, collector)</code> e
+                            <code>destroy()</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>update(dt, input, engine)</code></td>
+                        <td>—</td>
+                        <td>Early-return se spento. Cade in
+                            <code>worldY</code>, reset se sotto, poi
+                            <code>super.update</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>recycle()</code></td>
+                        <td>—</td>
+                        <td>Hook pool in <code>#sleep</code>. Vuoto:
+                            <code>reset</code> sta in
+                            <code>acquire</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>draw(ctx, engine)</code></td>
+                        <td>—</td>
+                        <td>Texture da <code>engine.getAsset(textureKey)</code>
+                            o cerchio arancione axis-aligned.</td>
+                    </tr>
+                    <tr>
+                        <td><code>prefabs.spawn('collectible', spec)</code></td>
+                        <td>istanza</td>
+                        <td>value / score, onCollect, sprite /
+                            textureKey. Canvas dal motore se manca.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
     </main>
 
