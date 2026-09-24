@@ -613,14 +613,107 @@
             white-space: nowrap;
         }
     }
+
+    /* ==========================================
+       5. FLUSSO (solo questa pagina)
+       ========================================== */
+    .bee-flow {
+        margin: 16px 0 4px 0;
+        padding: 16px 16px 14px 16px;
+        background: var(--bee-surface-2);
+        border: 1px solid var(--bee-line);
+        border-left: 4px solid var(--bee-honey);
+        border-radius: 10px;
+    }
+
+    .bee-flow-caption {
+        color: var(--bee-text-dim);
+        font-size: 13.5px;
+        line-height: 1.55;
+        margin: 0 0 12px 0;
+    }
+
+    .bee-flow-row {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: stretch;
+        gap: 8px 0;
+        margin: 0;
+        padding: 0;
+    }
+
+    .bee-flow-step {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        max-width: 100%;
+    }
+
+    .bee-flow-box {
+        display: block;
+        min-width: 7.5rem;
+        max-width: 14rem;
+        padding: 10px 12px;
+        background: var(--bee-surface);
+        border: 1px solid var(--bee-line-honey);
+        border-radius: 8px;
+        color: var(--bee-text);
+        font-size: 13.5px;
+        line-height: 1.45;
+    }
+
+    .bee-flow-box strong {
+        display: block;
+        color: var(--bee-honey);
+        font-family: var(--bee-mono);
+        font-size: 12.5px;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+        margin-bottom: 4px;
+    }
+
+    .bee-flow-box.bee-flow-read {
+        border-color: rgba(239, 68, 68, 0.45);
+    }
+
+    .bee-flow-box.bee-flow-read strong {
+        color: #ff8f8f;
+    }
+
+    .bee-flow-box code {
+        font-family: var(--bee-mono);
+        font-size: 12.5px;
+        color: #fcd34d;
+    }
+
+    .bee-flow-arrow {
+        color: var(--bee-honey);
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1;
+        padding: 0 6px;
+        flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+        .bee-flow-step {
+            width: 100%;
+        }
+
+        .bee-flow-box {
+            max-width: none;
+            flex-grow: 1;
+        }
+    }
 </style>
 
 <!-- HEADER FISSA -->
 <header class="bee-docs-header">
     <a href="#" class="bee-header-logo">
-        <span class="bee-header-title">Documentazione mettere la classe</span>
+        <span class="bee-header-title">BeeLadybug</span>
     </a>
-    <span class="bee-header-badge">v2.2.0</span>
+    <span class="bee-header-badge">v2.8.0</span>
 </header>
 
 <!-- CONTENITORE PRINCIPALE -->
@@ -646,22 +739,26 @@
 
             <summary>📁 Core </summary>
             <ul>
+                <li><a href="#BeeEngine">BeeEngine.js</a></li>
                 <li><a href="#BeeAssetManager">BeeAssetManager .js</a></li>
                 <li><a href="#BeeEntity">BeeEntity.js</a></li>
                 <li><a href="#BeeGrid">BeeGrid.js</a></li>
-                <li><a href="#BeeSave" class="is-current">BeeSave.js</a></li>
+                <li><a href="#BeePathfinder">BeePathfinder.js</a></li>
+                <li><a href="#BeePool">BeePool.js</a></li>
+                <li><a href="#BeePrefab">BeePrefab.js</a></li>
+                <li><a href="#BeeSave">BeeSave.js</a></li>
                 <li><a href="#BeeSceneManager">BeeSceneManager.js</a></li>
-                <li><a href="#Beetime">Beetime.js</a></li>
+                <li><a href="#BeeTime">BeeTime.js</a></li>
+                <li><a href="#BeeTimeline">BeeTimeline.js</a></li>
                 <li><a href="#BeeTimer">BeeTimer.js</a></li>
+                <li><a href="#BeeTween">BeeTween.js</a></li>
                 <li><a href="#BeeTransform">BeeTransform.js</a></li>
             </ul>
         </details>
-
         <details>
             <summary>📁 Debug</summary>
             <ul>
-                <li><a href="#BeeDebug">BeeDebug.js</a></li>
-
+                <li><a href="#BeeLadybug" class="is-current">BeeLadybug.js</a></li>
             </ul>
         </details>
 
@@ -717,92 +814,366 @@
     <!-- AREA CONTENUTI (TUTTI I MODULI VANNO QUI DENTRO) -->
     <main class="bee-docs-content">
 
-        <!-- SEZIONE 1 -->
-        <h2 class="bee-section-title"></h2>
+        <div
+            style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
+            <div>
+                <h2 class="bee-section-title" style="margin: 0;">BeeLadybug — Documentazione Tecnica</h2>
+                <p style="margin-top: 5px;">Occhio del motore:
+                    <code class="bee-inline-code">F2</code> overlay,
+                    <code class="bee-inline-code">F3</code> slow-mo,
+                    <code class="bee-inline-code">F4</code> freeze,
+                    hitbox in spazio mondo
+                </p>
+            </div>
+            <img src="https://beeenginejs.com/wp-content/uploads/2026/09/Gemini_Generated_Image_bg7xjjbg7xjjbg7x-1-1.jpg"
+                alt="BeeEngine Mascot" width="80" height="80" style="width: 80px; height: auto; flex-shrink: 0;">
+        </div>
 
-        <div class="bee-class-card" id="radme">****>>>>>>>> mettere id >>>>>>>>>>*****
-            <h3> </h3>
+        <div class="bee-class-card bee-ladybug" id="BeeLadybug">
 
-            <p></p>
+            <h3>📁 Panoramica</h3>
 
-            <p> </p>
+            <p><code>BeeLadybug</code> è l'occhio del motore, non una classe di gameplay. Vive in
+                <code>src/debug/BeeLadybug.js</code> e il barrel la re-esporta con
+                <code>BEE_LADYBUG_DEFAULTS</code>. Disegna hitbox AABB (e OBB se c'è una transform)
+                <strong>dentro</strong> la camera, e un pannello HUD <strong>dopo</strong>
+                <code>ctx.restore()</code>, in spazio schermo. Non usa F12 (DevTools) né la tilde:
+                sui layout italiani la tilde non è un tasto unico.</p>
 
-            <p>📁 </p>
+            <p>Quello che <strong>non</strong> è: il collision system, un profiler, un logger.
+                Il rosso sulle hitbox è overlap AABB dei <em>draw-bounds</em>, calcolato con un
+                <code>BeeSpatialHash</code> privato. Non è <code>collisions.run()</code> e non
+                è <code>engine.spatial</code>.</p>
 
-            <div class="bee-code-block"></div>
+            <p><code>BeeEngine</code> crea subito <code>this.debug = new BeeLadybug(this)</code>
+                e chiama <code>attach()</code>. L'overlay parte spento
+                (<code>enabled = false</code>). F2 lo accende. <code>enableLadybug()</code> fa
+                <code>configure + attach + show</code>: visibile al primo frame.</p>
 
-            <p>📁</p>
+            <div class="bee-code-block"><span class="token keyword">import</span> <span
+                    class="token punctuation">{</span> <span class="token class-name">BeeEngine</span> <span
+                    class="token punctuation">}</span> <span class="token keyword">from</span> <span
+                    class="token string">'beeengine'</span><span class="token punctuation">;</span>
 
-            <div class="bee-code-block"></div>
+<span class="token keyword">const</span> gioco <span class="token operator">=</span> <span
+                    class="token keyword">new</span> <span class="token class-name">BeeEngine</span><span
+                    class="token punctuation">(</span><span class="token string">'testCanvas'</span><span
+                    class="token punctuation">,</span> <span class="token number">800</span><span
+                    class="token punctuation">,</span> <span class="token number">600</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
 
-            <p>📁</p>
+gioco<span class="token punctuation">.</span><span class="token function">enableLadybug</span><span
+                    class="token punctuation">(</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span> <span class="token comment">// visibile; F2 la nasconde</span>
+<span class="token comment">// oppure: gioco.debug.toggle();</span>
+gioco<span class="token punctuation">.</span><span class="token function">start</span><span
+                    class="token punctuation">(</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span></div>
 
-            <div class="bee-code-block"> </div>
+            <h3>📁 Due pass di disegno</h3>
 
-            <p>📁</p>
+            <p>Il loop ufficiale chiama Ladybug in tre punti. L'ordine conta: le hitbox devono
+                vedere la camera, l'HUD no, i click arrivano prima di
+                <code>input.endFrame()</code>.</p>
 
-            <div class="bee-code-block"></div>
+            <div class="bee-flow" role="region" aria-label="Flusso Ladybug nel loop">
+                <p class="bee-flow-caption">Dentro <code>BeeEngine.loop</code>.
+                    <code>drawWorld</code> gira solo se <code>enabled</code>.
+                    <code>drawOverlay</code> e <code>poll</code> vengono chiamati sempre
+                    (early-return se l'overlay è spento).</p>
+                <ol class="bee-flow-row">
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>1. mondo</strong>Scene, layer,
+                            <code>render</code>. Poi, se enabled,
+                            <code>debug.drawWorld</code> <em>prima</em> di
+                            <code>restore</code>.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>2. schermo</strong><code>ctx.restore</code>,
+                            layer screen, UI, touch. Poi
+                            <code>debug.drawOverlay</code> con
+                            <code>setTransform(1,0,0,1,0,0)</code>.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box bee-flow-read"><strong>3. click</strong><code>debug.poll</code>
+                            sui tre pulsanti, poi
+                            <code>input.endFrame</code>.</span>
+                    </li>
+                </ol>
+            </div>
 
-            <p>📁</p>
+            <h3>📁 Tasti e pulsanti</h3>
 
-            <div class="bee-code-block"></div>
+            <p>Il listener è su <code>window</code> <code>keydown</code>, confronta
+                <code>event.code</code> (quindi <code>'F2'</code>, non
+                <code>event.key</code> e non <code>'f2'</code>). Ignora
+                <code>event.repeat</code> e fa <code>preventDefault</code> sui tre tasti.
+                F2 funziona anche a overlay spento. F3 e F4 solo se
+                <code>enabled</code>.</p>
 
-            <p>📁 </p>
+            <table class="bee-api-table">
+                <thead>
+                    <tr>
+                        <th>Ingresso</th>
+                        <th>Metodo</th>
+                        <th>Effetto reale</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>F2 / <code>toggle()</code></td>
+                        <td><code>toggle</code> / <code>show</code> / <code>hide</code></td>
+                        <td>Accende o spegne <code>enabled</code>. Non tocca timeScale né
+                            la pausa.</td>
+                    </tr>
+                    <tr>
+                        <td>F3 / bottone SLOW</td>
+                        <td><code>applySlowMo()</code></td>
+                        <td>Se <code>time.paused</code>, prima <code>resume</code>. Poi
+                            alterna <code>timeScale</code> tra <code>slowScale</code>
+                            (default 0.25) e 1, via <code>engine.setTimeScale</code>.</td>
+                    </tr>
+                    <tr>
+                        <td>F4 / bottone STOP</td>
+                        <td><code>toggleFreeze()</code></td>
+                        <td><code>time.togglePause()</code>. Il mondo vede
+                            <code>dt = 0</code>, il rAF e il draw continuano: ispezioni
+                            le hitbox da fermo.</td>
+                    </tr>
+                    <tr>
+                        <td>bottone 1x LIVE</td>
+                        <td><code>restoreRealtime()</code></td>
+                        <td>Resume se in pausa, poi <code>setTimeScale(1)</code>.</td>
+                    </tr>
+                </tbody>
+            </table>
 
-            <div class="bee-class-card"></div>
+            <p>I tre rettangoli sull'HUD (268×168, angolo
+                <code>overlayX/Y</code> default 12,12) fanno le stesse tre azioni.
+                Si accendono in rosso se lo stato corrente li riguarda (slow e non
+                frozen, frozen, live 1×).</p>
 
-            <p>📁 </p>
+            <h3>📁 Chi viene disegnato</h3>
 
-            <div class="bee-class-card"></div>
+            <p><code>drawWorld</code> ricalcola la lista ogni frame. Visita, con un
+                <code>Set</code> anti-duplicato e i figli ricorsivi:
+                <code>engine.entities</code>,
+                <code>engine.scenes.currentScene.entities</code> (fallback
+                <code>engine.currentScene</code>), i bucket di
+                <code>engine.collisions.groups</code>, e
+                <code>engine.physics.bodies[i].entity</code>.</p>
 
-            <p> 📁 </p>
+            <p>Salta <code>destroyed</code>. L'AABB viene da
+                <code>engine.getEntityDrawBounds</code>: prima
+                <code>entity.getWorldAABB()</code>, poi il rect del
+                <code>collider</code>, altrimenti
+                <code>worldX/Y</code> (o <code>x/y</code>) +
+                <code>width/height</code>. Senza size positiva non c'è box.</p>
 
-            <div class="bee-class-card"></div>
+            <p>Poi il tratto: se c'è <code>entity.body.drawDebug</code> lo chiama
+                (forma del body, non solo il rettangolo). Altrimenti, se la
+                transform ha <code>transformPoint</code>, traccia l'OBB locale
+                <code>(0,0)→(w,h)</code>. Altrimenti <code>strokeRect</code>
+                sull'AABB.</p>
 
-            <p> 📁 </p>
+            <h3>📁 Colori: verde / rosso / grigio</h3>
 
-            <div class="bee-class-card"></div>
+            <p><strong>Verde</strong> = <code>active !== false</code> e niente
+                overlap. <strong>Grigio</strong> = inattiva.
+                <strong>Rosso</strong> = la sua AABB si sovrappone a un'altra
+                AABB della stessa lista. Broadphase: hash a celle da 64px
+                (default di <code>BeeSpatialHash</code>), poi test AABB-AABB.
+                L'overlay scrive <code>verde=ok  rosso=collide</code>: collide
+                qui vuol dire “i rettangoli di disegno si toccano”, non
+                “il gruppo player/enemy ha sparato un evento”.</p>
 
-            <p>📁 </p>
+            <p>L'HUD legge la lista dell'<em>ultimo</em>
+                <code>drawWorld</code>: FPS da <code>time.fps</code>, ciclo da
+                <code>unscaledDt * 1000</code>, scala, RUN/FREEZE, conteggio
+                attive / in memoria. Se chiami solo <code>drawOverlay</code> a
+                mano, i numeri restano quelli (o zero) del frame precedente.</p>
+        </div>
 
-            <div class="bee-class-card"> </div>
+        <div class="bee-class-card bee-ladybug" id="BeeLadybug-note">
+            <h3>📁 Dove è facile sbagliare</h3>
 
-            <p>📁 </p>
+            <p><strong>Il rosso non è <code>collisions.run()</code>.</strong>
+                Ladybug ha il suo hash. Due sprite che si coprono diventano
+                rosse anche se non sono nello stesso gruppo e anche se la
+                scena non chiama mai il collision system.</p>
 
-            <div class="bee-class-card"></div>
+            <p><strong>F3 da freeze scongela.</strong>
+                <code>applySlowMo</code> fa <code>resume</code> prima di
+                toccare la scala. F3 non è “slow anche in pausa”.</p>
 
-            <p>📁</p>
+            <p><strong>Il click sull'HUD arriva anche al gioco.</strong>
+                <code>poll</code> legge <code>input.mouse.wasPressed</code>
+                (coordinate canvas, spazio schermo) e non lo consuma. Lo
+                stesso frame può far partire un impulso, uno spawn, un UI
+                click. I tasti F* invece fanno <code>preventDefault</code>.</p>
 
-            <div class="bee-class-card"> </div>
+            <p><strong>Le chiavi sono <code>event.code</code>.</strong>
+                Default <code>'F2'</code> / <code>'F3'</code> / <code>'F4'</code>
+                coincidono col code dei function key. Se rinomini con
+                <code>configure({ toggleKey: 'KeyD' })</code> va. Con
+                <code>'d'</code> o <code>'D'</code> no.</p>
 
-            <p>📁 </p>
+            <p><strong>F3/F4 muti a overlay spento.</strong> F2 è l'unico
+                tasto vivo quando <code>enabled</code> è false. Il costruttore
+                del motore ha già fatto <code>attach()</code>: non serve
+                riattaccare il listener a ogni <code>start</code>.</p>
+        </div>
 
-            <div class="bee-class-card"> </div>
+        <div class="bee-class-card" id="BeeLadybug-esempio">
+            <h3>📁 Esempio: accendi, configura, ispeziona</h3>
 
-            <p> 📁 </p>
+            <div class="bee-code-block"><span class="token keyword">import</span> <span
+                    class="token punctuation">{</span> <span class="token class-name">BeeEngine</span> <span
+                    class="token punctuation">}</span> <span class="token keyword">from</span> <span
+                    class="token string">'beeengine'</span><span class="token punctuation">;</span>
 
-            <div class="bee-code-block"></div>
+<span class="token keyword">const</span> gioco <span class="token operator">=</span> <span
+                    class="token keyword">new</span> <span class="token class-name">BeeEngine</span><span
+                    class="token punctuation">(</span><span class="token string">'testCanvas'</span><span
+                    class="token punctuation">,</span> <span class="token number">800</span><span
+                    class="token punctuation">,</span> <span class="token number">600</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
 
-            <p>📁</p>
+gioco<span class="token punctuation">.</span><span class="token function">enableLadybug</span><span
+                    class="token punctuation">(</span><span class="token punctuation">{</span>
+    <span class="token property">slowScale</span><span class="token punctuation">:</span> <span
+                    class="token number">0.1</span><span class="token punctuation">,</span>
+    <span class="token property">overlayX</span><span class="token punctuation">:</span> <span
+                    class="token number">16</span><span class="token punctuation">,</span>
+    <span class="token property">overlayY</span><span class="token punctuation">:</span> <span
+                    class="token number">16</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
 
-            <div class="bee-code-block"></div>
+<span class="token comment">// F2 nasconde. F3 = 0.1x / 1x. F4 = freeze.</span>
+<span class="token comment">// Da codice, stessa cosa:</span>
+gioco<span class="token punctuation">.</span>debug<span class="token punctuation">.</span><span
+                    class="token function">applySlowMo</span><span
+                    class="token punctuation">(</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+gioco<span class="token punctuation">.</span>debug<span class="token punctuation">.</span><span
+                    class="token function">toggleFreeze</span><span
+                    class="token punctuation">(</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+gioco<span class="token punctuation">.</span>debug<span class="token punctuation">.</span><span
+                    class="token function">restoreRealtime</span><span
+                    class="token punctuation">(</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
 
+gioco<span class="token punctuation">.</span><span class="token function">start</span><span
+                    class="token punctuation">(</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span></div>
+        </div>
 
-            <p>📁 </p>
-
-            <div class="bee-code-block"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-code-block"></div>
-
-            <p> 📁</p>
-
-            <div class="bee-code-block"> </div>
-
-
-
-
+        <div class="bee-class-card" id="BeeLadybug-api">
+            <h3>📁 Riepilogo API</h3>
+            <p>Fluent: <code>configure</code>, <code>attach</code>,
+                <code>detach</code>, <code>show</code>, <code>hide</code>,
+                <code>toggle</code>, <code>applySlowMo</code>,
+                <code>toggleFreeze</code>, <code>restoreRealtime</code>
+                ritornano <code>this</code>. Default frozen:
+                <code>BEE_LADYBUG_DEFAULTS</code>.</p>
+            <table class="bee-api-table">
+                <thead>
+                    <tr>
+                        <th>Membro</th>
+                        <th>Ritorna</th>
+                        <th>Scopo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>BEE_LADYBUG_DEFAULTS</code></td>
+                        <td>oggetto frozen</td>
+                        <td>toggleKey F2 · slowKey F3 · freezeKey F4 ·
+                            slowScale 0.25 · colori active/colliding/inactive ·
+                            overlay 12,12.</td>
+                    </tr>
+                    <tr>
+                        <td><code>new BeeLadybug(engine, options?)</code></td>
+                        <td><code>BeeLadybug</code></td>
+                        <td>Parte <code>enabled: false</code>, listener non
+                            attaccato. Il motore lo costruisce e fa
+                            <code>attach()</code> da solo.</td>
+                    </tr>
+                    <tr>
+                        <td><code>configure(options)</code></td>
+                        <td><code>this</code></td>
+                        <td>Merge sui default. Non tocca
+                            <code>enabled</code> né il listener.</td>
+                    </tr>
+                    <tr>
+                        <td><code>attach()</code> / <code>detach()</code></td>
+                        <td><code>this</code></td>
+                        <td>keydown su <code>window</code>. Seconda
+                            <code>attach</code> è no-op.</td>
+                    </tr>
+                    <tr>
+                        <td><code>show</code> / <code>hide</code> /
+                            <code>toggle</code></td>
+                        <td><code>this</code></td>
+                        <td>Flag <code>enabled</code>. Non stacca i tasti.</td>
+                    </tr>
+                    <tr>
+                        <td><code>applySlowMo()</code></td>
+                        <td><code>this</code></td>
+                        <td>Resume se paused, poi toggle scala
+                            <code>slowScale</code> ↔ 1.</td>
+                    </tr>
+                    <tr>
+                        <td><code>toggleFreeze()</code></td>
+                        <td><code>this</code></td>
+                        <td><code>time.togglePause()</code>. No-op senza
+                            <code>engine.time</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>restoreRealtime()</code></td>
+                        <td><code>this</code></td>
+                        <td>Resume + scala 1.</td>
+                    </tr>
+                    <tr>
+                        <td><code>drawWorld(ctx)</code></td>
+                        <td>—</td>
+                        <td>Raccoglie entity, refresh overlap, fill+stroke
+                            hitbox. Chiamare dentro la camera.</td>
+                    </tr>
+                    <tr>
+                        <td><code>drawOverlay(ctx)</code></td>
+                        <td>—</td>
+                        <td>HUD 268×168, reset transform, pulsanti. Dopo
+                            <code>restore</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>poll()</code></td>
+                        <td>—</td>
+                        <td>Hit-test mouse canvas sui tre bottoni. Prima di
+                            <code>endFrame</code>. Non consuma
+                            <code>wasPressed</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>destroy()</code></td>
+                        <td>—</td>
+                        <td><code>detach</code>, <code>enabled = false</code>,
+                            svuota liste/Set/bottoni. Il motore lo chiama in
+                            <code>BeeEngine.destroy</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>gioco.debug</code> /
+                            <code>gioco.enableLadybug(options?)</code></td>
+                        <td>istanza</td>
+                        <td>Stessa coccinella. <code>enableLadybug</code>
+                            configura, attacca e <code>show</code>.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
     </main>
 
