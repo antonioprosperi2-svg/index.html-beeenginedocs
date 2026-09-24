@@ -613,14 +613,107 @@
             white-space: nowrap;
         }
     }
+
+    /* ==========================================
+       5. FLUSSO (solo questa pagina)
+       ========================================== */
+    .bee-flow {
+        margin: 16px 0 4px 0;
+        padding: 16px 16px 14px 16px;
+        background: var(--bee-surface-2);
+        border: 1px solid var(--bee-line);
+        border-left: 4px solid var(--bee-honey);
+        border-radius: 10px;
+    }
+
+    .bee-flow-caption {
+        color: var(--bee-text-dim);
+        font-size: 13.5px;
+        line-height: 1.55;
+        margin: 0 0 12px 0;
+    }
+
+    .bee-flow-row {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: stretch;
+        gap: 8px 0;
+        margin: 0;
+        padding: 0;
+    }
+
+    .bee-flow-step {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        max-width: 100%;
+    }
+
+    .bee-flow-box {
+        display: block;
+        min-width: 7.5rem;
+        max-width: 14rem;
+        padding: 10px 12px;
+        background: var(--bee-surface);
+        border: 1px solid var(--bee-line-honey);
+        border-radius: 8px;
+        color: var(--bee-text);
+        font-size: 13.5px;
+        line-height: 1.45;
+    }
+
+    .bee-flow-box strong {
+        display: block;
+        color: var(--bee-honey);
+        font-family: var(--bee-mono);
+        font-size: 12.5px;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+        margin-bottom: 4px;
+    }
+
+    .bee-flow-box.bee-flow-read {
+        border-color: rgba(239, 68, 68, 0.45);
+    }
+
+    .bee-flow-box.bee-flow-read strong {
+        color: #ff8f8f;
+    }
+
+    .bee-flow-box code {
+        font-family: var(--bee-mono);
+        font-size: 12.5px;
+        color: #fcd34d;
+    }
+
+    .bee-flow-arrow {
+        color: var(--bee-honey);
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1;
+        padding: 0 6px;
+        flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+        .bee-flow-step {
+            width: 100%;
+        }
+
+        .bee-flow-box {
+            max-width: none;
+            flex-grow: 1;
+        }
+    }
 </style>
 
 <!-- HEADER FISSA -->
 <header class="bee-docs-header">
     <a href="#" class="bee-header-logo">
-        <span class="bee-header-title">Documentazione mettere la classe</span>
+        <span class="bee-header-title">BeeEnemyShooter</span>
     </a>
-    <span class="bee-header-badge">v2.2.0</span>
+    <span class="bee-header-badge">v2.8.1</span>
 </header>
 
 <!-- CONTENITORE PRINCIPALE -->
@@ -646,11 +739,26 @@
 
                 <summary>📁 Core </summary>
                 <ul>
+                    <li><a href="#BeeEngine">BeeEngine.js</a></li>
                     <li><a href="#BeeAssetManager">BeeAssetManager .js</a></li>
+                    <li><a href="#BeeEntity">BeeEntity.js</a></li>
                     <li><a href="#BeeGrid">BeeGrid.js</a></li>
+                    <li><a href="#BeePathfinder">BeePathfinder.js</a></li>
+                    <li><a href="#BeePool">BeePool.js</a></li>
+                    <li><a href="#BeePrefab">BeePrefab.js</a></li>
                     <li><a href="#BeeSave">BeeSave.js</a></li>
                     <li><a href="#BeeSceneManager">BeeSceneManager.js</a></li>
+                    <li><a href="#BeeTime">BeeTime.js</a></li>
+                    <li><a href="#BeeTimeline">BeeTimeline.js</a></li>
                     <li><a href="#BeeTimer">BeeTimer.js</a></li>
+                    <li><a href="#BeeTween">BeeTween.js</a></li>
+                    <li><a href="#BeeTransform">BeeTransform.js</a></li>
+                </ul>
+            </details>
+            <details>
+                <summary>📁 Debug</summary>
+                <ul>
+                    <li><a href="#BeeLadybug">BeeLadybug.js</a></li>
                 </ul>
             </details>
 
@@ -659,7 +767,6 @@
                 <ul>
                     <li><a href="#BeeCollectible">BeeCollectible.js</a></li>
                     <li><a href="#BeeEnemyShooter" class="is-current">BeeEnemyShooter.js</a></li>
-                    <li><a href="#BeeEntity">BeeEntity.js</a></li>
                     <li><a href="#BeeMenuScene">BeeMenuScene.js</a></li>
                     <li><a href="#BeeNemico">BeeNemico.js</a></li>
                     <li><a href="#BeePlatform">BeePlatform.js</a></li>
@@ -706,92 +813,264 @@
     <!-- AREA CONTENUTI (TUTTI I MODULI VANNO QUI DENTRO) -->
     <main class="bee-docs-content">
 
-        <!-- SEZIONE 1 -->
-        <h2 class="bee-section-title"></h2>
+        <div
+            style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
+            <div>
+                <h2 class="bee-section-title" style="margin: 0;">BeeEnemyShooter — Documentazione Tecnica</h2>
+                <p style="margin-top: 5px;">Nemico che rimbalza e spara:
+                    <code class="bee-inline-code">setBounds</code> /
+                    <code class="bee-inline-code">shoot</code>,
+                    colpi in <code class="bee-inline-code">hazards</code>
+                </p>
+            </div>
+            <img src="https://beeenginejs.com/wp-content/uploads/2026/09/Gemini_Generated_Image_bg7xjjbg7xjjbg7x-1-1.jpg"
+                alt="BeeEngine Mascot" width="80" height="80" style="width: 80px; height: auto; flex-shrink: 0;">
+        </div>
 
-        <div class="bee-class-card" id="radme">****>>>>>>>> mettere id >>>>>>>>>>*****
-            <h3> </h3>
+        <div class="bee-class-card" id="BeeEnemyShooter">
 
-            <p></p>
+            <h3>📁 Panoramica</h3>
 
-            <p> </p>
+            <p><code>BeeEnemyShooter</code> è un <code>BeeEnemy</code> che
+                non pattuglia: spegne <code>speed</code> e si muove con
+                <code>vx</code>/<code>vy</code> via
+                <code>integrate()</code>. Vive in
+                <code>src/gameplay/BeeEnemyShooter.js</code>. Ogni
+                <code>shootInterval</code> (default 1.5 s) un
+                <code>BeeTimer</code> locale chiama
+                <code>shoot</code>: un <code>BeeBullet</code> dal pool
+                <code>engine.bullets</code> (o <code>new</code> se manca),
+                <code>addEntity</code>, poi
+                <code>collisions.add(bulletGroup, bullet)</code>
+                (default gruppo <code>'hazards'</code>).</p>
 
-            <p>📁 </p>
+            <p>Quello che <strong>non</strong> è: un turret fermo, un
+                aiming al player, un diagonal shot. Il colpo è cardinale,
+                nel verso della velocità più forte. Se
+                <code>vx === vy === 0</code> spara in <strong>basso</strong>
+                (non più in alto per sbaglio).</p>
 
-            <div class="bee-code-block"></div>
+            <div class="bee-code-block"><span class="token keyword">const</span> shooter <span
+                    class="token operator">=</span> <span class="token keyword">new</span> <span
+                    class="token class-name">BeeEnemyShooter</span><span
+                    class="token punctuation">(</span><span class="token number">520</span><span
+                    class="token punctuation">,</span> <span class="token number">220</span><span
+                    class="token punctuation">,</span> <span class="token number">32</span><span
+                    class="token punctuation">,</span> <span class="token number">32</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
+shooter<span class="token punctuation">.</span><span class="token function">setBounds</span><span
+                    class="token punctuation">(</span><span class="token number">0</span><span
+                    class="token punctuation">,</span> <span class="token number">0</span><span
+                    class="token punctuation">,</span> <span class="token number">1600</span><span
+                    class="token punctuation">,</span> <span class="token number">900</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
 
-            <p>📁</p>
+gioco<span class="token punctuation">.</span>collisions<span class="token punctuation">.</span><span
+                    class="token function">setGroup</span><span class="token punctuation">(</span><span
+                    class="token string">'hazards'</span><span class="token punctuation">,</span> <span
+                    class="token punctuation">[</span>enemy<span class="token punctuation">,</span> shooter<span
+                    class="token punctuation">]</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+gioco<span class="token punctuation">.</span>collisions<span class="token punctuation">.</span><span
+                    class="token function">overlap</span><span class="token punctuation">(</span><span
+                    class="token string">'player'</span><span class="token punctuation">,</span> <span
+                    class="token string">'hazards'</span><span class="token punctuation">,</span> <span
+                    class="token punctuation">(</span>p<span class="token punctuation">,</span> h<span
+                    class="token punctuation">)</span> <span class="token operator">=&gt;</span> p<span
+                    class="token punctuation">.</span><span class="token function">takeDamage</span><span
+                    class="token punctuation">(</span><span class="token number">1</span><span
+                    class="token punctuation">)</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span></div>
 
-            <div class="bee-code-block"></div>
+            <h3>📁 Update: timer, integrate, clamp</h3>
 
-            <p>📁</p>
+            <div class="bee-flow" role="region" aria-label="Flusso shooter">
+                <p class="bee-flow-caption">Early-return se
+                    <code>destroyed</code> o inactive: niente fuoco, niente
+                    rimbalzo, niente flip di <code>vx</code> da fermo.</p>
+                <ol class="bee-flow-row">
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>1. timer</strong><code>fire.duration = shootInterval</code>,
+                            poi <code>fire.update(time)</code> (o
+                            <code>dt</code>).</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>2. parent</strong><code>BeeEnemy.update</code>:
+                            <code>x += speed * dt</code> (qui speed è 0),
+                            poi <code>integrate</code> su
+                            <code>vx/vy</code>.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box bee-flow-read"><strong>3. bordo</strong>Segno di
+                            <code>vx/vy</code> verso l'interno e
+                            <code>worldX/Y</code> clampati. Niente jitter.</span>
+                    </li>
+                </ol>
+            </div>
 
-            <div class="bee-code-block"> </div>
+            <p><code>setBounds(minX, minY, maxX, maxY)</code> è spazio
+                <strong>mondo</strong>. Se <code>boundsMaxX/Y</code> restano
+                <code>null</code>, cade su
+                <code>engine.canvas.width/height</code>. Senza canvas
+                (e senza max) l'<code>update</code> esce dopo il parent:
+                si muove, non rimbalza. <code>boundsMin</code> default 0,0.</p>
 
-            <p>📁</p>
+            <h3>📁 Sparo e pool</h3>
 
-            <div class="bee-code-block"></div>
+            <p>Il timer <strong>non</strong> sta su
+                <code>gioco.timers</code>: lo ticka l'entity. In pausa
+                <code>updateEntities</code> non gira, quindi non spara.
+                <code>onComplete</code> spara solo se active, non
+                destroyed, e <code>this.engine</code> è settato.</p>
 
-            <p>📁</p>
+            <p><code>recycle()</code> (release / <code>#sleep</code>)
+                cancella il fuoco. <code>reset()</code> (acquire) fa
+                <code>fire.start()</code>: elapsed e cancelled si
+                azzerano. <code>destroy()</code> cancella e poi
+                <code>super.destroy()</code> (release se pooled). Il
+                secondo giro di vita spara di nuovo.</p>
 
-            <div class="bee-code-block"></div>
+            <p><code>reset()</code> <strong>non</strong> rimette posa né
+                <code>vx/vy</code>: solo il timer. Il pool dei
+                <em>proiettili</em> è <code>engine.bullets</code>; lo
+                shooter stesso di solito è un
+                <code>new</code> / prefab <code>'shooter'</code>.</p>
+        </div>
 
-            <p>📁 </p>
+        <div class="bee-class-card bee-ladybug" id="BeeEnemyShooter-note">
+            <h3>📁 Dove è facile sbagliare</h3>
 
-            <div class="bee-class-card"></div>
+            <p><strong>Senza <code>setBounds</code> il mondo è il
+                canvas.</strong> Con camera o mappa più larga dello
+                schermo lo shooter “tocca il bordo” a
+                <code>canvas.width</code>. La demo 800×600 senza camera
+                sta in piedi; un follow-cam no, finché non passi i
+                bound mondo.</p>
 
-            <p>📁 </p>
+            <p><strong>Non rimettere <code>speed</code>.</strong> Il
+                parent fa ancora <code>this.x += speed * dt</code>
+                (locale) più i bound <code>minX/maxX</code> su
+                <code>worldX</code>. Qui <code>speed = 0</code> apposta.
+                Se lo alzi hai due moti in X.</p>
 
-            <div class="bee-class-card"></div>
+            <p><strong>I colpi devono stare in un gruppo.</strong>
+                Default <code>bulletGroup = 'hazards'</code>. Serve
+                <code>overlap('player', 'hazards')</code> (la demo ce
+                l'ha). Senza pool, <code>add</code> lascia i bullet
+                morti nell'array: <code>run</code> li salta
+                (<code>destroyed</code>), ma la lista cresce.</p>
 
-            <p> 📁 </p>
+            <p><strong>Niente mira.</strong> Il cannone e il colpo
+                seguono l'asse dominante di <code>vx/vy</code>, non il
+                player. Fermare il body
+                (<code>vx = vy = 0</code>) = raffica verso il basso.</p>
+        </div>
 
-            <div class="bee-class-card"></div>
+        <div class="bee-class-card" id="BeeEnemyShooter-esempio">
+            <h3>📁 Esempio: bound mondo + gruppo</h3>
 
-            <p> 📁 </p>
+            <div class="bee-code-block"><span class="token keyword">const</span> shooter <span
+                    class="token operator">=</span> <span class="token keyword">new</span> <span
+                    class="token class-name">BeeEnemyShooter</span><span
+                    class="token punctuation">(</span><span class="token number">520</span><span
+                    class="token punctuation">,</span> <span class="token number">220</span><span
+                    class="token punctuation">,</span> <span class="token number">32</span><span
+                    class="token punctuation">,</span> <span class="token number">32</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
+gioco<span class="token punctuation">.</span><span class="token function">addEntity</span><span
+                    class="token punctuation">(</span>shooter<span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+shooter<span class="token punctuation">.</span>shootInterval <span class="token operator">=</span> <span
+                    class="token number">1</span><span class="token punctuation">;</span>
+shooter<span class="token punctuation">.</span><span class="token function">setBounds</span><span
+                    class="token punctuation">(</span><span class="token number">0</span><span
+                    class="token punctuation">,</span> <span class="token number">0</span><span
+                    class="token punctuation">,</span> mondoW<span class="token punctuation">,</span> mondoH<span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
 
-            <div class="bee-class-card"></div>
+<span class="token comment">// i nuovi BeeBullet finiscono in 'hazards' da soli</span>
+gioco<span class="token punctuation">.</span>collisions<span class="token punctuation">.</span><span
+                    class="token function">add</span><span class="token punctuation">(</span><span
+                    class="token string">'hazards'</span><span class="token punctuation">,</span> shooter<span
+                    class="token punctuation">)</span><span class="token punctuation">;</span></div>
+        </div>
 
-            <p>📁 </p>
-
-            <div class="bee-class-card"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p>📁</p>
-
-            <div class="bee-class-card"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"> </div>
-
-            <p> 📁 </p>
-
-            <div class="bee-code-block"></div>
-
-            <p>📁</p>
-
-            <div class="bee-code-block"></div>
-
-
-            <p>📁 </p>
-
-            <div class="bee-code-block"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-code-block"></div>
-
-            <p> 📁</p>
-
-            <div class="bee-code-block"> </div>
-
-
-
-
+        <div class="bee-class-card" id="BeeEnemyShooter-api">
+            <h3>📁 Riepilogo API</h3>
+            <p>Estende <code>BeeEnemy</code>. Il timer è un
+                <code>BeeTimer</code> loop, non
+                <code>gioco.after</code>.</p>
+            <table class="bee-api-table">
+                <thead>
+                    <tr>
+                        <th>Membro</th>
+                        <th>Ritorna</th>
+                        <th>Scopo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>new BeeEnemyShooter(x, y, w?, h?, textureKey?)</code></td>
+                        <td><code>BeeEnemyShooter</code></td>
+                        <td>speed 0 · vx 80 · vy 60 · interval 1.5 ·
+                            bulletSpeed 250 · fire già
+                            <code>start()</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>setBounds(minX, minY, maxX, maxY)</code></td>
+                        <td>—</td>
+                        <td>Rettangolo mondo del rimbalzo. Max
+                            <code>null</code> → canvas.</td>
+                    </tr>
+                    <tr>
+                        <td><code>shootInterval</code> /
+                            <code>bulletSpeed</code> /
+                            <code>bulletGroup</code></td>
+                        <td>number / number / string</td>
+                        <td>Durata copiata sul timer ogni frame.
+                            Gruppo default <code>'hazards'</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>shootTimer</code></td>
+                        <td><code>number</code></td>
+                        <td>Alias di <code>fire.remaining</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>update(dt, input, engine)</code></td>
+                        <td>—</td>
+                        <td>Early-return se spento. Timer → parent →
+                            clamp bordi.</td>
+                    </tr>
+                    <tr>
+                        <td><code>shoot(engine)</code></td>
+                        <td>—</td>
+                        <td>Acquire/new bullet, addEntity,
+                            <code>collisions.add</code>. Cardinale.</td>
+                    </tr>
+                    <tr>
+                        <td><code>reset()</code> / <code>recycle()</code></td>
+                        <td>—</td>
+                        <td>Pool: start / cancel del fuoco. Non tocca
+                            la posa.</td>
+                    </tr>
+                    <tr>
+                        <td><code>destroy()</code></td>
+                        <td>—</td>
+                        <td>Cancel + <code>super.destroy</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>prefabs.type('shooter')</code></td>
+                        <td>classe</td>
+                        <td>Factory di stock. Serve una
+                            <code>define</code> prima di
+                            <code>spawn</code>. Bound e interval li
+                            setti tu.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
     </main>
 
