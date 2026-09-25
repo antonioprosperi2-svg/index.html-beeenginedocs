@@ -16,6 +16,7 @@ Questo spazio raccoglie le guide, gli esempi pratici e le spiegazioni di tutti i
 * **🐞 BeeLadybug (v2.4.0):** Il modulo dedicato al debug visivo e alle metriche in tempo reale (accessibile tramite i tasti di scelta rapida `F2`, `F3`, `F4`).
 * **🍯 BeeCollectible (v2.8.1):** Bonus che cade (`src/gameplay/BeeCollectible.html`): `reset` in cima, `collect(collector)` + `onCollect`, moto su `worldY`.
 * **🔫 BeeEnemyShooter:** Nemico che rimbalza e spara (`src/gameplay/BeeEnemyShooter.html`): `setBounds` mondo, colpi in `hazards`, timer in pool.
+* **📋 BeeMenuScene:** Scena di menu (`src/gameplay/BeeMenuScene.html`): splash o `items`, `next` / `onStart`, niente input in pausa.
 * **🐝 BeeEngine:** Facade e core loop (`src/core/BeeEngine.html`): `start`/`stop`/`pause`, scene vs `addEntity`, tween/timer/prefab/pathfinder.
 * **⏱ BeeTime:** Orologio unico del core loop (`src/core/BeeTime.html`): `dt` di simulazione, `unscaledDt` reale, pausa/F4, `timeScale`, accumulator per `BeePhysicsWorld`.
 * **⏱ BeeTimer:** Cooldown e loop di evento (`src/core/BeeTimer.html`): `gioco.after` / `gioco.every`, clock `gioco.timers`, assi scaled/unscaled.
