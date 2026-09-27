@@ -769,7 +769,6 @@
                     <li><a href="#BeeEnemy" class="is-current">BeeEnemy.js</a></li>
                     <li><a href="#BeeEnemyShooter">BeeEnemyShooter.js</a></li>
                     <li><a href="#BeeMenuScene">BeeMenuScene.js</a></li>
-                    <li><a href="#BeeNemico">BeeNemico.js</a></li>
                     <li><a href="#BeePlatform">BeePlatform.js</a></li>
                     <li><a href="#BeePlayer">BeePlayer.js</a></li>
                 </ul>
@@ -834,8 +833,7 @@
 
             <p><code>BeeEnemy</code> è un <code>BeeEntity</code> che
                 cammina in orizzontale. Vive in
-                <code>src/gameplay/BeeEnemy.js</code>. Il barrel esporta
-                anche l'alias <code>BeeNemico = BeeEnemy</code>. Non è un
+                <code>src/gameplay/BeeEnemy.js</code>. Non è un
                 fighter: niente HP, niente <code>takeDamage</code>, niente
                 Y. L'ostilità la dà il gruppo di collisione (in demo:
                 <code>hazards</code>).</p>
@@ -945,17 +943,9 @@ guard<span class="token punctuation">.</span>speed <span class="token operator">
                     class="token number">80</span><span class="token punctuation">;</span></div>
         </div>
 
-        <div class="bee-class-card" id="BeeNemico">
-            <h3>📁 BeeNemico</h3>
-            <p>Alias: <code>const BeeNemico = BeeEnemy</code> in
-                <code>BeeEngine.js</code>. Stessa classe, stesso
-                contratto. I file nuovi usano <code>BeeEnemy</code>.</p>
-        </div>
-
         <div class="bee-class-card" id="BeeEnemy-api">
             <h3>📁 Riepilogo API</h3>
-            <p>Estende <code>BeeEntity</code>. Alias:
-                <code>BeeNemico</code>.</p>
+            <p>Estende <code>BeeEntity</code>.</p>
             <table class="bee-api-table">
                 <thead>
                     <tr>
@@ -1001,11 +991,6 @@ guard<span class="token punctuation">.</span>speed <span class="token operator">
                         <td><code>getAsset(textureKey)</code> o
                             rettangolo rosso. Guardia come lo
                             shooter.</td>
-                    </tr>
-                    <tr>
-                        <td><code>BeeNemico</code></td>
-                        <td>stessa classe</td>
-                        <td>Alias di compatibilità nel barrel.</td>
                     </tr>
                 </tbody>
             </table>
