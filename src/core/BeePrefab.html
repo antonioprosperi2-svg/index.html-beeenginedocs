@@ -721,7 +721,7 @@
 
     <!-- SIDEBAR (UNICA PER TUTTA LA PAGINA) -->
     <aside class="bee-docs-sidebar">
-        <div class="bee-sidebar-title">BeeEngine V2.2</div>
+        <div class="bee-sidebar-title">BeeEngine V2.0</div>
 
         <details>
             <summary>🌐 Link Utili</summary>
@@ -835,54 +835,57 @@
                 <code>new BeeEnemy(x, y)</code> sparso nelle wave. Tiene due Map private:
                 <code>#types</code> (nome → factory) e <code>#recipes</code> (nome → spec clonato). Una ricetta
                 (tipo, posa, sprite, vita, collider) si definisce una volta; spawn, wave e oggetti tilemap la
-                istanziamo con override.</p>
+                istanziamo con override.
+            </p>
 
             <p>Quello che <strong>non</strong> è: un cloner di entity vive, un serializer di save-game, un
                 despawner. Non chiama <code>destroy()</code> sulle istanze. <code>clear()</code> svuota le ricette,
                 non i tipi e non la scena. Il ciclo di vita dell'oggetto resta su <code>BeeEntity.destroy</code> /
-                <code>BeePool.release</code>.</p>
+                <code>BeePool.release</code>.
+            </p>
 
             <p><code>BeeEngine</code> crea <strong>un</strong> catalogo: <code>this.prefabs = new BeePrefab({ engine:
                     this })</code>, poi registra i type di stock
                 (<code>entity</code>, <code>enemy</code>, <code>player</code>, <code>shooter</code>,
                 <code>platform</code>, <code>collectible</code>, <code>text</code>). Attenzione:
                 <code>gioco.spawn(name, …)</code> è il pool (<code>engine.pool</code> +
-                <code>addEntity</code>), non il prefab. Il prefab è <code>gioco.prefabs.spawn</code>.</p>
+                <code>addEntity</code>), non il prefab. Il prefab è <code>gioco.prefabs.spawn</code>.
+            </p>
 
             <div class="bee-code-block"><span class="token keyword">import</span> <span
                     class="token punctuation">{</span> <span class="token class-name">BeeEngine</span> <span
                     class="token punctuation">}</span> <span class="token keyword">from</span> <span
                     class="token string">'beeengine'</span><span class="token punctuation">;</span>
 
-<span class="token keyword">const</span> gioco <span class="token operator">=</span> <span
+                <span class="token keyword">const</span> gioco <span class="token operator">=</span> <span
                     class="token keyword">new</span> <span class="token class-name">BeeEngine</span><span
                     class="token punctuation">(</span><span class="token string">'testCanvas'</span><span
                     class="token punctuation">,</span> <span class="token number">800</span><span
                     class="token punctuation">,</span> <span class="token number">600</span><span
                     class="token punctuation">)</span><span class="token punctuation">;</span>
 
-gioco<span class="token punctuation">.</span>prefabs<span class="token punctuation">.</span><span
+                gioco<span class="token punctuation">.</span>prefabs<span class="token punctuation">.</span><span
                     class="token function">define</span><span class="token punctuation">(</span><span
                     class="token string">'slime'</span><span class="token punctuation">,</span> <span
                     class="token punctuation">{</span>
-    <span class="token property">type</span><span class="token punctuation">:</span> <span
+                <span class="token property">type</span><span class="token punctuation">:</span> <span
                     class="token string">'enemy'</span><span class="token punctuation">,</span>
-    <span class="token property">width</span><span class="token punctuation">:</span> <span
+                <span class="token property">width</span><span class="token punctuation">:</span> <span
                     class="token number">32</span><span class="token punctuation">,</span>
-    <span class="token property">height</span><span class="token punctuation">:</span> <span
+                <span class="token property">height</span><span class="token punctuation">:</span> <span
                     class="token number">32</span><span class="token punctuation">,</span>
-    <span class="token property">speed</span><span class="token punctuation">:</span> <span
+                <span class="token property">speed</span><span class="token punctuation">:</span> <span
                     class="token number">45</span><span class="token punctuation">,</span>
-    <span class="token property">hp</span><span class="token punctuation">:</span> <span
+                <span class="token property">hp</span><span class="token punctuation">:</span> <span
                     class="token number">3</span><span class="token punctuation">,</span>
-    <span class="token property">collider</span><span class="token punctuation">:</span> <span
+                <span class="token property">collider</span><span class="token punctuation">:</span> <span
                     class="token boolean">true</span><span class="token punctuation">,</span>
-    <span class="token property">drawLayer</span><span class="token punctuation">:</span> <span
+                <span class="token property">drawLayer</span><span class="token punctuation">:</span> <span
                     class="token string">'ysort'</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span
+                <span class="token punctuation">}</span><span class="token punctuation">)</span><span
                     class="token punctuation">;</span>
 
-<span class="token keyword">const</span> a <span class="token operator">=</span> gioco<span
+                <span class="token keyword">const</span> a <span class="token operator">=</span> gioco<span
                     class="token punctuation">.</span>prefabs<span class="token punctuation">.</span><span
                     class="token function">spawn</span><span class="token punctuation">(</span><span
                     class="token string">'slime'</span><span class="token punctuation">,</span> <span
@@ -891,8 +894,9 @@ gioco<span class="token punctuation">.</span>prefabs<span class="token punctuati
                     class="token punctuation">:</span> <span class="token number">20</span> <span
                     class="token punctuation">}</span><span class="token punctuation">)</span><span
                     class="token punctuation">;</span>
-a<span class="token punctuation">.</span>prefab<span class="token punctuation">;</span> <span
-                    class="token comment">// 'slime'</span></div>
+                a<span class="token punctuation">.</span>prefab<span class="token punctuation">;</span> <span
+                    class="token comment">// 'slime'</span>
+            </div>
 
             <h3>📁 Catalogo: type, define, get</h3>
 
@@ -904,20 +908,23 @@ a<span class="token punctuation">.</span>prefab<span class="token punctuation">;
                 lancia. Ridefinire lo stesso nome sovrascrive. <code>has</code> / <code>get</code> /
                 <code>list</code> / <code>remove</code> / <code>clear</code> parlano solo di
                 <code>#recipes</code>. <code>size</code> è <code>#recipes.size</code>.
-                <code>clear()</code> <strong>non</strong> tocca <code>#types</code>.</p>
+                <code>clear()</code> <strong>non</strong> tocca <code>#types</code>.
+            </p>
 
             <p><code>get(name)</code> torna una copia o <code>null</code>. Spawn e get non mutano la ricetta
                 salvata: <code>cloneSpec</code> fa spread top-level, clona
                 <code>props</code> / <code>collider</code> / <code>patrol</code> / <code>body</code>, e
                 <code>children.slice()</code>. Gli item di <code>children</code> restano lo stesso reference:
-                mutarli dopo un <code>get</code> sporca il catalogo.</p>
+                mutarli dopo un <code>get</code> sporca il catalogo.
+            </p>
 
             <h3>📁 Spawn — resolve, instantiate, finish</h3>
 
             <p><code>spawn(name, override = {})</code> è l'unico ingresso verso un'istanza. Name sconosciuto
                 (compreso <code>null</code> / <code>''</code>) lancia
                 <code>BeePrefab: ricetta sconosciuta</code>. L'override <code>null</code> diventa
-                <code>{}</code>.</p>
+                <code>{}</code>.
+            </p>
 
             <div class="bee-flow" role="region" aria-label="Flusso spawn">
                 <p class="bee-flow-caption">Tre fasi private. La ricetta resta intatta: si merge una copia.
@@ -954,17 +961,20 @@ a<span class="token punctuation">.</span>prefab<span class="token punctuation">;
                 (pool mancante lancia); altrimenti <code>create</code> || <code>class</code> || lookup
                 <code>type</code>. Una sottoclasse di <code>BeeEntity</code> viene costruita con
                 <code>new factory(x, y, width, height)</code>. Una factory libera riceve
-                <code>(spec, engine)</code> e non può tornare vuoto.</p>
+                <code>(spec, engine)</code> e non può tornare vuoto.
+            </p>
 
             <p>Se <code>type</code> manca, il lookup cade su <code>#types.get('entity')</code> oppure
                 <code>BeeEntity</code>. Una stringa sconosciuta lancia
-                <code>BeePrefab.spawn: type sconosciuto</code>.</p>
+                <code>BeePrefab.spawn: type sconosciuto</code>.
+            </p>
 
             <h3>📁 Spec — campi applicati</h3>
 
             <p><code>BEE_PREFAB_DEFAULTS</code> (frozen): <code>width</code> / <code>height</code> da
                 <code>BEE_ENTITY_DEFAULTS</code> (32), <code>addToScene: true</code>. I numeri non finiti
-                vanno al fallback (<code>x</code>/<code>y</code> → 0).</p>
+                vanno al fallback (<code>x</code>/<code>y</code> → 0).
+            </p>
 
             <table class="bee-api-table">
                 <thead>
@@ -977,7 +987,8 @@ a<span class="token punctuation">.</span>prefab<span class="token punctuation">;
                     <tr>
                         <td><code>type</code> / <code>class</code> / <code>create</code></td>
                         <td>Factory. Stringa → registro <code>type()</code>. Funzione entity →
-                            <code>new</code>. Altra funzione → <code>fn(spec, engine)</code>.</td>
+                            <code>new</code>. Altra funzione → <code>fn(spec, engine)</code>.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>extend</code></td>
@@ -987,7 +998,8 @@ a<span class="token punctuation">.</span>prefab<span class="token punctuation">;
                         <td><code>x</code> <code>y</code> <code>width</code> <code>height</code></td>
                         <td>Scritti su entity (getter/setter di <code>BeeTransform</code> per x/y).
                             <code>rotation</code> / <code>scaleX</code> / <code>scaleY</code> <strong>non</strong>
-                            sono applicati.</td>
+                            sono applicati.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>textureKey</code> / <code>sprite</code></td>
@@ -995,13 +1007,16 @@ a<span class="token punctuation">.</span>prefab<span class="token punctuation">;
                     </tr>
                     <tr>
                         <td><code>speed</code> <code>lives</code> <code>hp</code> <code>health</code>
-                            <code>score</code></td>
+                            <code>score</code>
+                        </td>
                         <td>Copiati se number. <code>health</code> scrive anche <code>hp</code> se
-                            <code>hp</code> è ancora <code>null</code>.</td>
+                            <code>hp</code> è ancora <code>null</code>.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>drawLayer</code> <code>sortY</code> <code>alpha</code> <code>visible</code>
-                            <code>active</code></td>
+                            <code>active</code>
+                        </td>
                         <td>Layer stringa, sortY/alpha number, flag boolean.</td>
                     </tr>
                     <tr>
@@ -1022,18 +1037,21 @@ a<span class="token punctuation">.</span>prefab<span class="token punctuation">;
                         <td><code>collider</code></td>
                         <td><code>true</code> o <code>{ offsetX, offsetY, width, height }</code> →
                             <code>addRectCollider</code>. Sostituisce il collider precedente, non lo
-                            <code>destroy</code>.</td>
+                            <code>destroy</code>.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>body</code></td>
                         <td><code>true</code> o opzioni <code>BeeRigidBody</code>. World di default:
                             <code>engine.physics</code>. Se c'è già un body, <code>addRigidBody</code> lo
-                            distrugge prima.</td>
+                            distrugge prima.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>patrol</code></td>
                         <td><code>{ minX, maxX }</code> oppure array <code>[min, max]</code> →
-                            <code>setPatrolBounds</code>.</td>
+                            <code>setPatrolBounds</code>.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>setup</code></td>
@@ -1043,7 +1061,8 @@ a<span class="token punctuation">.</span>prefab<span class="token punctuation">;
                     <tr>
                         <td><code>children</code></td>
                         <td>Array di nomi ricetta o spec. Spawnati con <code>addToScene: false</code>, poi
-                            <code>entity.addChild</code>.</td>
+                            <code>entity.addChild</code>.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>pool</code> / <code>acquire</code></td>
@@ -1062,7 +1081,8 @@ a<span class="token punctuation">.</span>prefab<span class="token punctuation">;
                 deep-merge (chiavi). <code>collider</code> / <code>body</code> / <code>patrol</code> /
                 <code>children</code> dell'override <strong>sostituiscono</strong> interi, non si fondono
                 campo per campo. Un ciclo <code>a → b → a</code> lancia
-                <code>BeePrefab: ciclo in extend</code>.</p>
+                <code>BeePrefab: ciclo in extend</code>.
+            </p>
 
             <p>Non esiste <code>entity.clone()</code>. Il “clone” è sempre dati → nuova istanza.
                 Due <code>spawn</code> dello stesso nome sono due object distinti; l'override vale solo per
@@ -1074,37 +1094,43 @@ a<span class="token punctuation">.</span>prefab<span class="token punctuation">;
                 (<code>gioco.createPool</code>). <code>pool.acquire(spec)</code> riceve lo spec mergiato
                 come primo argomento: il tuo <code>reset(item, spec)</code> deve leggerlo da lì. Se il
                 pool è pieno e <code>reclaim: false</code>, <code>acquire</code> torna <code>null</code> e
-                <code>spawn</code> restituisce <code>null</code> senza lanciare.</p>
+                <code>spawn</code> restituisce <code>null</code> senza lanciare.
+            </p>
 
             <p><code>spec.acquire</code> (funzione) bypassa il lookup: sei tu a dare l'istanza.
                 Finish gira comunque: x/y, campi, collider, body, setup, children, scena. Su un oggetto
                 pooled questo <strong>riapplica</strong> collider/body a ogni acquire. Il body vecchio
                 viene distrutto; il collider vecchio viene solo sostituito (reference orfano se era già
                 in <code>BeeCollisionSystem</code>). Per i pooled, metti collider/body nel
-                <code>reset</code> del pool, non nella ricetta, oppure accetta il replace.</p>
+                <code>reset</code> del pool, non nella ricetta, oppure accetta il replace.
+            </p>
 
             <p>I children di un pooled nascono di nuovo a ogni spawn (non sono pooled, salvo ricetta
                 figlia con <code>pool</code> suo). <code>BeeEntity.destroy</code> su un item con
-                <code>this.pool</code> fa <code>release</code>, non teardown.</p>
+                <code>this.pool</code> fa <code>release</code>, non teardown.
+            </p>
 
             <h3>📁 Transform</h3>
 
             <p>x/y passano dai setter di <code>BeeEntity</code>, quindi da
                 <code>BeeTransform</code> (dirty + world). width/height sono campi della entity, non della
                 transform. Finish scrive x/y/w/h <em>dopo</em> il costruttore, così un
-                <code>acquire</code> / factory che ignora lo spec viene riallineato.</p>
+                <code>acquire</code> / factory che ignora lo spec viene riallineato.
+            </p>
 
             <p>Non c'è applicazione di <code>rotation</code>, <code>scaleX</code>, <code>scaleY</code>,
                 <code>origin</code>. Se ti servono, mettili in <code>setup</code> o in
                 <code>props</code> (scale/rotation non sono in <code>RESERVED</code>, quindi
-                <code>props: { rotation: 0.2 }</code> finisce su <code>entity.rotation</code>).</p>
+                <code>props: { rotation: 0.2 }</code> finisce su <code>entity.rotation</code>).
+            </p>
 
             <h3>📁 Children e id</h3>
 
             <p>Stringa in <code>children</code> → <code>spawn(nome, { addToScene: false })</code>.
                 Oggetto con <code>prefab</code> noto → stesso schema, override nello spec figlio.
                 Altrimenti instantiate+finish inline, sempre fuori scena, poi
-                <code>addChild</code> (parent transform, no ciclo ancestor).</p>
+                <code>addChild</code> (parent transform, no ciclo ancestor).
+            </p>
 
             <p>I cicli <code>extend</code> sono protetti. I cicli <strong>children</strong>
                 (<code>nodo</code> che ha figlio <code>nodo</code>) non lo sono: stack overflow. Non
@@ -1113,7 +1139,8 @@ a<span class="token punctuation">.</span>prefab<span class="token punctuation">;
             <p>Identità: <code>entity.prefab</code> è il nome della ricetta usata in
                 <code>spawn</code>, non un id istanza. Non viene generato un uuid. <code>type</code> è
                 la factory, <code>prefab</code> è la ricetta. Due slime condividono lo stesso
-                <code>prefab === 'slime'</code>.</p>
+                <code>prefab === 'slime'</code>.
+            </p>
 
             <h3>📁 fromList, fromObjects — ingest, non save</h3>
 
@@ -1133,7 +1160,8 @@ a<span class="token punctuation">.</span>prefab<span class="token punctuation">;
                 <code>strict: true</code> (allora lancia). Le properties Tiled vengono sparse
                 <strong>in cima</strong> all'override: una property chiamata <code>type</code> /
                 <code>pool</code> / <code>create</code> può sovrascrivere la factory della
-                ricetta. Non usare quei nomi nei custom properties.</p>
+                ricetta. Non usare quei nomi nei custom properties.
+            </p>
 
             <p><code>spawnMany(name, spots)</code> è una wave dello stesso prefab.
                 Elemento array <code>[x, y]</code> oppure oggetto override. Non-array lancia.</p>
@@ -1145,7 +1173,8 @@ a<span class="token punctuation">.</span>prefab<span class="token punctuation">;
                 <code>destroyed</code>, non duplica il reference, e se c'è una scena corrente
                 delega a <code>scenes.addEntity</code>. I children nascono con
                 <code>addToScene: false</code>: li tiene il parent, non l'array
-                <code>engine.entities</code> (a meno che tu non li aggiunga a mano).</p>
+                <code>engine.entities</code> (a meno che tu non li aggiunga a mano).
+            </p>
 
             <p>Senza engine (test, catalogo isolato) spawn funziona uguale, semplicemente non
                 iscrive nessuno al loop.</p>
@@ -1154,14 +1183,16 @@ a<span class="token punctuation">.</span>prefab<span class="token punctuation">;
 
             <p><code>spawn(null)</code> / nome assente / ricetta sconosciuta → throw, non
                 <code>undefined</code> silenzioso. <code>fromObjects</code> è l'unico ingresso
-                permissivo (skip). Factory che torna falsy lancia.</p>
+                permissivo (skip). Factory che torna falsy lancia.
+            </p>
 
             <p>Leak tipici: dimenticare <code>destroy</code> sulle entity spawnate (restano in
                 <code>engine.entities</code> e, se hanno <code>body</code>, in
                 <code>BeePhysicsWorld</code>). <code>prefabs.clear()</code> non le tocca.
                 Children non aggiunti al parent (entity senza <code>addChild</code>) restano
                 solo se le hai messe in scena. Su pool: collider riapplicato ogni acquire può
-                lasciare il vecchio box nel collision system.</p>
+                lasciare il vecchio box nel collision system.
+            </p>
         </div>
 
         <div class="bee-class-card bee-ladybug" id="BeePrefab-note">
@@ -1172,22 +1203,27 @@ a<span class="token punctuation">.</span>prefab<span class="token punctuation">;
 
             <p><strong>Senza <code>type</code> non è un errore.</strong> Cade su
                 <code>BeeEntity</code>. Se volevi un nemico e hai solo
-                <code>define('slime', { hp: 3 })</code>, ottieni un'entity nuda.</p>
+                <code>define('slime', { hp: 3 })</code>, ottieni un'entity nuda.
+            </p>
 
             <p><strong>Children circolari.</strong> <code>extend</code> è sicuro. Un albero
-                <code>children: ['se-stesso']</code> no.</p>
+                <code>children: ['se-stesso']</code> no.
+            </p>
 
             <p><strong>Tiled <code>type</code> vs factory <code>type</code>.</strong>
                 <code>fromObjects</code> usa <code>obj.type</code> come <em>nome ricetta</em>.
                 Poi sparge le properties sopra lo spec. Una property <code>type</code> cambia
-                la factory.</p>
+                la factory.
+            </p>
 
             <p><strong>Pool + collider in ricetta.</strong> Finish riapplica. Preferisci
                 <code>reset</code> sul pool, o <code>spec.acquire</code> che torna l'item già
-                armato e tieni <code>collider</code> fuori dallo spec.</p>
+                armato e tieni <code>collider</code> fuori dallo spec.
+            </p>
 
-            <p><strong>Transform parziale.</strong> Solo x/y/w/h. Rotazione e scala: 
-                <code>setup</code> o <code>props</code>.</p>
+            <p><strong>Transform parziale.</strong> Solo x/y/w/h. Rotazione e scala:
+                <code>setup</code> o <code>props</code>.
+            </p>
         </div>
 
         <div class="bee-class-card" id="BeePrefab-esempio">
@@ -1198,93 +1234,93 @@ a<span class="token punctuation">.</span>prefab<span class="token punctuation">;
                     class="token punctuation">}</span> <span class="token keyword">from</span> <span
                     class="token string">'beeengine'</span><span class="token punctuation">;</span>
 
-<span class="token keyword">const</span> gioco <span class="token operator">=</span> <span
+                <span class="token keyword">const</span> gioco <span class="token operator">=</span> <span
                     class="token keyword">new</span> <span class="token class-name">BeeEngine</span><span
                     class="token punctuation">(</span><span class="token string">'testCanvas'</span><span
                     class="token punctuation">,</span> <span class="token number">800</span><span
                     class="token punctuation">,</span> <span class="token number">600</span><span
                     class="token punctuation">)</span><span class="token punctuation">;</span>
 
-gioco<span class="token punctuation">.</span>prefabs<span class="token punctuation">.</span><span
+                gioco<span class="token punctuation">.</span>prefabs<span class="token punctuation">.</span><span
                     class="token function">define</span><span class="token punctuation">(</span><span
                     class="token string">'slime'</span><span class="token punctuation">,</span> <span
                     class="token punctuation">{</span>
-    <span class="token property">type</span><span class="token punctuation">:</span> <span
+                <span class="token property">type</span><span class="token punctuation">:</span> <span
                     class="token string">'enemy'</span><span class="token punctuation">,</span>
-    <span class="token property">width</span><span class="token punctuation">:</span> <span
+                <span class="token property">width</span><span class="token punctuation">:</span> <span
                     class="token number">32</span><span class="token punctuation">,</span>
-    <span class="token property">height</span><span class="token punctuation">:</span> <span
+                <span class="token property">height</span><span class="token punctuation">:</span> <span
                     class="token number">32</span><span class="token punctuation">,</span>
-    <span class="token property">speed</span><span class="token punctuation">:</span> <span
+                <span class="token property">speed</span><span class="token punctuation">:</span> <span
                     class="token number">45</span><span class="token punctuation">,</span>
-    <span class="token property">hp</span><span class="token punctuation">:</span> <span
+                <span class="token property">hp</span><span class="token punctuation">:</span> <span
                     class="token number">3</span><span class="token punctuation">,</span>
-    <span class="token property">collider</span><span class="token punctuation">:</span> <span
+                <span class="token property">collider</span><span class="token punctuation">:</span> <span
                     class="token boolean">true</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span
+                <span class="token punctuation">}</span><span class="token punctuation">)</span><span
                     class="token punctuation">;</span>
 
-gioco<span class="token punctuation">.</span>prefabs<span class="token punctuation">.</span><span
+                gioco<span class="token punctuation">.</span>prefabs<span class="token punctuation">.</span><span
                     class="token function">define</span><span class="token punctuation">(</span><span
                     class="token string">'slime-fast'</span><span class="token punctuation">,</span> <span
                     class="token punctuation">{</span>
-    <span class="token property">extend</span><span class="token punctuation">:</span> <span
+                <span class="token property">extend</span><span class="token punctuation">:</span> <span
                     class="token string">'slime'</span><span class="token punctuation">,</span>
-    <span class="token property">speed</span><span class="token punctuation">:</span> <span
+                <span class="token property">speed</span><span class="token punctuation">:</span> <span
                     class="token number">90</span><span class="token punctuation">,</span>
-    <span class="token property">hp</span><span class="token punctuation">:</span> <span
+                <span class="token property">hp</span><span class="token punctuation">:</span> <span
                     class="token number">2</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span
+                <span class="token punctuation">}</span><span class="token punctuation">)</span><span
                     class="token punctuation">;</span>
 
-<span class="token keyword">const</span> wave <span class="token operator">=</span> gioco<span
+                <span class="token keyword">const</span> wave <span class="token operator">=</span> gioco<span
                     class="token punctuation">.</span>prefabs<span class="token punctuation">.</span><span
                     class="token function">spawnMany</span><span class="token punctuation">(</span><span
                     class="token string">'slime'</span><span class="token punctuation">,</span> <span
                     class="token punctuation">[</span>
-    <span class="token punctuation">[</span><span class="token number">0</span><span
+                <span class="token punctuation">[</span><span class="token number">0</span><span
                     class="token punctuation">,</span> <span class="token number">1</span><span
                     class="token punctuation">]</span><span class="token punctuation">,</span>
-    <span class="token punctuation">{</span> x<span class="token punctuation">:</span> <span
+                <span class="token punctuation">{</span> x<span class="token punctuation">:</span> <span
                     class="token number">4</span><span class="token punctuation">,</span> y<span
                     class="token punctuation">:</span> <span class="token number">5</span><span
                     class="token punctuation">,</span> hp<span class="token punctuation">:</span> <span
                     class="token number">8</span> <span class="token punctuation">}</span>
-<span class="token punctuation">]</span><span class="token punctuation">)</span><span
+                <span class="token punctuation">]</span><span class="token punctuation">)</span><span
                     class="token punctuation">;</span>
 
-gioco<span class="token punctuation">.</span>prefabs<span class="token punctuation">.</span><span
+                gioco<span class="token punctuation">.</span>prefabs<span class="token punctuation">.</span><span
                     class="token function">fromList</span><span class="token punctuation">(</span><span
                     class="token punctuation">[</span>
-    <span class="token punctuation">{</span> <span class="token property">prefab</span><span
+                <span class="token punctuation">{</span> <span class="token property">prefab</span><span
                     class="token punctuation">:</span> <span class="token string">'slime'</span><span
                     class="token punctuation">,</span> x<span class="token punctuation">:</span> <span
                     class="token number">1</span><span class="token punctuation">,</span> y<span
                     class="token punctuation">:</span> <span class="token number">2</span> <span
                     class="token punctuation">}</span><span class="token punctuation">,</span>
-    <span class="token punctuation">{</span> <span class="token property">prefab</span><span
+                <span class="token punctuation">{</span> <span class="token property">prefab</span><span
                     class="token punctuation">:</span> <span class="token string">'slime-fast'</span><span
                     class="token punctuation">,</span> x<span class="token punctuation">:</span> <span
                     class="token number">3</span><span class="token punctuation">,</span> y<span
                     class="token punctuation">:</span> <span class="token number">4</span> <span
                     class="token punctuation">}</span>
-<span class="token punctuation">]</span><span class="token punctuation">)</span><span
+                <span class="token punctuation">]</span><span class="token punctuation">)</span><span
                     class="token punctuation">;</span>
 
-gioco<span class="token punctuation">.</span>prefabs<span class="token punctuation">.</span><span
+                gioco<span class="token punctuation">.</span>prefabs<span class="token punctuation">.</span><span
                     class="token function">fromObjects</span><span class="token punctuation">(</span><span
                     class="token punctuation">[</span>
-    <span class="token punctuation">{</span> <span class="token property">type</span><span
+                <span class="token punctuation">{</span> <span class="token property">type</span><span
                     class="token punctuation">:</span> <span class="token string">'slime'</span><span
                     class="token punctuation">,</span> x<span class="token punctuation">:</span> <span
                     class="token number">50</span><span class="token punctuation">,</span> y<span
                     class="token punctuation">:</span> <span class="token number">60</span><span
                     class="token punctuation">,</span>
-        <span class="token property">width</span><span class="token punctuation">:</span> <span
+                <span class="token property">width</span><span class="token punctuation">:</span> <span
                     class="token number">16</span><span class="token punctuation">,</span> <span
                     class="token property">height</span><span class="token punctuation">:</span> <span
                     class="token number">16</span><span class="token punctuation">,</span>
-        <span class="token property">properties</span><span class="token punctuation">:</span> <span
+                <span class="token property">properties</span><span class="token punctuation">:</span> <span
                     class="token punctuation">[</span><span class="token punctuation">{</span> <span
                     class="token property">name</span><span class="token punctuation">:</span> <span
                     class="token string">'hp'</span><span class="token punctuation">,</span> <span
@@ -1292,21 +1328,23 @@ gioco<span class="token punctuation">.</span>prefabs<span class="token punctuati
                     class="token number">7</span> <span class="token punctuation">}</span><span
                     class="token punctuation">]</span> <span class="token punctuation">}</span><span
                     class="token punctuation">,</span>
-    <span class="token punctuation">{</span> <span class="token property">type</span><span
+                <span class="token punctuation">{</span> <span class="token property">type</span><span
                     class="token punctuation">:</span> <span class="token string">'decor'</span><span
                     class="token punctuation">,</span> x<span class="token punctuation">:</span> <span
                     class="token number">0</span><span class="token punctuation">,</span> y<span
                     class="token punctuation">:</span> <span class="token number">0</span> <span
                     class="token punctuation">}</span>
-<span class="token punctuation">]</span><span class="token punctuation">)</span><span
-                    class="token punctuation">;</span></div>
+                <span class="token punctuation">]</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+            </div>
         </div>
 
         <div class="bee-class-card" id="BeePrefab-api">
             <h3>📁 Riepilogo API</h3>
             <p>Fluent: <code>type</code>, <code>define</code>, <code>remove</code>, <code>clear</code>
                 ritornano <code>this</code>. I default sono in <code>BEE_PREFAB_DEFAULTS</code> (frozen).
-                <code>engine</code> sull'istanza è pubblico.</p>
+                <code>engine</code> sull'istanza è pubblico.
+            </p>
             <table class="bee-api-table">
                 <thead>
                     <tr>
@@ -1320,7 +1358,8 @@ gioco<span class="token punctuation">.</span>prefabs<span class="token punctuati
                         <td><code>BEE_PREFAB_DEFAULTS</code></td>
                         <td>oggetto frozen</td>
                         <td><code>width</code> / <code>height</code> da entity (32) ·
-                            <code>addToScene</code> true.</td>
+                            <code>addToScene</code> true.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>new BeePrefab({ engine })</code></td>
@@ -1351,7 +1390,8 @@ gioco<span class="token punctuation">.</span>prefabs<span class="token punctuati
                         <td><code>get(name)</code></td>
                         <td>spec o <code>null</code></td>
                         <td>Copia. Mutare il risultato non deve (salvo item di
-                            <code>children</code>) toccare il catalogo.</td>
+                            <code>children</code>) toccare il catalogo.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>list()</code></td>
