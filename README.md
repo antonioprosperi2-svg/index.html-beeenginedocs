@@ -19,6 +19,7 @@ Questo spazio raccoglie le guide, gli esempi pratici e le spiegazioni di tutti i
 * **📋 BeeMenuScene:** Scena di menu (`src/gameplay/BeeMenuScene.html`): splash o `items`, `next` / `onStart`, niente input in pausa.
 * **👾 BeeEnemy (v2.8.4):** Pattuglia X (`src/gameplay/BeeEnemy.html`): `worldX`, muro `minX`/`maxX + width`.
 * **🟫 BeePlatform:** Sprite statico per i solidi (`src/gameplay/BeePlatform.html`): la fisica è `collisions.solid` + `resolvePlatformCollision`.
+* **🎮 BeePlayer:** Personaggio giocabile (`src/gameplay/BeePlayer.html`): `setMode` platformer/free, `consumeAttack`, boost permanente vs temporaneo.
 * **🐝 BeeEngine:** Facade e core loop (`src/core/BeeEngine.html`): `start`/`stop`/`pause`, scene vs `addEntity`, tween/timer/prefab/pathfinder.
 * **⏱ BeeTime:** Orologio unico del core loop (`src/core/BeeTime.html`): `dt` di simulazione, `unscaledDt` reale, pausa/F4, `timeScale`, accumulator per `BeePhysicsWorld`.
 * **⏱ BeeTimer:** Cooldown e loop di evento (`src/core/BeeTimer.html`): `gioco.after` / `gioco.every`, clock `gioco.timers`, assi scaled/unscaled.
