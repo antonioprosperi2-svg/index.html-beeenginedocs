@@ -976,8 +976,8 @@ hero<span class="token punctuation">.</span>animator <span class="token operator
                     </li>
                     <li class="bee-flow-step">
                         <span class="bee-flow-box bee-flow-read"><strong>3. when</strong>Anche in lock.
-                            Priorità <em>stato</em> &gt; lock:
-                            interrompe. ≤ : coda.
+                            Score <code>when.priority + dest.priority</code>
+                            &gt; lock: interrompe. ≤ : coda.
                             <code>force</code> rompe sempre.</span>
                     </li>
                 </ol>
@@ -994,21 +994,22 @@ hero<span class="token punctuation">.</span>animator <span class="token operator
                 <code>exitTo: 'idle'</code> al frame dopo rientri in
                 attack.</p>
 
-            <p><strong>Il lock guarda la priorità dello
-                stato</strong> (<code>add(..., { priority })</code>),
-                non quella del <code>when(..., { priority })</code>.
-                L'edge serve solo a scegliere quale transizione vince
-                tra le candidate. <code>hurt</code> con
-                <code>priority: 0</code> e un when a 100, contro un
-                attack a 10, va in <em>coda</em>, non interrompe.</p>
+            <p><strong>Lo score del lock è
+                <code>when.priority + dest.priority</code>.</strong>
+                Un <code>when('*', 'hurt', …, { priority: 100 })</code>
+                verso uno stato a 0, contro un attack lockato a 10,
+                interrompe (100 &gt; 10). Tra due
+                <code>when</code> vince lo score più alto.
+                <code>set('hurt')</code> invece guarda solo la
+                priorità dello stato: hurt a 0 non rompe un lock a
+                10, a meno di <code>{ force: true }</code>.</p>
 
-            <p><strong>Lock senza sprite, o
+            <p><strong>Senza sprite, o
                 <code>play === false</code>.</strong>
-                <code>console.warn</code> una volta: quello stato
-                resta lockato finché non arriva uno stato con
-                priorità maggiore o <code>set(..., { force: true })</code>.
-                Senza sprite <code>finished</code> è sempre
-                false.</p>
+                <code>console.warn</code> una volta e il lock
+                <em>non</em> si applica: <code>locked</code> è
+                false, <code>when</code> / <code>set</code> possono
+                uscire. Non è più un vicolo cieco.</p>
 
             <p><strong>Il primo <code>add()</code> è
                 <code>initial</code></strong> se non segni
@@ -1036,18 +1037,17 @@ hero<span class="token punctuation">.</span>animator <span class="token operator
                     class="token punctuation">(</span><span class="token string">'hurt'</span><span
                     class="token punctuation">,</span> <span class="token punctuation">{</span> <span
                     class="token property">clip</span><span class="token punctuation">:</span> <span
-                    class="token string">'hurt'</span><span class="token punctuation">,</span> <span
-                    class="token property">lock</span><span class="token punctuation">:</span> <span
-                    class="token boolean">true</span><span class="token punctuation">,</span> <span
-                    class="token property">priority</span><span class="token punctuation">:</span> <span
-                    class="token number">10</span> <span class="token punctuation">}</span><span
+                    class="token string">'hurt'</span> <span class="token punctuation">}</span><span
                     class="token punctuation">)</span>
     <span class="token punctuation">.</span><span class="token function">when</span><span
                     class="token punctuation">(</span><span class="token string">'*'</span><span
                     class="token punctuation">,</span> <span class="token string">'hurt'</span><span
                     class="token punctuation">,</span> <span class="token punctuation">(</span>a<span
                     class="token punctuation">)</span> <span class="token operator">=&gt;</span> a<span
-                    class="token punctuation">.</span>stunned<span class="token punctuation">)</span>
+                    class="token punctuation">.</span>stunned<span class="token punctuation">,</span> <span
+                    class="token punctuation">{</span> <span class="token property">priority</span><span
+                    class="token punctuation">:</span> <span class="token number">100</span> <span
+                    class="token punctuation">}</span><span class="token punctuation">)</span>
     <span class="token punctuation">.</span><span class="token function">start</span><span
                     class="token punctuation">(</span><span class="token string">'attack'</span><span
                     class="token punctuation">)</span><span class="token punctuation">;</span></div>
@@ -1091,7 +1091,9 @@ hero<span class="token punctuation">.</span>animator <span class="token operator
                         <td><code>this</code></td>
                         <td><code>from</code> stringa, array o
                             <code>'*'</code>. Predicato:
-                            <code>(ctx, animator) =&gt; boolean</code>.</td>
+                            <code>(ctx, animator) =&gt; boolean</code>.
+                            Score lock:
+                            <code>priority + dest.priority</code>.</td>
                     </tr>
                     <tr>
                         <td><code>start(name?)</code> /
@@ -1114,8 +1116,9 @@ hero<span class="token punctuation">.</span>animator <span class="token operator
                             <code>queued</code> /
                             <code>timeInState</code></td>
                         <td>string / bool / string / number</td>
-                        <td>Stato, lock finché non
-                            <code>finished</code>, coda, tempo nello
+                        <td>Stato; lock solo se il clip è
+                            partito e non è
+                            <code>finished</code>; coda; tempo nello
                             stato.</td>
                     </tr>
                     <tr>
