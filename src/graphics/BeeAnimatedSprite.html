@@ -713,7 +713,7 @@
     <a href="#" class="bee-header-logo">
         <span class="bee-header-title">BeeAnimatedSprite</span>
     </a>
-    <span class="bee-header-badge">v2.9.1</span>
+    <span class="bee-header-badge">v2.9.2</span>
 </header>
 
 <!-- CONTENITORE PRINCIPALE -->
@@ -1022,8 +1022,9 @@
                 <code>draw</code> non guarda se
                 <code>this.sheet</code> è null: chiama
                 <code>frameWidth</code> / <code>drawFrame</code>.
-                Nome clip inesistente: <code>console.warn</code> e
-                resta sul clip vecchio.
+                Nome clip inesistente: <code>play</code> torna
+                <code>false</code>, <code>console.warn</code>, clip
+                invariato.
             </p>
         </div>
 
@@ -1104,11 +1105,14 @@
                     </tr>
                     <tr>
                         <td><code>play(name, { restart, loop }?)</code></td>
-                        <td><code>this</code></td>
+                        <td><code>true</code> / <code>false</code></td>
                         <td>Cambia clip, azzera frame/timer.
+                            <code>true</code> anche se è già quel
+                            clip (senza <code>restart</code>).
+                            <code>false</code> = nome assente, warn,
+                            resta sul precedente.
                             <code>loop</code> boolean override;
                             assente torna a <code>anim.loop</code>.
-                            Nome assente: warn.
                         </td>
                     </tr>
                     <tr>

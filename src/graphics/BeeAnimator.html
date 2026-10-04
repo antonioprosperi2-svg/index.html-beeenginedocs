@@ -613,14 +613,107 @@
             white-space: nowrap;
         }
     }
+
+    /* ==========================================
+       5. FLUSSO (solo questa pagina)
+       ========================================== */
+    .bee-flow {
+        margin: 16px 0 4px 0;
+        padding: 16px 16px 14px 16px;
+        background: var(--bee-surface-2);
+        border: 1px solid var(--bee-line);
+        border-left: 4px solid var(--bee-honey);
+        border-radius: 10px;
+    }
+
+    .bee-flow-caption {
+        color: var(--bee-text-dim);
+        font-size: 13.5px;
+        line-height: 1.55;
+        margin: 0 0 12px 0;
+    }
+
+    .bee-flow-row {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: stretch;
+        gap: 8px 0;
+        margin: 0;
+        padding: 0;
+    }
+
+    .bee-flow-step {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        max-width: 100%;
+    }
+
+    .bee-flow-box {
+        display: block;
+        min-width: 7.5rem;
+        max-width: 14rem;
+        padding: 10px 12px;
+        background: var(--bee-surface);
+        border: 1px solid var(--bee-line-honey);
+        border-radius: 8px;
+        color: var(--bee-text);
+        font-size: 13.5px;
+        line-height: 1.45;
+    }
+
+    .bee-flow-box strong {
+        display: block;
+        color: var(--bee-honey);
+        font-family: var(--bee-mono);
+        font-size: 12.5px;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+        margin-bottom: 4px;
+    }
+
+    .bee-flow-box.bee-flow-read {
+        border-color: rgba(239, 68, 68, 0.45);
+    }
+
+    .bee-flow-box.bee-flow-read strong {
+        color: #ff8f8f;
+    }
+
+    .bee-flow-box code {
+        font-family: var(--bee-mono);
+        font-size: 12.5px;
+        color: #fcd34d;
+    }
+
+    .bee-flow-arrow {
+        color: var(--bee-honey);
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1;
+        padding: 0 6px;
+        flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+        .bee-flow-step {
+            width: 100%;
+        }
+
+        .bee-flow-box {
+            max-width: none;
+            flex-grow: 1;
+        }
+    }
 </style>
 
 <!-- HEADER FISSA -->
 <header class="bee-docs-header">
     <a href="#" class="bee-header-logo">
-        <span class="bee-header-title">BeeAssetManager</span>
+        <span class="bee-header-title">BeeAnimator</span>
     </a>
-    <span class="bee-header-badge">v2.2.0</span>
+    <span class="bee-header-badge">v2.9.2</span>
 </header>
 
 <!-- CONTENITORE PRINCIPALE -->
@@ -765,98 +858,277 @@
 
 
     <!-- AREA CONTENUTI (TUTTI I MODULI VANNO QUI DENTRO) -->
-    <main class="bee-docs-content">
+        <main class="bee-docs-content">
 
-        <!-- SEZIONE 1 -->
-        <h2 class="bee-section-title">BeeAssetManager — Documentazione Tecnica
+        <div
+            style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
+            <div>
+                <h2 class="bee-section-title" style="margin: 0;">BeeAnimator — Documentazione Tecnica</h2>
+                <p style="margin-top: 5px;">Grafo di stati:
+                    <code class="bee-inline-code">when</code> /
+                    <code class="bee-inline-code">lock</code> /
+                    <code class="bee-inline-code">exitTo</code>,
+                    <code class="bee-inline-code">onComplete</code> una volta
+                </p>
+            </div>
+            <img src="https://beeenginejs.com/wp-content/uploads/2026/09/Gemini_Generated_Image_bg7xjjbg7xjjbg7x-1-1.jpg"
+                alt="BeeEngine Mascot" width="80" height="80" style="width: 80px; height: auto; flex-shrink: 0;">
+        </div>
 
-            Modulo core di BeeEngine per il caricamento centralizzato delle risorse di gioco</h2>
+        <div class="bee-class-card" id="BeeAnimator">
 
-        <div class="bee-class-card" id="BeeAssetManager">
-            <h3> </h3>
+            <h3>📁 Panoramica</h3>
 
-            <p></p>
+            <p><code>BeeAnimator</code> decide <em>quale</em> clip e
+                <em>quando</em>. Non disegna. Lo sprite
+                (<code>BeeAnimatedSprite</code>) riproduce. Vive in
+                <code>src/graphics/BeeAnimator.js</code>. Factory:
+                <code>gioco.createAnimator(sprite)</code>.
+                <code>BeeEntity.update</code> ticka
+                <code>entity.animator</code> (e allora non riticka
+                <code>entity.sprite</code>).</p>
 
-            <p> </p>
+            <p>In <code>#enter</code> chiama
+                <code>sprite.play(clip, { restart: true, loop: next.loop })</code>:
+                sul loop, quando c'è l'animator, vince lo
+                <strong>stato</strong> (<code>add(..., { loop })</code>,
+                default <code>true</code>), non il flag del clip.</p>
 
-            <p>📁 </p>
+            <div class="bee-code-block"><span class="token keyword">const</span> animator <span
+                    class="token operator">=</span> gioco<span class="token punctuation">.</span><span
+                    class="token function">createAnimator</span><span
+                    class="token punctuation">(</span>sprite<span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+animator
+    <span class="token punctuation">.</span><span class="token function">add</span><span
+                    class="token punctuation">(</span><span class="token string">'idle'</span><span
+                    class="token punctuation">,</span> <span class="token punctuation">{</span> <span
+                    class="token property">clip</span><span class="token punctuation">:</span> <span
+                    class="token string">'idle'</span><span class="token punctuation">,</span> <span
+                    class="token property">initial</span><span class="token punctuation">:</span> <span
+                    class="token boolean">true</span> <span class="token punctuation">}</span><span
+                    class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">add</span><span
+                    class="token punctuation">(</span><span class="token string">'run'</span><span
+                    class="token punctuation">,</span> <span class="token punctuation">{</span> <span
+                    class="token property">clip</span><span class="token punctuation">:</span> <span
+                    class="token string">'run'</span><span class="token punctuation">,</span> <span
+                    class="token property">priority</span><span class="token punctuation">:</span> <span
+                    class="token number">1</span> <span class="token punctuation">}</span><span
+                    class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">add</span><span
+                    class="token punctuation">(</span><span class="token string">'attack'</span><span
+                    class="token punctuation">,</span> <span class="token punctuation">{</span>
+        <span class="token property">clip</span><span class="token punctuation">:</span> <span
+                    class="token string">'attack'</span><span class="token punctuation">,</span>
+        <span class="token property">loop</span><span class="token punctuation">:</span> <span
+                    class="token boolean">false</span><span class="token punctuation">,</span>
+        <span class="token property">lock</span><span class="token punctuation">:</span> <span
+                    class="token boolean">true</span><span class="token punctuation">,</span>
+        <span class="token property">priority</span><span class="token punctuation">:</span> <span
+                    class="token number">10</span><span class="token punctuation">,</span>
+        <span class="token property">exitTo</span><span class="token punctuation">:</span> <span
+                    class="token string">'idle'</span>
+    <span class="token punctuation">}</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">when</span><span
+                    class="token punctuation">(</span><span class="token string">'idle'</span><span
+                    class="token punctuation">,</span> <span class="token string">'run'</span><span
+                    class="token punctuation">,</span> <span class="token punctuation">(</span>actor<span
+                    class="token punctuation">)</span> <span class="token operator">=&gt;</span> Math<span
+                    class="token punctuation">.</span><span class="token function">abs</span><span
+                    class="token punctuation">(</span>actor<span class="token punctuation">.</span>vx<span
+                    class="token punctuation">)</span> <span class="token operator">&gt;</span> <span
+                    class="token number">1</span><span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">when</span><span
+                    class="token punctuation">(</span><span class="token string">'*'</span><span
+                    class="token punctuation">,</span> <span class="token string">'attack'</span><span
+                    class="token punctuation">,</span> <span class="token punctuation">(</span>actor<span
+                    class="token punctuation">)</span> <span class="token operator">=&gt;</span> actor<span
+                    class="token punctuation">.</span>wantsAttack<span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">start</span><span
+                    class="token punctuation">(</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+hero<span class="token punctuation">.</span>sprite <span class="token operator">=</span> sprite<span
+                    class="token punctuation">;</span>
+hero<span class="token punctuation">.</span>animator <span class="token operator">=</span> animator<span
+                    class="token punctuation">;</span></div>
 
-            <div class="bee-code-block"></div>
+            <h3>📁 Update</h3>
 
-            <p>📁</p>
+            <div class="bee-flow" role="region" aria-label="Flusso animator">
+                <p class="bee-flow-caption">Il contesto è il secondo
+                    argomento di <code>update</code>, oppure
+                    <code>options.context()</code>. L'entity passa
+                    sé stessa (o <code>animatorContext()</code>).</p>
+                <ol class="bee-flow-row">
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>1. clip</strong><code>sprite.update(dt)</code>
+                            (dt 0 in pausa).</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>2. fine</strong>Se
+                            <code>finished</code>:
+                            <code>onComplete</code> <em>una</em>
+                            volta per visita, poi
+                            <code>queued || exitTo</code>.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box bee-flow-read"><strong>3. when</strong>Anche in lock.
+                            Priorità <em>stato</em> &gt; lock:
+                            interrompe. ≤ : coda.
+                            <code>force</code> rompe sempre.</span>
+                    </li>
+                </ol>
+            </div>
+        </div>
 
-            <div class="bee-code-block"></div>
+        <div class="bee-class-card bee-ladybug" id="BeeAnimator-note">
+            <h3>📁 Dove è facile sbagliare</h3>
 
-            <p>📁</p>
+            <p><strong>Spegni <code>wantsAttack</code>.</strong>
+                <code>when('*', 'attack', a =&gt; a.wantsAttack)</code>
+                senza <code>consumeAttack()</code> (o
+                <code>onEnter</code> che azzera il flag): dopo
+                <code>exitTo: 'idle'</code> al frame dopo rientri in
+                attack.</p>
 
-            <div class="bee-code-block"> </div>
+            <p><strong>Il lock guarda la priorità dello
+                stato</strong> (<code>add(..., { priority })</code>),
+                non quella del <code>when(..., { priority })</code>.
+                L'edge serve solo a scegliere quale transizione vince
+                tra le candidate. <code>hurt</code> con
+                <code>priority: 0</code> e un when a 100, contro un
+                attack a 10, va in <em>coda</em>, non interrompe.</p>
 
-            <p>📁</p>
+            <p><strong>Lock senza sprite, o
+                <code>play === false</code>.</strong>
+                <code>console.warn</code> una volta: quello stato
+                resta lockato finché non arriva uno stato con
+                priorità maggiore o <code>set(..., { force: true })</code>.
+                Senza sprite <code>finished</code> è sempre
+                false.</p>
 
-            <div class="bee-code-block"></div>
+            <p><strong>Il primo <code>add()</code> è
+                <code>initial</code></strong> se non segni
+                <code>initial: true</code> su un altro. Senza
+                <code>start()</code> <code>current</code> è null.
+                <code>#queued</code> è un solo nome (l'ultimo vince).
+                <code>set('sconosciuto')</code> tace.</p>
+        </div>
 
-            <p>📁</p>
+        <div class="bee-class-card" id="BeeAnimator-esempio">
+            <h3>📁 Esempio: lock rotto da hurt</h3>
 
-            <div class="bee-code-block"></div>
+            <div class="bee-code-block">animator
+    <span class="token punctuation">.</span><span class="token function">add</span><span
+                    class="token punctuation">(</span><span class="token string">'attack'</span><span
+                    class="token punctuation">,</span> <span class="token punctuation">{</span> <span
+                    class="token property">clip</span><span class="token punctuation">:</span> <span
+                    class="token string">'attack'</span><span class="token punctuation">,</span> <span
+                    class="token property">loop</span><span class="token punctuation">:</span> <span
+                    class="token boolean">false</span><span class="token punctuation">,</span> <span
+                    class="token property">lock</span><span class="token punctuation">:</span> <span
+                    class="token boolean">true</span> <span class="token punctuation">}</span><span
+                    class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">add</span><span
+                    class="token punctuation">(</span><span class="token string">'hurt'</span><span
+                    class="token punctuation">,</span> <span class="token punctuation">{</span> <span
+                    class="token property">clip</span><span class="token punctuation">:</span> <span
+                    class="token string">'hurt'</span><span class="token punctuation">,</span> <span
+                    class="token property">lock</span><span class="token punctuation">:</span> <span
+                    class="token boolean">true</span><span class="token punctuation">,</span> <span
+                    class="token property">priority</span><span class="token punctuation">:</span> <span
+                    class="token number">10</span> <span class="token punctuation">}</span><span
+                    class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">when</span><span
+                    class="token punctuation">(</span><span class="token string">'*'</span><span
+                    class="token punctuation">,</span> <span class="token string">'hurt'</span><span
+                    class="token punctuation">,</span> <span class="token punctuation">(</span>a<span
+                    class="token punctuation">)</span> <span class="token operator">=&gt;</span> a<span
+                    class="token punctuation">.</span>stunned<span class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">start</span><span
+                    class="token punctuation">(</span><span class="token string">'attack'</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span></div>
+        </div>
 
-            <p>📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p> 📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p> 📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p>📁</p>
-
-            <div class="bee-class-card"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"> </div>
-
-            <p> 📁 </p>
-
-            <div class="bee-code-block"></div>
-
-            <p>📁</p>
-
-            <div class="bee-code-block"></div>
-
-
-            <p>📁 </p>
-
-            <div class="bee-code-block"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-code-block"></div>
-
-            <p> 📁</p>
-
-            <div class="bee-code-block"> </div>
-
-
-
-
+        <div class="bee-class-card" id="BeeAnimator-api">
+            <h3>📁 Riepilogo API</h3>
+            <p><code>play</code> sull'animator è
+                <code>set</code> (cambia stato). Non è
+                <code>BeeAnimatedSprite.play</code>.</p>
+            <table class="bee-api-table">
+                <thead>
+                    <tr>
+                        <th>Membro</th>
+                        <th>Ritorna</th>
+                        <th>Scopo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>new BeeAnimator(sprite?, { context }?)</code></td>
+                        <td><code>BeeAnimator</code></td>
+                        <td>Sprite opzionale.
+                            <code>context()</code> se
+                            <code>update</code> non passa il ctx.</td>
+                    </tr>
+                    <tr>
+                        <td><code>add(name, spec?)</code></td>
+                        <td><code>this</code></td>
+                        <td><code>clip</code> / <code>animation</code>
+                            o il name. <code>loop</code> default
+                            true. <code>lock</code>,
+                            <code>priority</code>,
+                            <code>exitTo</code>,
+                            <code>onEnter</code> /
+                            <code>onExit</code> /
+                            <code>onComplete</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>when(from, to, pred, { priority }?)</code></td>
+                        <td><code>this</code></td>
+                        <td><code>from</code> stringa, array o
+                            <code>'*'</code>. Predicato:
+                            <code>(ctx, animator) =&gt; boolean</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>start(name?)</code> /
+                            <code>set</code> / <code>play</code></td>
+                        <td><code>this</code></td>
+                        <td><code>start</code> usa
+                            <code>initial</code>.
+                            <code>{ restart, force }</code> su
+                            set/play.</td>
+                    </tr>
+                    <tr>
+                        <td><code>update(dt, context?)</code></td>
+                        <td><code>this</code></td>
+                        <td>Avanza clip, complete, exit, then
+                            <code>when</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>current</code> /
+                            <code>locked</code> /
+                            <code>queued</code> /
+                            <code>timeInState</code></td>
+                        <td>string / bool / string / number</td>
+                        <td>Stato, lock finché non
+                            <code>finished</code>, coda, tempo nello
+                            stato.</td>
+                    </tr>
+                    <tr>
+                        <td><code>gioco.createAnimator(sprite, opts)</code></td>
+                        <td>istanza</td>
+                        <td>Factory sul motore.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
     </main>
+
 
 </div>
 
