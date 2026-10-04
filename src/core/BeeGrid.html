@@ -710,7 +710,9 @@
                 <li><a
                         href="https://beeenginejs.com/animazione-spritesheet-in-javascript-play-update-e-draw/">BeeAnimatedSprite.js</a>
                 </li>
-                <li><a href="#BeeAnimator">BeeAnimator.js</a></li>
+                <li><a
+                        href="https://beeenginejs.com/state-machine-per-animazioni-in-javascript-transizioni-2d/">BeeAnimator.js</a>
+                </li>
                 <li><a href="#BeeCamera">BeeCamera.js</a></li>
                 <li><a href="#BeeLayer">BeeLayer.js</a></li>
                 <li><a href="#BeeParticleSystem">BeeParticleSystem.js</a></li>
@@ -789,7 +791,8 @@
             <p>La classe è intenzionalmente piccola. Il costruttore alloca la matrice, <code>setCell</code> /
                 <code>getCell</code> la leggono e la scrivono con controlli di bound, e <code>draw</code> delega il
                 rendering a una funzione che passi tu. Se ti serve una mappa visiva con sprite, quella è
-                <code>BeeTilemap</code>. Qui stai lavorando sulla geometria dello spazio.</p>
+                <code>BeeTilemap</code>. Qui stai lavorando sulla geometria dello spazio.
+            </p>
 
             <div class="bee-code-block"><span class="token keyword">export</span> <span
                     class="token keyword">class</span> <span class="token class-name">BeeGrid</span> <span
@@ -829,7 +832,8 @@
             <p>Questo è il punto dove è più facile sbagliare. La matrice interna è <code>data[riga][colonna]</code>, ma
                 i metodi pubblici accettano <strong>prima la colonna e poi la riga</strong>:
                 <code>setCell(c, r, val)</code> e <code>getCell(c, r)</code>. È la convenzione canvas (x, y): la colonna
-                cresce verso destra, la riga verso il basso.</p>
+                cresce verso destra, la riga verso il basso.
+            </p>
 
             <p>Se inverti gli argomenti, su una griglia non quadrata (per esempio 20×12) non prendi un errore: scrivi in
                 una cella sbagliata e il gioco “funziona” in modo storto. Controlla sempre l’ordine prima di incolpare
@@ -861,7 +865,8 @@
             <p>Entrambe le funzioni controllano che la riga esista (<code>this.data[r]</code>) e che la colonna stia in
                 <code>[0, cols)</code>. Fuori dai bordi <code>setCell</code> non fa nulla e <code>getCell</code> ritorna
                 <code>null</code> — non <code>0</code>. Zero è una cella valida (vuota di default); <code>null</code>
-                significa “questa coordinata non esiste”.</p>
+                significa “questa coordinata non esiste”.
+            </p>
 
             <p>Non usare <code>getCell</code> come se tornasse sempre un numero. Se stai facendo pathfinding o
                 collisioni, distingue i due casi, altrimenti tratti una cella fuori mappa come ostacolo o come spazio
@@ -908,13 +913,15 @@
             <p><code>draw(ctx, drawFunction)</code> non dipinge da sola. Scorre tutte le celle e per ognuna chiama
                 <code>drawFunction(ctx, x, y, valore)</code>, dove <code>x</code> e <code>y</code> sono già in pixel:
                 <code>c * cellSize</code> e <code>r * cellSize</code>. Il valore è quello salvato in
-                <code>data[r][c]</code>.</p>
+                <code>data[r][c]</code>.
+            </p>
 
             <p>Due conseguenze pratiche. La prima: se la griglia è 40×30 stai facendo 1.200 callback ogni frame. Per una
                 griglia di debug va bene; per un livello grande conviene disegnare solo le celle visibili (culling)
                 fuori da questa classe, oppure non chiamare <code>draw</code> ogni frame. La seconda:
                 <code>drawFunction</code> deve esistere. Se passi <code>undefined</code>, il ciclo parte e va in errore
-                alla prima cella.</p>
+                alla prima cella.
+            </p>
 
             <div class="bee-code-block">griglia<span class="token punctuation">.</span><span
                     class="token function">draw</span><span class="token punctuation">(</span>ctx<span
@@ -966,7 +973,8 @@
             <p>Il contrario è quello che fa già <code>draw</code>: <code>x = c * cellSize</code>,
                 <code>y = r * cellSize</code>. L’origine della griglia è in alto a sinistra dello spazio mondo,
                 allineata a (0, 0). Se la mappa è spostata (camera, offset di livello), devi sottrarre quell’offset
-                prima di convertire, altrimenti le celle “camminano” rispetto agli sprite.</p>
+                prima di convertire, altrimenti le celle “camminano” rispetto agli sprite.
+            </p>
 
             <h3>📁 Esempio pratico</h3>
 
@@ -1042,7 +1050,8 @@
 
             <p><strong>Nessuna copia difensiva di <code>data</code>.</strong> <code>griglia.data</code> è l’array vivo.
                 Puoi leggerlo per un algoritmo A*, ma se lo rimpiazzi o gli cambi la forma, <code>setCell</code> e
-                <code>draw</code> smettono di essere coerenti con <code>cols</code> / <code>rows</code>.</p>
+                <code>draw</code> smettono di essere coerenti con <code>cols</code> / <code>rows</code>.
+            </p>
 
             <p><strong>Non ridimensiona a caldo.</strong> Cambiare <code>cols</code> o <code>rows</code> dopo il
                 costruttore non rialloca la matrice. Per una mappa nuova crea un altro <code>BeeGrid</code>.</p>

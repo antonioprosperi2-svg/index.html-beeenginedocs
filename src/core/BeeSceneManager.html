@@ -711,7 +711,9 @@
                 <li><a
                         href="https://beeenginejs.com/animazione-spritesheet-in-javascript-play-update-e-draw/">BeeAnimatedSprite.js</a>
                 </li>
-                <li><a href="#BeeAnimator">BeeAnimator.js</a></li>
+                <li><a
+                        href="https://beeenginejs.com/state-machine-per-animazioni-in-javascript-transizioni-2d/">BeeAnimator.js</a>
+                </li>
                 <li><a href="#BeeCamera">BeeCamera.js</a></li>
                 <li><a href="#BeeLayer">BeeLayer.js</a></li>
                 <li><a href="#BeeParticleSystem">BeeParticleSystem.js</a></li>
@@ -786,7 +788,8 @@
             <p><code>BeeSceneManager</code> è il registro delle schermate e il puntatore alla scena attiva. Il motore la
                 crea nel costruttore e la espone come <code>engine.scenes</code>. Tu registri oggetti-scena con
                 <code>add</code>, passi da una all'altra con <code>change</code>, e il game loop chiama
-                <code>update</code> / <code>draw</code> sulla corrente.</p>
+                <code>update</code> / <code>draw</code> sulla corrente.
+            </p>
 
             <p>Quello che <strong>non</strong> è: uno stack (niente push/pop, niente overlay di pausa), un tween di
                 transizione. <code>change</code> è un replace. Stesso nome = restart: exit, sweep delle entity, enter di
@@ -796,7 +799,8 @@
 
             <p>Contratto del loop: il manager è l'<strong>unico owner</strong> del tick e del draw delle entity.
                 <code>scene.update</code> / <code>scene.draw</code> sono logica di scena e HUD — non un secondo
-                <code>for</code> su <code>this.entities</code>.</p>
+                <code>for</code> su <code>this.entities</code>.
+            </p>
 
             <div class="bee-code-block"><span class="token keyword">export</span> <span
                     class="token keyword">class</span> <span class="token class-name">BeeSceneManager</span> <span
@@ -843,7 +847,8 @@
             <p>Non esiste una classe <code>BeeScene</code> obbligatoria. Qualsiasi oggetto va bene. Gli hook sono
                 opzionali; se mancano, quel passo è un no-op. Se sulla stessa scena esistono sia <code>onEnter</code>
                 sia <code>enter</code>, parte <strong>solo</strong> <code>onEnter</code> (stessa regola per
-                <code>onExit</code> vs <code>exit</code>).</p>
+                <code>onExit</code> vs <code>exit</code>).
+            </p>
 
             <table class="bee-api-table">
                 <thead>
@@ -863,14 +868,16 @@
                     <tr>
                         <td><code>onExit()</code> / <code>exit()</code></td>
                         <td>Inizio di <code>#leave</code> (change della corrente, <code>remove</code> della corrente,
-                            <code>destroy</code>)</td>
+                            <code>destroy</code>)
+                        </td>
                         <td><strong>Nessun argomento.</strong> Poi parte lo sweep delle entity.</td>
                     </tr>
                     <tr>
                         <td><code>update(dt, input, engine)</code></td>
                         <td>Ogni tick del manager, prima delle entity</td>
                         <td>Parte anche se <code>dt &lt;= 0</code>. Logica e input di scena, <strong>non</strong> il
-                            <code>for</code> sulle entity.</td>
+                            <code>for</code> sulle entity.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>draw(ctx, engine)</code></td>
@@ -897,13 +904,15 @@
             <p>Il manager ticka e disegna <code>currentScene.entities</code>. Se in <code>scene.update</code> /
                 <code>scene.draw</code> iteri già <code>this.entities</code>, nello stesso frame le ritocchi due volte.
                 Non c'è un lock runtime: è un contratto. HUD, collisioni di livello, win/lose, input di menu: sì.
-                <code>for (const e of this.entities) e.update(...)</code>: no.</p>
+                <code>for (const e of this.entities) e.update(...)</code>: no.
+            </p>
 
             <p>Il motore, se non è in pausa, chiama <code>scenes.update(dt, this.input)</code> e poi
                 <code>updateEntities</code> sulla lista <code>engine.entities</code>. Con una scena corrente,
                 <code>engine.addEntity</code> <strong>delega</strong> a <code>scenes.addEntity</code>: gli spawn
                 finiscono sulla scena, non sulla lista del motore. <code>engine.entities</code> resta per oggetti
-                aggiunti <em>prima</em> del primo <code>change</code> (o senza scena).</p>
+                aggiunti <em>prima</em> del primo <code>change</code> (o senza scena).
+            </p>
 
             <h3>📁 add / has — registra, non avvia</h3>
 
@@ -911,17 +920,20 @@
                 <code>scene.engine = this.engine</code> e, se <code>scene.entities</code> non è un array, lo inizializza
                 a <code>[]</code>. Non chiama enter. Ritorna <code>this</code> (fluent). Un secondo <code>add</code> con
                 lo stesso nome sovrascrive la voce nella mappa; se quella era la scena corrente,
-                <code>currentScene</code> resta l'oggetto vecchio finché non fai di nuovo <code>change</code>.</p>
+                <code>currentScene</code> resta l'oggetto vecchio finché non fai di nuovo <code>change</code>.
+            </p>
 
             <p>Guardie: nome <code>undefined</code> / <code>null</code> / <code>''</code> →
                 <code>throw new Error('BeeSceneManager.add: name required')</code>. Scena falsy o non-oggetto →
                 <code>throw new Error('BeeSceneManager.add: scene must be an object')</code>. Quindi
                 <code>add(null)</code> e <code>add('menu', null)</code> non arrivano più a un <code>TypeError</code> su
-                <code>.entities</code>.</p>
+                <code>.entities</code>.
+            </p>
 
             <p><code>has(name)</code> è <code>this.scenes.has(String(name ?? ''))</code>. Non lancia:
                 <code>has(null)</code> è <code>false</code> a meno che tu abbia (impossibile via <code>add</code>) una
-                chiave vuota.</p>
+                chiave vuota.
+            </p>
 
             <div class="bee-code-block">game<span class="token punctuation">.</span>scenes<span
                     class="token punctuation">.</span><span class="token function">add</span><span
@@ -956,7 +968,8 @@
             <p>Nome assente → <code>throw new Error('BeeSceneManager: scena non trovata: …')</code>. Nome vuoto →
                 <code>name required</code>. Stesso nome della corrente: non è un no-op. È un restart dello stesso
                 oggetto: esce, sweep, rientra. Utile per un retry se in <code>onEnter</code> riallochii le entity (dopo
-                lo sweep la lista è vuota, a meno di <code>persistEntities</code>).</p>
+                lo sweep la lista è vuota, a meno di <code>persistEntities</code>).
+            </p>
 
             <p>Non esiste <code>push</code> / <code>pop</code>. Un menu di pausa “sopra” il livello non è supportato: o
                 sostituisci, o gestisci la pausa fuori da questa classe (<code>engine.time.pause()</code>).</p>
@@ -994,14 +1007,16 @@
                 tickano in questo frame, ma non è lo stesso contratto documentato per <code>scene.update</code>. Su un
                 restart dello stesso nome, <code>onEnter</code> può re-pushare sulla stessa lista e gli indici nuovi
                 oltre <code>read</code> potrebbero ricevere un tick nello stesso frame. Preferisci <code>change</code>
-                dall'hook della scena.</p>
+                dall'hook della scena.
+            </p>
 
             <h3>📁 remove — toglie dalla Map</h3>
 
             <p><code>remove(name)</code> è nuovo. Se la scena non c'è, no-op e ritorna <code>this</code>. Se è la
                 corrente: <code>#leave</code> (exit + sweep), poi azzera <code>currentScene</code> /
                 <code>currentSceneName</code> / <code>engine.currentScene</code>. Se non è la corrente: solo
-                <code>#sweep</code> (niente <code>onExit</code>). In entrambi i casi <code>scenes.delete(id)</code>.</p>
+                <code>#sweep</code> (niente <code>onExit</code>). In entrambi i casi <code>scenes.delete(id)</code>.
+            </p>
 
             <p>Nome vuoto lancia come gli altri metodi. <code>persistEntities</code> salva le entity dallo sweep, ma la
                 scena esce comunque dalla mappa: restano riferimenti orfani se non le distruggi tu.</p>
@@ -1010,7 +1025,8 @@
 
             <p><code>scenes.addEntity(entity)</code> pusha su <code>currentScene.entities</code>, inietta
                 <code>entity.engine</code> e <code>entity.scene</code>, evita i duplicati (<code>indexOf</code>).
-                Ritorna sempre <code>entity</code>.</p>
+                Ritorna sempre <code>entity</code>.
+            </p>
 
             <p>Guardie silenziose: <code>entity</code> nullo, già <code>destroyed</code>, o nessuna scena corrente →
                 ritorna <code>entity</code> senza throw. Se <code>entities</code> non è un array, lo crea.</p>
@@ -1018,7 +1034,8 @@
             <p><code>engine.addEntity</code> non è più una seconda lista parallela quando c'è una scena: delega a
                 <code>scenes.addEntity</code>. Solo senza corrente fa push su <code>engine.entities</code>.
                 <code>BeeEngine.setScene</code> svuota <code>engine.entities</code> e poi chiama
-                <code>scenes.change</code> (che a sua volta fa leave/sweep della precedente).</p>
+                <code>scenes.change</code> (che a sua volta fa leave/sweep della precedente).
+            </p>
 
             <div class="bee-code-block"><span class="token comment">// equivalente, se currentScene esiste:</span>
                 game<span class="token punctuation">.</span><span class="token function">addEntity</span><span
@@ -1038,7 +1055,8 @@
 
             <p><strong>1. Hook della scena</strong> — <code>scene.update(dt, input, engine)</code> parte
                 <em>sempre</em>, anche con <code>dt &lt;= 0</code>. Tiene vivo un menu mentre il mondo è fermo,
-                <em>se</em> qualcuno chiama il manager con dt zero.</p>
+                <em>se</em> qualcuno chiama il manager con dt zero.
+            </p>
             <p><strong>2. Cambio a metà tick</strong> — se <code>change</code> è partito da quell'hook, return: niente
                 tick entity.</p>
             <p><strong>3. Guardia dt</strong> — se <code>dt &lt;= 0</code> return: niente tick entity, niente compact.
@@ -1046,12 +1064,14 @@
             <p><strong>4. Entity</strong> — <code>#tickEntities</code>: compact in-place (niente <code>filter</code> che
                 alloca). Salta buchi e <code>destroyed</code>. Se <code>active !== false</code> e ha
                 <code>update</code>, la chiama con <code>(dt, input, engine)</code>. Poi accorcia
-                <code>list.length</code>.</p>
+                <code>list.length</code>.
+            </p>
 
             <p><strong>Pausa del motore.</strong> <code>BeeEngine.loop</code> non chiama affatto
                 <code>scenes.update</code> quando <code>time.paused</code> è true. Il ramo “scena sì, entity no” lo vedi
                 solo se chiami <code>scenes.update(0)</code> tu, o se <code>dt</code> è zero senza passare da quella
-                guardia del loop.</p>
+                guardia del loop.
+            </p>
 
             <div class="bee-code-block">update<span class="token punctuation">(</span>dt<span
                     class="token punctuation">,</span> input<span class="token punctuation">)</span> <span
@@ -1104,7 +1124,8 @@
             <p><code>draw(ctx = this.ctx)</code>: no-op senza scena. Poi <code>scene.draw(ctx, engine)</code> se è una
                 funzione, poi per ogni voce di <code>entities</code> (salta <code>destroyed</code>) chiama
                 <code>engine.drawEntity</code> (lì il motore salta anche <code>visible === false</code> e attraversa i
-                <code>children</code>).</p>
+                <code>children</code>).
+            </p>
 
             <h3>📁 Sweep, persistEntities, destroy</h3>
 
@@ -1115,16 +1136,19 @@
             <p><code>scene.persistEntities === true</code> fa return immediato: le entity sopravvivono a
                 <code>change</code>, <code>remove</code> e anche a <code>manager.destroy()</code>. Usalo per un hub che
                 deve restare vivo sotto un menu; altrimenti le ritrovi duplicate al re-enter se <code>onEnter</code> le
-                rialloca.</p>
+                rialloca.
+            </p>
 
             <p><code>destroy()</code> sul manager: <code>#leave</code> della corrente, poi sweep di
                 <strong>tutte</strong> le scene ancora in mappa, <code>scenes.clear()</code>, puntatori a
                 <code>null</code> (anche <code>engine.currentScene</code>). Ritorna <code>this</code>.
-                <code>BeeEngine.destroy()</code> lo chiama, poi svuota <code>engine.entities</code>.</p>
+                <code>BeeEngine.destroy()</code> lo chiama, poi svuota <code>engine.entities</code>.
+            </p>
 
             <p>Senza scena corrente, <code>update</code>, <code>draw</code> e <code>addEntity</code> sono no-op. Non
                 esiste <code>start()</code> sul manager: il “doppio start” è di <code>BeeEngine.start()</code> (se
-                <code>isRunning</code> è già true, ritorna).</p>
+                <code>isRunning</code> è già true, ritorna).
+            </p>
 
             <h3>📁 Esempio: menu → livello, owner unico</h3>
 
@@ -1215,14 +1239,16 @@
 
             <p><strong>Restart = <code>change</code> sullo stesso nome.</strong> Lo sweep ha già distrutto le entity: in
                 <code>onEnter</code> rialloca, non “pulire a mano” a meno che tu abbia messo
-                <code>persistEntities</code>.</p>
+                <code>persistEntities</code>.
+            </p>
 
             <p><strong>Spawn via <code>engine.addEntity</code></strong> dopo il primo <code>change</code> finiscono
                 sulla scena. Prima del <code>change</code> restano su <code>engine.entities</code> e il loop del motore
                 le ticka a parte.</p>
 
             <p><strong>Nessuna transizione.</strong> Fade, wipe, load async: tu, prima di <code>change</code> o dentro
-                <code>onEnter</code>. Il manager è sincrono e immediato.</p>
+                <code>onEnter</code>. Il manager è sincrono e immediato.
+            </p>
         </div>
 
         <div class="bee-class-card" id="BeeSceneManager-api">
@@ -1251,7 +1277,8 @@
                         <td><code>currentScene</code></td>
                         <td><code>object | null</code></td>
                         <td>Oggetto attivo, o <code>null</code> prima del primo <code>change</code> / dopo
-                            <code>remove</code> della corrente.</td>
+                            <code>remove</code> della corrente.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>currentSceneName</code></td>
@@ -1273,7 +1300,8 @@
                         <td><code>change(name, data = null)</code></td>
                         <td><code>this</code></td>
                         <td>Replace: leave (exit + sweep) → swap → enter. Stesso nome = restart. Throw se assente. Da
-                            <code>scene.update</code>, skip tick entity in questo frame.</td>
+                            <code>scene.update</code>, skip tick entity in questo frame.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>remove(name)</code></td>
@@ -1312,7 +1340,8 @@
                         <td><code>destroy()</code></td>
                         <td><code>this</code></td>
                         <td>Leave della corrente, sweep di tutte le scene, Map vuota, puntatori null. Chiamato da
-                            <code>engine.destroy()</code>.</td>
+                            <code>engine.destroy()</code>.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>persistEntities</code> (sullo scene object)</td>

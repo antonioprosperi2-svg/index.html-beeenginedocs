@@ -711,7 +711,9 @@
                 <li><a
                         href="https://beeenginejs.com/animazione-spritesheet-in-javascript-play-update-e-draw/">BeeAnimatedSprite.js</a>
                 </li>
-                <li><a href="#BeeAnimator">BeeAnimator.js</a></li>
+                <li><a
+                        href="https://beeenginejs.com/state-machine-per-animazioni-in-javascript-transizioni-2d/">BeeAnimator.js</a>
+                </li>
                 <li><a href="#BeeCamera">BeeCamera.js</a></li>
                 <li><a href="#BeeLayer">BeeLayer.js</a></li>
                 <li><a href="#BeeParticleSystem">BeeParticleSystem.js</a></li>
@@ -787,12 +789,14 @@
                 re-esporta, e <code>BeeEngine</code> ne crea <strong>uno</strong> nel costruttore:
                 <code>this.time = new BeeTime()</code>. Non ce n'è un secondo per le scene. Ogni frame il loop chiama
                 <code>time.tick(timestamp)</code> <em>una sola volta</em>, anche in pausa: da quel tick nascono due
-                delta, non due loop.</p>
+                delta, non due loop.
+            </p>
 
             <p>Quello che <strong>non</strong> è: un scheduler di eventi, un tween, un clock di rete. Non conosce le
                 scene, le entity, la fisica. Espone numeri. Chi avanza il mondo (scene, entity,
                 <code>BeePhysicsWorld</code>, <code>BeeTimer</code>) legge quei numeri. Il freeze di Ladybug (F4) non è
-                un secondo orologio: è <code>togglePause()</code> sullo stesso oggetto.</p>
+                un secondo orologio: è <code>togglePause()</code> sullo stesso oggetto.
+            </p>
 
             <div class="bee-code-block"><span class="token keyword">import</span> <span
                     class="token punctuation">{</span> <span class="token class-name">BeeEngine</span><span
@@ -864,7 +868,8 @@
                 <code>unscaledDt = min(rawDelta, maxDelta)</code>. Poi <code>dt</code> è zero se <code>paused</code>,
                 altrimenti <code>unscaledDt * timeScale</code>. <code>delta(false)</code> torna <code>dt</code>;
                 <code>delta(true)</code> torna <code>unscaledDt</code>. Gli alias <code>scaledDt</code> e
-                <code>realDt</code> sono getter sullo stesso dato: non esiste un terzo asse.</p>
+                <code>realDt</code> sono getter sullo stesso dato: non esiste un terzo asse.
+            </p>
 
             <div class="bee-code-block"><span class="token keyword">const</span> dt <span
                     class="token operator">=</span> gioco<span class="token punctuation">.</span>time<span
@@ -885,7 +890,8 @@
             <p>Contratto: il loop chiama <code>tick(timestamp)</code> con il timestamp di
                 <code>requestAnimationFrame</code> (millisecondi). Dentro, la differenza viene divisa per
                 <code>1000</code>: i campi pubblici sono in <strong>secondi</strong>. Chiamarlo due volte nello stesso
-                frame avanza elapsed due volte. Non farlo.</p>
+                frame avanza elapsed due volte. Non farlo.
+            </p>
 
             <p>Il primo tick (o il primo dopo un <code>reset(0)</code>) è un allineamento: azzera i delta, memorizza il
                 timestamp, <strong>non</strong> incrementa <code>frameCount</code> / <code>elapsed</code>. Evita lo
@@ -895,12 +901,14 @@
             <p><code>frameCount</code> e <code>unscaledElapsed</code> avanzano anche in pausa: stai contando frame
                 disegnati e tempo reale. <code>elapsed</code> no (<code>dt</code> è zero). <code>fps</code> campiona su
                 <code>unscaledDt</code> in una finestra di <code>fpsSampleWindow</code> (default 0,5 s): per mezzo
-                secondo all'avvio resta <code>0</code>, poi è <code>frames / secondiReali</code>, senza EMA.</p>
+                secondo all'avvio resta <code>0</code>, poi è <code>frames / secondiReali</code>, senza EMA.
+            </p>
 
             <p><strong>Timestamp obbligatorio.</strong> Il loop passa sempre l'argomento di rAF. Se chiami
                 <code>tick()</code> senza numero, <code>rawDelta</code> diventa <code>NaN</code> e da lì <code>dt</code>
                 / <code>elapsed</code> restano avvelenati. Non c'è un fallback su <code>performance.now()</code> dentro
-                <code>tick</code> (quel fallback esiste in <code>now()</code> e nel default di <code>begin</code>).</p>
+                <code>tick</code> (quel fallback esiste in <code>now()</code> e nel default di <code>begin</code>).
+            </p>
 
             <h3>📁 maxDelta — clamp sul tempo reale, non sul dt scalato</h3>
 
@@ -917,7 +925,8 @@
                 frame variabile. È voluto per il fast-forward; non è un secondo clamp. I campi <code>maxDelta</code>,
                 <code>minTimeScale</code>, <code>maxTimeScale</code>, <code>fixedDelta</code>,
                 <code>maxFixedSteps</code>, <code>fpsSampleWindow</code> sono pubblici e mutabili a caldo: non c'è un
-                setter che ricalcola lo stato interno.</p>
+                setter che ricalcola lo stato interno.
+            </p>
 
             <h3>📁 timeScale — slow-mo e fast-forward</h3>
 
@@ -925,19 +934,22 @@
                 <code>timeScale = x</code> delega a <code>setScale(x)</code>: <code>Number(value)</code>, se non è
                 finito ripiega su <code>#defaultScale</code> (la scala passata al costruttore), poi clamp tra
                 <code>minTimeScale</code> (0) e <code>maxTimeScale</code> (16). Ritorna <code>this</code>.
-                <code>BeeEngine.setTimeScale</code> è lo stesso metodo.</p>
+                <code>BeeEngine.setTimeScale</code> è lo stesso metodo.
+            </p>
 
             <p><code>timeScale = 0</code> non alza il flag <code>paused</code>. <code>dt</code> è zero, ma il loop del
                 motore <em>non</em> è in pausa: chiama ancora <code>scenes.update(0)</code> e
                 <code>updateEntities(0)</code>. Il manager, con <code>dt &lt;= 0</code>, salta il tick delle entity. È
                 un “mondo fermo, scena ancora interrogata”. <code>pause()</code> invece salta l'intero blocco
                 scene/entity/fisica. Non sono equivalenti: per un menu di pausa usa <code>pause()</code> (o F4), non la
-                scala a zero, a meno che tu voglia proprio l'hook della scena con dt zero.</p>
+                scala a zero, a meno che tu voglia proprio l'hook della scena con dt zero.
+            </p>
 
             <p><strong>Costruttore:</strong> <code>setScale</code> clamp-a, il costruttore no.
                 <code>new BeeTime({ timeScale: 99 })</code> parte a 99 fino al primo <code>setScale</code> /
                 assegnamento. <code>#defaultScale</code> resta quel valore: un <code>reset()</code> lo ripristina, un
-                <code>setScale(NaN)</code> ci ricade.</p>
+                <code>setScale(NaN)</code> ci ricade.
+            </p>
 
             <h3>📁 pause, freeze, resume, stop — tre livelli, non uno</h3>
 
@@ -945,29 +957,34 @@
                 <code>#paused</code>. Non azzerano elapsed, non chiamano <code>begin</code>, non fermano rAF. In pausa
                 l'accumulatore fisso <strong>non</strong> cresce (il residuo resta lì). Ladybug F4 è
                 <code>time.togglePause()</code>: freeze e pausa sono la stessa bandiera. L'overlay dice RUN/FREEZE;
-                l'API dice <code>paused</code>.</p>
+                l'API dice <code>paused</code>.
+            </p>
 
             <p>Il loop di <code>BeeEngine</code>, se <code>time.paused</code>:</p>
 
             <p><strong>1.</strong> Chiama comunque <code>tick</code> (HUD reale, FPS, overlay).</p>
             <p><strong>2.</strong> <strong>Non</strong> chiama <code>scenes.update</code>, <code>updateEntities</code>,
                 <code>consumeFixedSteps</code> → fisica ferma, entity ferme, hook <code>scene.update</code> <em>non
-                    parte</em>.</p>
+                    parte</em>.
+            </p>
             <p><strong>3.</strong> Chiama comunque <code>this.update(dt, input, time)</code> se l'hai passato a
                 <code>start</code> — con <code>dt = 0</code>. Qui vive un menu di pausa che deve leggere l'input mentre
-                il mondo è fermo.</p>
+                il mondo è fermo.
+            </p>
             <p><strong>4.</strong> Disegna sempre: scene, entity, Ladybug, touch. Puoi ispezionare le hitbox da fermo.
             </p>
 
             <p><code>engine.isPaused</code> è getter/setter su <code>time.paused</code>. <code>engine.pause()</code> è
-                <code>time.pause()</code>: il loop resta <code>isRunning</code>.</p>
+                <code>time.pause()</code>: il loop resta <code>isRunning</code>.
+            </p>
 
             <p><code>engine.stop()</code> è un altro livello: <code>isRunning = false</code>, <code>time.pause()</code>,
                 <code>cancelAnimationFrame</code>. Niente tick, niente draw. <code>start()</code> (e
                 <code>resume()</code> se il loop era spento) chiama <code>time.resume()</code> +
                 <code>time.begin(performance.now())</code> e riaggancia rAF. <code>resume()</code> a loop già acceso
                 <strong>non</strong> chiama <code>begin</code>: il prossimo frame ha un delta normale, non uno spike. È
-                il percorso pausa/F4.</p>
+                il percorso pausa/F4.
+            </p>
 
             <div class="bee-code-block">gioco<span class="token punctuation">.</span><span
                     class="token function">pause</span><span class="token punctuation">(</span><span
@@ -988,28 +1005,33 @@
                 <code>#hasTimestamp</code>, azzera <code>rawDelta</code> / <code>unscaledDt</code> / <code>dt</code> /
                 accumulatore / <code>alpha</code>. <strong>Non</strong> tocca elapsed, scale, pausa, FPS, frameCount. È
                 il “non spike-are dopo start, dopo stop, o dopo un buco”. Il motore lo chiama in <code>start</code> e
-                nel <code>resume</code> che riaccende il loop.</p>
+                nel <code>resume</code> che riaccende il loop.
+            </p>
 
             <p><code>reset(timestamp = 0)</code> è una nuova sessione: <code>paused = false</code>, scala tornata a
                 <code>#defaultScale</code>, contatori a zero, accumulatore a zero. Se passi <code>0</code> (default),
                 <code>#hasTimestamp</code> è false: il prossimo <code>tick</code> è di nuovo un allineamento. Se passi
-                un timestamp &gt; 0, il prossimo tick calcola già un delta.</p>
+                un timestamp &gt; 0, il prossimo tick calcola già un delta.
+            </p>
 
             <p>Il setter di <code>lastTimestamp</code> (e l'alias motore <code>engine.lastTime</code>) forza
                 <code>#hasTimestamp = true</code> anche con <code>0</code>. Usalo solo se stai innestando un clock
-                esterno. Per un riavvio pulito, <code>begin</code> o <code>reset</code>.</p>
+                esterno. Per un riavvio pulito, <code>begin</code> o <code>reset</code>.
+            </p>
 
             <h3>📁 Accumulator, passi fissi, alpha</h3>
 
             <p><code>fixedDelta</code> default <code>1/60</code>. <code>maxFixedSteps</code> default <code>5</code>. In
                 <code>tick</code>, se non sei in pausa, <code>#fixedAccumulator += dt</code> e poi viene tapato a
                 <code>fixedDelta * maxFixedSteps</code> (~83 ms di simulazione fissa). L'eccesso si butta: è la
-                protezione spiral-of-death, non un debito da saldare dopo.</p>
+                protezione spiral-of-death, non un debito da saldare dopo.
+            </p>
 
             <p><code>consumeFixedSteps(callback)</code> esegue <code>callback(fixedDelta)</code> finché l'accumulatore
                 copre un passo, sottrae, conta. Ritorna il numero di step. Poi ricalcola
                 <code>alpha = residuo / fixedDelta</code> (in <code>[0, 1)</code> se hai consumato). Se la callback non
-                è una funzione, o <code>fixedDelta &lt;= 0</code>, ritorna <code>0</code> senza toccare nulla.</p>
+                è una funzione, o <code>fixedDelta &lt;= 0</code>, ritorna <code>0</code> senza toccare nulla.
+            </p>
 
             <p>Il loop V2.4 <strong>lo chiama già</strong>:</p>
 
@@ -1050,14 +1072,16 @@
                 <code>integrate()</code> non si muove da sola — lo fa il solver. <code>alpha</code> è lì per interpolare
                 il draw sul residuo; il renderer di stock non lo usa. Dopo <code>tick</code> e <em>prima</em> di
                 <code>consumeFixedSteps</code>, <code>alpha</code> può essere &gt; 1 (accumulatore pieno di più passi).
-                Leggilo dopo il consume, se ti serve per l'interpolazione.</p>
+                Leggilo dopo il consume, se ti serve per l'interpolazione.
+            </p>
 
             <p><strong>Disallineamento a scala alta.</strong> Il cap dell'accumulatore è ~5 passi (~83 ms). Un
                 <code>dt</code> variabile a <code>timeScale</code> 16 può essere 0,8 s: le entity “veloci” avanzano di
                 0,8 s, la fisica ne simula al massimo ~0,08 s e butta il resto. Non è un bug del clamp: è il tetto
                 <code>maxFixedSteps</code> che non scala con <code>timeScale</code>. Fast-forward estremo e hitch lunghi
                 desincronizzano body e sprite a dt variabile. A scala 1 e hitch già clampati a 50 ms stai dentro il cap
-                (50 ms &lt; 83 ms): un passo o due, niente drop.</p>
+                (50 ms &lt; 83 ms): un passo o due, niente drop.
+            </p>
 
             <h3>📁 Integrazione: BeeEngine, scene, timer, Ladybug</h3>
 
@@ -1068,13 +1092,15 @@
             <p><code>BeeSceneManager.update(dt)</code> parte solo se il motore <em>non</em> è in pausa. Un HUD animato
                 messo in <code>scene.update</code> si ferma con F4. Mettilo in <code>scene.draw</code> (il draw gira
                 sempre) oppure nel callback <code>engine.update</code>, e avanza i tween con
-                <code>time.unscaledDt</code>.</p>
+                <code>time.unscaledDt</code>.
+            </p>
 
             <p><code>BeeTimer</code> di default somma <code>time.dt</code> (pausa e slow-mo lo fermano / lo rallentano).
                 Con <code>{ useUnscaledTime: true }</code> somma <code>unscaledDt</code>. Devi comunque chiamare
                 <code>timer.update(gioco.time)</code> tu: il loop non aggiorna i timer da solo. Se il timer vive in
                 <code>scene.update</code>, in pausa non viene chiamato — l'opzione unscaled non basta se nessuno invoca
-                <code>update</code>.</p>
+                <code>update</code>.
+            </p>
 
             <div class="bee-code-block"><span class="token keyword">const</span> hudTick <span
                     class="token operator">=</span> <span class="token keyword">new</span> <span
@@ -1109,7 +1135,8 @@
                 <code>gioco.pause()</code> / <code>gioco.resume()</code>. Ladybug: F3 alterna <code>slowScale</code>
                 (default 0,25) e <code>1</code> (se eri in freeze, prima fa <code>resume</code>); F4 freeze; overlay FPS
                 legge <code>time.fps</code>, durata ciclo <code>unscaledDt</code> in ms, <code>timeScale</code>, stato
-                pausa.</p>
+                pausa.
+            </p>
 
             <h3>📁 Esempio: scena, slow-mo, HUD immune</h3>
 
@@ -1229,7 +1256,8 @@
 
             <p><strong>Menu di pausa.</strong> Non metterlo in <code>scene.update</code>: F4 lo spegne. Callback
                 <code>engine.update</code> + <code>unscaledDt</code>, oppure input letto nel draw (peggio: mescoli
-                logica e canvas).</p>
+                logica e canvas).
+            </p>
 
             <p><strong>Nessun interpolatore nel renderer.</strong> <code>alpha</code> è il residuo del solver, non un
                 lerp applicato agli sprite. Se interpoli, fallo tu dopo <code>consumeFixedSteps</code>.</p>
@@ -1243,14 +1271,16 @@
 
             <p><strong>Non è un clock di rete / audio thread.</strong> <code>now()</code> è
                 <code>performance.now()</code> sul main thread. Per l'audio usa l'asse unscaled, non un secondo
-                <code>BeeTime</code>.</p>
+                <code>BeeTime</code>.
+            </p>
         </div>
 
         <div class="bee-class-card" id="BeeTime-api">
             <h3>📁 Riepilogo API</h3>
             <p>Fluent: <code>setScale</code>, <code>pause</code>, <code>resume</code>, <code>togglePause</code>,
                 <code>begin</code>, <code>reset</code>, <code>tick</code> ritornano <code>this</code>. I default sono in
-                <code>BEE_TIME_DEFAULTS</code> (oggetto frozen); l'istanza ne tiene copie mutabili.</p>
+                <code>BEE_TIME_DEFAULTS</code> (oggetto frozen); l'istanza ne tiene copie mutabili.
+            </p>
             <table class="bee-api-table">
                 <thead>
                     <tr>
@@ -1265,7 +1295,8 @@
                         <td>oggetto frozen</td>
                         <td><code>maxDelta</code> 0,05 · <code>timeScale</code> 1 · <code>minTimeScale</code> 0 ·
                             <code>maxTimeScale</code> 16 · <code>fixedDelta</code> 1/60 · <code>maxFixedSteps</code> 5 ·
-                            <code>fpsSampleWindow</code> 0,5.</td>
+                            <code>fpsSampleWindow</code> 0,5.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>new BeeTime(options)</code></td>
