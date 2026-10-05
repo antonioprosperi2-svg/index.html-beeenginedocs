@@ -613,14 +613,107 @@
             white-space: nowrap;
         }
     }
+
+    /* ==========================================
+       5. FLUSSO (solo questa pagina)
+       ========================================== */
+    .bee-flow {
+        margin: 16px 0 4px 0;
+        padding: 16px 16px 14px 16px;
+        background: var(--bee-surface-2);
+        border: 1px solid var(--bee-line);
+        border-left: 4px solid var(--bee-honey);
+        border-radius: 10px;
+    }
+
+    .bee-flow-caption {
+        color: var(--bee-text-dim);
+        font-size: 13.5px;
+        line-height: 1.55;
+        margin: 0 0 12px 0;
+    }
+
+    .bee-flow-row {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: stretch;
+        gap: 8px 0;
+        margin: 0;
+        padding: 0;
+    }
+
+    .bee-flow-step {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        max-width: 100%;
+    }
+
+    .bee-flow-box {
+        display: block;
+        min-width: 7.5rem;
+        max-width: 14rem;
+        padding: 10px 12px;
+        background: var(--bee-surface);
+        border: 1px solid var(--bee-line-honey);
+        border-radius: 8px;
+        color: var(--bee-text);
+        font-size: 13.5px;
+        line-height: 1.45;
+    }
+
+    .bee-flow-box strong {
+        display: block;
+        color: var(--bee-honey);
+        font-family: var(--bee-mono);
+        font-size: 12.5px;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+        margin-bottom: 4px;
+    }
+
+    .bee-flow-box.bee-flow-read {
+        border-color: rgba(239, 68, 68, 0.45);
+    }
+
+    .bee-flow-box.bee-flow-read strong {
+        color: #ff8f8f;
+    }
+
+    .bee-flow-box code {
+        font-family: var(--bee-mono);
+        font-size: 12.5px;
+        color: #fcd34d;
+    }
+
+    .bee-flow-arrow {
+        color: var(--bee-honey);
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1;
+        padding: 0 6px;
+        flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+        .bee-flow-step {
+            width: 100%;
+        }
+
+        .bee-flow-box {
+            max-width: none;
+            flex-grow: 1;
+        }
+    }
 </style>
 
 <!-- HEADER FISSA -->
 <header class="bee-docs-header">
     <a href="#" class="bee-header-logo">
-        <span class="bee-header-title">Documentazione mettere la classe</span>
+        <span class="bee-header-title">BeeCamera</span>
     </a>
-    <span class="bee-header-badge">v2.2.0</span>
+    <span class="bee-header-badge">v2.9.3</span>
 </header>
 
 <!-- CONTENITORE PRINCIPALE -->
@@ -767,96 +860,195 @@
 
 
     <!-- AREA CONTENUTI (TUTTI I MODULI VANNO QUI DENTRO) -->
-    <main class="bee-docs-content">
+        <main class="bee-docs-content">
 
-        <!-- SEZIONE 1 -->
-        <h2 class="bee-section-title"></h2>
+        <div
+            style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
+            <div>
+                <h2 class="bee-section-title" style="margin: 0;">BeeCamera — Documentazione Tecnica</h2>
+                <p style="margin-top: 5px;">Inquadratura mondo:
+                    <code class="bee-inline-code">follow</code> /
+                    <code class="bee-inline-code">update(dt)</code> /
+                    <code class="bee-inline-code">apply</code>,
+                    culling su <code class="bee-inline-code">getViewBounds</code>
+                </p>
+            </div>
+            <img src="https://beeenginejs.com/wp-content/uploads/2026/09/Gemini_Generated_Image_bg7xjjbg7xjjbg7x-1-1.jpg"
+                alt="BeeEngine Mascot" width="80" height="80" style="width: 80px; height: auto; flex-shrink: 0;">
+        </div>
 
-        <div class="bee-class-card" id="radme">****>>>>>>>> mettere id >>>>>>>>>>*****
-            <h3> </h3>
+        <div class="bee-class-card" id="BeeCamera">
 
-            <p></p>
+            <h3>📁 Panoramica</h3>
 
-            <p> </p>
+            <p><code>BeeCamera</code> è lo scroll 2D. Non è una
+                scena, non è uno zoom, non è uno shake. Vive in
+                <code>src/graphics/BeeCamera.js</code>. Il motore
+                parte con <code>gioco.camera = null</code>: la
+                costruisci tu e la agganci.
+                <code>follow(target)</code> <em>ricorda</em> il
+                bersaglio; a muovere è <code>update(dt)</code>.</p>
 
-            <p>📁 </p>
+            <p>Il loop, se non è in pausa e c'è
+                <code>camera.target</code>, chiama
+                <code>camera.update(dt)</code> dopo scene ed
+                entity, poi <code>save</code> →
+                <code>apply</code> → mondo →
+                <code>restore</code> (UI e overlay restano in
+                spazio schermo).</p>
 
-            <div class="bee-code-block"></div>
+            <div class="bee-code-block">gioco<span class="token punctuation">.</span>camera <span
+                    class="token operator">=</span> <span class="token keyword">new</span> <span
+                    class="token class-name">BeeCamera</span><span
+                    class="token punctuation">(</span>gioco<span class="token punctuation">.</span>canvas<span
+                    class="token punctuation">.</span>width<span class="token punctuation">,</span> gioco<span
+                    class="token punctuation">.</span>canvas<span class="token punctuation">.</span>height<span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
+gioco<span class="token punctuation">.</span>camera
+    <span class="token punctuation">.</span><span class="token function">setBounds</span><span
+                    class="token punctuation">(</span><span class="token number">0</span><span
+                    class="token punctuation">,</span> <span class="token number">0</span><span
+                    class="token punctuation">,</span> <span class="token number">1600</span><span
+                    class="token punctuation">,</span> <span class="token number">900</span><span
+                    class="token punctuation">)</span>
+    <span class="token punctuation">.</span><span class="token function">follow</span><span
+                    class="token punctuation">(</span>hero<span class="token punctuation">,</span> <span
+                    class="token number">0.08</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span></div>
 
-            <p>📁</p>
+            <h3>📁 Update</h3>
 
-            <div class="bee-code-block"></div>
+            <div class="bee-flow" role="region" aria-label="Flusso camera">
+                <p class="bee-flow-caption">Centro del bersaglio:
+                    <code>worldX/Y</code> se sono numeri, senno
+                    <code>x/y</code>. Senza width/height: 0, non
+                    NaN. <code>dt</code> 0 (pausa) non muove.</p>
+                <ol class="bee-flow-row">
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>1. follow</strong>Setta
+                            <code>target</code> e opzionale
+                            <code>smooth</code>. Non sposta.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>2. update</strong><code>smooth ≤ 0</code> o
+                            <code>≥ 1</code>: snap.
+                            Altrimenti lerp con
+                            <code>1-(1-s)^(dt*60)</code>.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box bee-flow-read"><strong>3. apply</strong><code>translate(-round(x), -round(y))</code>.
+                            View e culling usano lo stesso
+                            round.</span>
+                    </li>
+                </ol>
+            </div>
+        </div>
 
-            <p>📁</p>
+        <div class="bee-class-card bee-ladybug" id="BeeCamera-note">
+            <h3>📁 Dove è facile sbagliare</h3>
 
-            <div class="bee-code-block"> </div>
+            <p><strong>Non chiamare <code>update</code> a
+                mano</strong> se la camera è
+                <code>gioco.camera</code> e hai già un target: il
+                loop la ticka già. Due update = lerp due volte.
+                <code>follow</code> nello
+                <code>scene.update</code> va bene (solo setta).
+                Se <code>follow</code> sta solo in
+                <code>gioco.update</code> (dopo il tick camera),
+                perdi un frame.</p>
 
-            <p>📁</p>
+            <p><strong>Mondo più stretto del canvas.</strong> Se
+                <code>bounds.width &lt; camera.w</code> (stesso per
+                h) la vista si <em>centra</em> sul bounds, non si
+                inchioda. <code>setBounds(null)</code> toglie i
+                limiti.</p>
 
-            <div class="bee-code-block"></div>
+            <p><strong>Niente zoom, shake, deadzone.</strong>
+                <code>enableAutoResize</code> scala il CSS, non
+                <code>camera.w/h</code>: se cambi
+                <code>canvas.width</code> chiama
+                <code>setSize</code>. UI dopo
+                <code>restore</code> non segue lo scroll.</p>
+        </div>
 
-            <p>📁</p>
+        <div class="bee-class-card" id="BeeCamera-esempio">
+            <h3>📁 Esempio: culling</h3>
 
-            <div class="bee-code-block"></div>
+            <div class="bee-code-block"><span class="token keyword">if</span> <span
+                    class="token punctuation">(</span><span class="token operator">!</span>gioco<span
+                    class="token punctuation">.</span><span class="token function">isRectVisibleInView</span><span
+                    class="token punctuation">(</span>ent<span class="token punctuation">.</span>worldX<span
+                    class="token punctuation">,</span> ent<span class="token punctuation">.</span>worldY<span
+                    class="token punctuation">,</span> ent<span class="token punctuation">.</span>width<span
+                    class="token punctuation">,</span> ent<span class="token punctuation">.</span>height<span
+                    class="token punctuation">)</span><span class="token punctuation">)</span> <span
+                    class="token keyword">return</span><span class="token punctuation">;</span></div>
+        </div>
 
-            <p>📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p> 📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p> 📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p>📁</p>
-
-            <div class="bee-class-card"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"> </div>
-
-            <p> 📁 </p>
-
-            <div class="bee-code-block"></div>
-
-            <p>📁</p>
-
-            <div class="bee-code-block"></div>
-
-
-            <p>📁 </p>
-
-            <div class="bee-code-block"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-code-block"></div>
-
-            <p> 📁</p>
-
-            <div class="bee-code-block"> </div>
-
-
-
-
+        <div class="bee-class-card" id="BeeCamera-api">
+            <h3>📁 Riepilogo API</h3>
+            <p>Non estende <code>BeeEntity</code>. Default
+                costruttore 800×600 se w/h non sono numeri
+                &gt; 0.</p>
+            <table class="bee-api-table">
+                <thead>
+                    <tr>
+                        <th>Membro</th>
+                        <th>Ritorna</th>
+                        <th>Scopo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>new BeeCamera(w?, h?)</code></td>
+                        <td><code>BeeCamera</code></td>
+                        <td><code>x/y</code> 0.
+                            <code>target</code> null.
+                            <code>smooth</code> 0.1.</td>
+                    </tr>
+                    <tr>
+                        <td><code>follow(target, smooth?)</code></td>
+                        <td><code>this</code></td>
+                        <td>Memorizza il bersaglio. Secondo
+                            argomento omesso: tiene lo
+                            <code>smooth</code> attuale.</td>
+                    </tr>
+                    <tr>
+                        <td><code>update(dt)</code></td>
+                        <td><code>this</code></td>
+                        <td>Muove e clamp. Senza target o
+                            <code>dt ≤ 0</code>: no-op.</td>
+                    </tr>
+                    <tr>
+                        <td><code>apply(ctx)</code></td>
+                        <td><code>this</code></td>
+                        <td>Translate arrotondato. Senza ctx:
+                            return.</td>
+                    </tr>
+                    <tr>
+                        <td><code>setBounds(x, y, w, h)</code> /
+                            <code>setSize(w, h)</code></td>
+                        <td><code>this</code></td>
+                        <td><code>setBounds(null)</code> (o
+                            <code>x</code> null) toglie i
+                            limiti.</td>
+                    </tr>
+                    <tr>
+                        <td><code>getViewBounds()</code> /
+                            <code>isRectVisible(x,y,w,h)</code></td>
+                        <td>rect / boolean</td>
+                        <td>Stesso round di
+                            <code>apply</code>. Width/height ≤ 0:
+                            non visibile.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
     </main>
+
 
 </div>
 
