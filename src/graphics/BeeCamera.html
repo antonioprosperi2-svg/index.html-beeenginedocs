@@ -713,7 +713,7 @@
     <a href="#" class="bee-header-logo">
         <span class="bee-header-title">BeeCamera</span>
     </a>
-    <span class="bee-header-badge">v2.9.3</span>
+    <span class="bee-header-badge">v2.9.4</span>
 </header>
 
 <!-- CONTENITORE PRINCIPALE -->
@@ -867,10 +867,11 @@
             <div>
                 <h2 class="bee-section-title" style="margin: 0;">BeeCamera — Documentazione Tecnica</h2>
                 <p style="margin-top: 5px;">Inquadratura mondo:
-                    <code class="bee-inline-code">follow</code> /
-                    <code class="bee-inline-code">update(dt)</code> /
-                    <code class="bee-inline-code">apply</code>,
-                    culling su <code class="bee-inline-code">getViewBounds</code>
+                    <code class="bee-inline-code">follow</code>,
+                    tick dal loop se è
+                    <code class="bee-inline-code">gioco.camera</code>,
+                    <code class="bee-inline-code">apply</code> /
+                    <code class="bee-inline-code">screenToWorld</code>
                 </p>
             </div>
             <img src="https://beeenginejs.com/wp-content/uploads/2026/09/Gemini_Generated_Image_bg7xjjbg7xjjbg7x-1-1.jpg"
@@ -881,21 +882,21 @@
 
             <h3>📁 Panoramica</h3>
 
-            <p><code>BeeCamera</code> è lo scroll 2D. Non è una
-                scena, non è uno zoom, non è uno shake. Vive in
-                <code>src/graphics/BeeCamera.js</code>. Il motore
-                parte con <code>gioco.camera = null</code>: la
-                costruisci tu e la agganci.
-                <code>follow(target)</code> <em>ricorda</em> il
-                bersaglio; a muovere è <code>update(dt)</code>.</p>
+            <p><code>BeeCamera</code> è lo scroll 2D del mondo.
+                Vive in <code>src/graphics/BeeCamera.js</code>. Il
+                motore parte con <code>gioco.camera = null</code>:
+                la crei e la agganci tu. Appena è
+                <code>gioco.camera</code>, il loop fa
+                <code>host(true)</code>. Dopo scene, entità,
+                fisica e <code>gioco.update</code> chiama
+                <code>update(dt, true)</code> se non è in pausa e
+                c'è un target.</p>
 
-            <p>Il loop, se non è in pausa e c'è
-                <code>camera.target</code>, chiama
-                <code>camera.update(dt)</code> dopo scene ed
-                entity, poi <code>save</code> →
-                <code>apply</code> → mondo →
-                <code>restore</code> (UI e overlay restano in
-                spazio schermo).</p>
+            <p>Poi <code>save</code> → <code>apply</code> →
+                mondo / tilemap / <code>drawEntity</code>
+                (già con culling) → <code>restore</code>. HUD,
+                <code>BeeUI</code> e overlay restano in pixel
+                schermo, sopra lo scroll.</p>
 
             <div class="bee-code-block">gioco<span class="token punctuation">.</span>camera <span
                     class="token operator">=</span> <span class="token keyword">new</span> <span
@@ -921,25 +922,31 @@ gioco<span class="token punctuation">.</span>camera
             <div class="bee-flow" role="region" aria-label="Flusso camera">
                 <p class="bee-flow-caption">Centro del bersaglio:
                     <code>worldX/Y</code> se sono numeri, senno
-                    <code>x/y</code>. Senza width/height: 0, non
-                    NaN. <code>dt</code> 0 (pausa) non muove.</p>
+                    <code>x/y</code>. Senza width/height: 0.
+                    Target <code>destroyed</code> o
+                    <code>dt ≤ 0</code>: resta ferma.</p>
                 <ol class="bee-flow-row">
                     <li class="bee-flow-step">
-                        <span class="bee-flow-box"><strong>1. follow</strong>Setta
-                            <code>target</code> e opzionale
-                            <code>smooth</code>. Non sposta.</span>
+                        <span class="bee-flow-box"><strong>1. follow</strong>Una volta (enter o
+                            update): setta
+                            <code>target</code> e
+                            <code>smooth</code>.
+                            <code>follow(null)</code> stacca.</span>
                         <span class="bee-flow-arrow" aria-hidden="true">→</span>
                     </li>
                     <li class="bee-flow-step">
-                        <span class="bee-flow-box"><strong>2. update</strong><code>smooth ≤ 0</code> o
-                            <code>≥ 1</code>: snap.
-                            Altrimenti lerp con
-                            <code>1-(1-s)^(dt*60)</code>.</span>
+                        <span class="bee-flow-box"><strong>2. update</strong>Hosted: no-op se non
+                            <code>fromHost</code>.
+                            <code>smooth</code> in (0, 1):
+                            lerp
+                            <code>1-(1-s)^(dt*60)</code>;
+                            senno snap.</span>
                         <span class="bee-flow-arrow" aria-hidden="true">→</span>
                     </li>
                     <li class="bee-flow-step">
                         <span class="bee-flow-box bee-flow-read"><strong>3. apply</strong><code>translate(-round(x), -round(y))</code>.
-                            View e culling usano lo stesso
+                            View, culling e
+                            screen/world usano lo stesso
                             round.</span>
                     </li>
                 </ol>
@@ -949,42 +956,81 @@ gioco<span class="token punctuation">.</span>camera
         <div class="bee-class-card bee-ladybug" id="BeeCamera-note">
             <h3>📁 Dove è facile sbagliare</h3>
 
-            <p><strong>Non chiamare <code>update</code> a
-                mano</strong> se la camera è
-                <code>gioco.camera</code> e hai già un target: il
-                loop la ticka già. Due update = lerp due volte.
-                <code>follow</code> nello
-                <code>scene.update</code> va bene (solo setta).
-                Se <code>follow</code> sta solo in
-                <code>gioco.update</code> (dopo il tick camera),
-                perdi un frame.</p>
+            <p><strong><code>follow</code> basta su
+                <code>gioco.camera</code>.</strong> Il loop la
+                hosta e chiama <code>update(dt, true)</code>
+                dopo <code>gioco.update</code>. Un
+                <code>camera.update(dt)</code> a mano è no-op
+                (evita il doppio lerp). Fuori da
+                <code>gioco.camera</code> la ticks tu.</p>
+
+            <p><strong>Size sul canvas.</strong> Ogni frame il
+                motore fa <code>setSize(canvas.width,
+                canvas.height)</code> sulla camera hostata.
+                <code>setSize</code> ricalcola anche il clamp sui
+                bounds.</p>
 
             <p><strong>Mondo più stretto del canvas.</strong> Se
-                <code>bounds.width &lt; camera.w</code> (stesso per
-                h) la vista si <em>centra</em> sul bounds, non si
-                inchioda. <code>setBounds(null)</code> toglie i
-                limiti.</p>
+                i bounds sono più piccoli della vista, la camera
+                si centra sul rettangolo.
+                <code>setBounds(null)</code> toglie i limiti.</p>
 
-            <p><strong>Niente zoom, shake, deadzone.</strong>
-                <code>enableAutoResize</code> scala il CSS, non
-                <code>camera.w/h</code>: se cambi
-                <code>canvas.width</code> chiama
-                <code>setSize</code>. UI dopo
-                <code>restore</code> non segue lo scroll.</p>
+            <p><strong>HUD e click.</strong> Dopo
+                <code>restore</code> il canvas è in pixel
+                schermo. Per un click nel mondo:
+                <code>screenToWorld</code> (stesso round di
+                <code>apply</code>).</p>
         </div>
 
         <div class="bee-class-card" id="BeeCamera-esempio">
-            <h3>📁 Esempio: culling</h3>
+            <h3>📁 Esempio: follow sul player</h3>
 
-            <div class="bee-code-block"><span class="token keyword">if</span> <span
-                    class="token punctuation">(</span><span class="token operator">!</span>gioco<span
-                    class="token punctuation">.</span><span class="token function">isRectVisibleInView</span><span
-                    class="token punctuation">(</span>ent<span class="token punctuation">.</span>worldX<span
-                    class="token punctuation">,</span> ent<span class="token punctuation">.</span>worldY<span
-                    class="token punctuation">,</span> ent<span class="token punctuation">.</span>width<span
-                    class="token punctuation">,</span> ent<span class="token punctuation">.</span>height<span
-                    class="token punctuation">)</span><span class="token punctuation">)</span> <span
-                    class="token keyword">return</span><span class="token punctuation">;</span></div>
+            <div class="bee-code-block">gioco<span class="token punctuation">.</span>camera <span
+                    class="token operator">=</span> <span class="token keyword">new</span> <span
+                    class="token class-name">BeeCamera</span><span
+                    class="token punctuation">(</span><span class="token number">800</span><span
+                    class="token punctuation">,</span> <span class="token number">600</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
+gioco<span class="token punctuation">.</span>camera<span class="token punctuation">.</span><span
+                    class="token function">setBounds</span><span
+                    class="token punctuation">(</span><span class="token number">0</span><span
+                    class="token punctuation">,</span> <span class="token number">0</span><span
+                    class="token punctuation">,</span> <span class="token number">1600</span><span
+                    class="token punctuation">,</span> <span class="token number">900</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
+gioco<span class="token punctuation">.</span>camera<span class="token punctuation">.</span><span
+                    class="token function">follow</span><span
+                    class="token punctuation">(</span>hero<span class="token punctuation">,</span> <span
+                    class="token number">0.08</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span></div>
+            <p><code>drawEntity</code> e la tilemap già saltano
+                ciò che sta fuori vista. Per un punto schermo
+                (click, puntatore) usa
+                <code>screenToWorld</code>.</p>
+            <div class="bee-code-block"><span class="token keyword">const</span> r <span
+                    class="token operator">=</span> canvas<span class="token punctuation">.</span><span
+                    class="token function">getBoundingClientRect</span><span
+                    class="token punctuation">(</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+<span class="token keyword">const</span> sx <span class="token operator">=</span> <span
+                    class="token punctuation">(</span>e<span class="token punctuation">.</span>clientX <span
+                    class="token operator">-</span> r<span class="token punctuation">.</span>left<span
+                    class="token punctuation">)</span> <span class="token operator">*</span> <span
+                    class="token punctuation">(</span>canvas<span class="token punctuation">.</span>width <span
+                    class="token operator">/</span> r<span class="token punctuation">.</span>width<span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> sy <span class="token operator">=</span> <span
+                    class="token punctuation">(</span>e<span class="token punctuation">.</span>clientY <span
+                    class="token punctuation">-</span> r<span class="token punctuation">.</span>top<span
+                    class="token punctuation">)</span> <span class="token operator">*</span> <span
+                    class="token punctuation">(</span>canvas<span class="token punctuation">.</span>height <span
+                    class="token operator">/</span> r<span class="token punctuation">.</span>height<span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">const</span> mondo <span class="token operator">=</span> gioco<span
+                    class="token punctuation">.</span>camera<span class="token punctuation">.</span><span
+                    class="token function">screenToWorld</span><span
+                    class="token punctuation">(</span>sx<span class="token punctuation">,</span> sy<span
+                    class="token punctuation">)</span><span class="token punctuation">;</span></div>
         </div>
 
         <div class="bee-class-card" id="BeeCamera-api">
@@ -1011,14 +1057,26 @@ gioco<span class="token punctuation">.</span>camera
                     <tr>
                         <td><code>follow(target, smooth?)</code></td>
                         <td><code>this</code></td>
-                        <td>Memorizza il bersaglio. Secondo
-                            argomento omesso: tiene lo
+                        <td>Memorizza il bersaglio.
+                            <code>follow(null)</code> stacca.
+                            Secondo argomento omesso: tiene lo
                             <code>smooth</code> attuale.</td>
                     </tr>
                     <tr>
-                        <td><code>update(dt)</code></td>
+                        <td><code>host(on)</code></td>
                         <td><code>this</code></td>
-                        <td>Muove e clamp. Senza target o
+                        <td><code>true</code> quando è
+                            <code>gioco.camera</code>. Il loop
+                            lo setta; al
+                            <code>destroy</code> lo toglie.</td>
+                    </tr>
+                    <tr>
+                        <td><code>update(dt, fromHost?)</code></td>
+                        <td><code>this</code></td>
+                        <td>Muove e clamp. Hosted: no-op se
+                            <code>fromHost</code> non è
+                            <code>true</code>. Senza target,
+                            <code>destroyed</code> o
                             <code>dt ≤ 0</code>: no-op.</td>
                     </tr>
                     <tr>
@@ -1032,8 +1090,10 @@ gioco<span class="token punctuation">.</span>camera
                             <code>setSize(w, h)</code></td>
                         <td><code>this</code></td>
                         <td><code>setBounds(null)</code> (o
-                            <code>x</code> null) toglie i
-                            limiti.</td>
+                            valori non finiti) toglie i limiti.
+                            <code>setSize</code> reclampa. Su
+                            <code>gioco.camera</code> w/h
+                            seguono il canvas ogni frame.</td>
                     </tr>
                     <tr>
                         <td><code>getViewBounds()</code> /
@@ -1042,6 +1102,13 @@ gioco<span class="token punctuation">.</span>camera
                         <td>Stesso round di
                             <code>apply</code>. Width/height ≤ 0:
                             non visibile.</td>
+                    </tr>
+                    <tr>
+                        <td><code>screenToWorld(sx, sy)</code> /
+                            <code>worldToScreen(wx, wy)</code></td>
+                        <td><code>{ x, y }</code></td>
+                        <td>Pixel canvas ↔ mondo, stesso
+                            round di <code>apply</code>.</td>
                     </tr>
                 </tbody>
             </table>
