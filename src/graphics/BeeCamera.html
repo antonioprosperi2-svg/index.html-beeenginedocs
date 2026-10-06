@@ -713,7 +713,7 @@
     <a href="#" class="bee-header-logo">
         <span class="bee-header-title">BeeCamera</span>
     </a>
-    <span class="bee-header-badge">v2.9.4</span>
+    <span class="bee-header-badge">v2.9.5</span>
 </header>
 
 <!-- CONTENITORE PRINCIPALE -->
@@ -924,7 +924,8 @@ gioco<span class="token punctuation">.</span>camera
                     <code>worldX/Y</code> se sono numeri, senno
                     <code>x/y</code>. Senza width/height: 0.
                     Target <code>destroyed</code> o
-                    <code>dt ≤ 0</code>: resta ferma.</p>
+                    <code>dt ≤ 0</code>: non segue, ma
+                    reclampa sui bounds.</p>
                 <ol class="bee-flow-row">
                     <li class="bee-flow-step">
                         <span class="bee-flow-box"><strong>1. follow</strong>Una volta (enter o
@@ -945,9 +946,8 @@ gioco<span class="token punctuation">.</span>camera
                     </li>
                     <li class="bee-flow-step">
                         <span class="bee-flow-box bee-flow-read"><strong>3. apply</strong><code>translate(-round(x), -round(y))</code>.
-                            View, culling e
-                            screen/world usano lo stesso
-                            round.</span>
+                            Il clamp tiene quel round
+                            dentro i bounds.</span>
                     </li>
                 </ol>
             </div>
@@ -970,10 +970,15 @@ gioco<span class="token punctuation">.</span>camera
                 <code>setSize</code> ricalcola anche il clamp sui
                 bounds.</p>
 
-            <p><strong>Mondo più stretto del canvas.</strong> Se
-                i bounds sono più piccoli della vista, la camera
-                si centra sul rettangolo.
-                <code>setBounds(null)</code> toglie i limiti.</p>
+            <p><strong>Bounds.</strong>
+                <code>setBounds</code> clampa subito (non
+                aspetti l'update). Se il mondo è più stretto
+                della vista, centra il rettangolo.
+                <code>setBounds(null)</code> toglie i limiti;
+                NaN o lati negativi lasciano quelli già
+                settati. Il clamp tiene
+                <code>Math.round(x/y)</code> dentro i bounds,
+                così <code>apply</code> non esce di un pixel.</p>
 
             <p><strong>HUD e click.</strong> Dopo
                 <code>restore</code> il canvas è in pixel
@@ -1077,7 +1082,8 @@ gioco<span class="token punctuation">.</span>camera<span class="token punctuatio
                             <code>fromHost</code> non è
                             <code>true</code>. Senza target,
                             <code>destroyed</code> o
-                            <code>dt ≤ 0</code>: no-op.</td>
+                            <code>dt ≤ 0</code>: non segue,
+                            i bounds si riallineano lo stesso.</td>
                     </tr>
                     <tr>
                         <td><code>apply(ctx)</code></td>
@@ -1089,9 +1095,9 @@ gioco<span class="token punctuation">.</span>camera<span class="token punctuatio
                         <td><code>setBounds(x, y, w, h)</code> /
                             <code>setSize(w, h)</code></td>
                         <td><code>this</code></td>
-                        <td><code>setBounds(null)</code> (o
-                            valori non finiti) toglie i limiti.
-                            <code>setSize</code> reclampa. Su
+                        <td><code>setBounds(null)</code> toglie
+                            i limiti. NaN / lati &lt; 0: ignora.
+                            Entrambi reclampano subito. Su
                             <code>gioco.camera</code> w/h
                             seguono il canvas ogni frame.</td>
                     </tr>
