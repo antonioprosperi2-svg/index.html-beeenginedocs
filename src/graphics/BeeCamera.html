@@ -868,7 +868,8 @@
                 <h2 class="bee-section-title" style="margin: 0;">BeeCamera — Documentazione Tecnica</h2>
                 <p style="margin-top: 5px;">Inquadratura mondo:
                     <code class="bee-inline-code">follow</code>,
-                    tick dal loop se è
+                    <code class="bee-inline-code">setBounds</code>
+                    clamp subito, tick dal loop se è
                     <code class="bee-inline-code">gioco.camera</code>,
                     <code class="bee-inline-code">apply</code> /
                     <code class="bee-inline-code">screenToWorld</code>
@@ -890,7 +891,9 @@
                 <code>host(true)</code>. Dopo scene, entità,
                 fisica e <code>gioco.update</code> chiama
                 <code>update(dt, true)</code> se non è in pausa e
-                c'è un target.</p>
+                c'è un target. <code>setBounds</code> e
+                <code>setSize</code> riallineano i bounds anche
+                senza follow.</p>
 
             <p>Poi <code>save</code> → <code>apply</code> →
                 mondo / tilemap / <code>drawEntity</code>
@@ -924,7 +927,8 @@ gioco<span class="token punctuation">.</span>camera
                     <code>worldX/Y</code> se sono numeri, senno
                     <code>x/y</code>. Senza width/height: 0.
                     Target <code>destroyed</code> o
-                    <code>dt ≤ 0</code>: resta ferma.</p>
+                    <code>dt ≤ 0</code>: non segue, ma riallinea
+                    i bounds.</p>
                 <ol class="bee-flow-row">
                     <li class="bee-flow-step">
                         <span class="bee-flow-box"><strong>1. follow</strong>Una volta (enter o
@@ -940,14 +944,16 @@ gioco<span class="token punctuation">.</span>camera
                             <code>smooth</code> in (0, 1):
                             lerp
                             <code>1-(1-s)^(dt*60)</code>;
-                            senno snap.</span>
+                            senno snap. Clamp anche se non
+                            segue.</span>
                         <span class="bee-flow-arrow" aria-hidden="true">→</span>
                     </li>
                     <li class="bee-flow-step">
                         <span class="bee-flow-box bee-flow-read"><strong>3. apply</strong><code>translate(-round(x), -round(y))</code>.
                             View, culling e
                             screen/world usano lo stesso
-                            round.</span>
+                            round. Il clamp tiene quel round
+                            nei bounds.</span>
                     </li>
                 </ol>
             </div>
@@ -967,13 +973,27 @@ gioco<span class="token punctuation">.</span>camera
             <p><strong>Size sul canvas.</strong> Ogni frame il
                 motore fa <code>setSize(canvas.width,
                 canvas.height)</code> sulla camera hostata.
-                <code>setSize</code> ricalcola anche il clamp sui
-                bounds.</p>
+                <code>setSize</code> e <code>setBounds</code>
+                ricalcolano il clamp. Un
+                <code>update</code> hosted a mano è no-op
+                anche per il clamp: ci pensa il loop (o
+                <code>setSize</code>).</p>
 
             <p><strong>Mondo più stretto del canvas.</strong> Se
                 i bounds sono più piccoli della vista, la camera
-                si centra sul rettangolo.
-                <code>setBounds(null)</code> toglie i limiti.</p>
+                si centra sul rettangolo, subito in
+                <code>setBounds</code> (non serve
+                <code>update</code>).
+                <code>setBounds(null)</code> toglie i limiti.
+                Valori non finiti o lato negativo: i bounds
+                restano quelli di prima.</p>
+
+            <p><strong>Round e bounds.</strong>
+                <code>apply</code>, <code>getViewBounds</code>,
+                <code>isRectVisible</code> e screen/world usano
+                <code>Math.round(x/y)</code>. Il clamp sposta
+                l'origine così quel round resta nel lato — un
+                bordo a 0.4 non fa uscire un pixel.</p>
 
             <p><strong>HUD e click.</strong> Dopo
                 <code>restore</code> il canvas è in pixel
@@ -1051,16 +1071,34 @@ gioco<span class="token punctuation">.</span>camera<span class="token punctuatio
                         <td><code>new BeeCamera(w?, h?)</code></td>
                         <td><code>BeeCamera</code></td>
                         <td><code>x/y</code> 0.
+                            <code>bounds</code> /
                             <code>target</code> null.
-                            <code>smooth</code> 0.1.</td>
+                            <code>smooth</code> 0.1.
+                            <code>w/h</code> 800×600 se non
+                            sono numeri &gt; 0.</td>
+                    </tr>
+                    <tr>
+                        <td><code>x</code> / <code>y</code> /
+                            <code>w</code> / <code>h</code> /
+                            <code>bounds</code> /
+                            <code>target</code> /
+                            <code>smooth</code></td>
+                        <td>—</td>
+                        <td>Stato pubblico.
+                            <code>apply</code> usa
+                            <code>round(x/y)</code>.
+                            <code>smooth</code> ≤ 0 o ≥ 1:
+                            snap.</td>
                     </tr>
                     <tr>
                         <td><code>follow(target, smooth?)</code></td>
                         <td><code>this</code></td>
-                        <td>Memorizza il bersaglio.
+                        <td>Memorizza il bersaglio; non muove
+                            da sola (ci pensa <code>update</code>).
                             <code>follow(null)</code> stacca.
                             Secondo argomento omesso: tiene lo
-                            <code>smooth</code> attuale.</td>
+                            <code>smooth</code> attuale. Se lo
+                            passi e non è finito: 0.1.</td>
                     </tr>
                     <tr>
                         <td><code>host(on)</code></td>
@@ -1077,7 +1115,8 @@ gioco<span class="token punctuation">.</span>camera<span class="token punctuatio
                             <code>fromHost</code> non è
                             <code>true</code>. Senza target,
                             <code>destroyed</code> o
-                            <code>dt ≤ 0</code>: no-op.</td>
+                            <code>dt ≤ 0</code>: non segue, ma
+                            riallinea i bounds.</td>
                     </tr>
                     <tr>
                         <td><code>apply(ctx)</code></td>
@@ -1086,14 +1125,23 @@ gioco<span class="token punctuation">.</span>camera<span class="token punctuatio
                             return.</td>
                     </tr>
                     <tr>
-                        <td><code>setBounds(x, y, w, h)</code> /
-                            <code>setSize(w, h)</code></td>
+                        <td><code>setBounds(x, y, w, h)</code></td>
                         <td><code>this</code></td>
-                        <td><code>setBounds(null)</code> (o
-                            valori non finiti) toglie i limiti.
-                            <code>setSize</code> reclampa. Su
-                            <code>gioco.camera</code> w/h
-                            seguono il canvas ogni frame.</td>
+                        <td><code>null</code> toglie i limiti.
+                            Clamp subito, anche senza target.
+                            Non finito o lato &lt; 0: non
+                            cambia i bounds.
+                            <code>round(x/y)</code> resta nel
+                            lato, come <code>apply</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>setSize(w, h)</code></td>
+                        <td><code>this</code></td>
+                        <td>Aggiorna <code>w/h</code> solo se
+                            finiti e &gt; 0, poi reclampa. Su
+                            <code>gioco.camera</code> il loop
+                            lo chiama ogni frame sul
+                            canvas.</td>
                     </tr>
                     <tr>
                         <td><code>getViewBounds()</code> /
