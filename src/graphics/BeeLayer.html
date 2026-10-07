@@ -613,12 +613,105 @@
             white-space: nowrap;
         }
     }
+
+    /* ==========================================
+       5. FLUSSO (solo questa pagina)
+       ========================================== */
+    .bee-flow {
+        margin: 16px 0 4px 0;
+        padding: 16px 16px 14px 16px;
+        background: var(--bee-surface-2);
+        border: 1px solid var(--bee-line);
+        border-left: 4px solid var(--bee-honey);
+        border-radius: 10px;
+    }
+
+    .bee-flow-caption {
+        color: var(--bee-text-dim);
+        font-size: 13.5px;
+        line-height: 1.55;
+        margin: 0 0 12px 0;
+    }
+
+    .bee-flow-row {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: stretch;
+        gap: 8px 0;
+        margin: 0;
+        padding: 0;
+    }
+
+    .bee-flow-step {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        max-width: 100%;
+    }
+
+    .bee-flow-box {
+        display: block;
+        min-width: 7.5rem;
+        max-width: 14rem;
+        padding: 10px 12px;
+        background: var(--bee-surface);
+        border: 1px solid var(--bee-line-honey);
+        border-radius: 8px;
+        color: var(--bee-text);
+        font-size: 13.5px;
+        line-height: 1.45;
+    }
+
+    .bee-flow-box strong {
+        display: block;
+        color: var(--bee-honey);
+        font-family: var(--bee-mono);
+        font-size: 12.5px;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+        margin-bottom: 4px;
+    }
+
+    .bee-flow-box.bee-flow-read {
+        border-color: rgba(239, 68, 68, 0.45);
+    }
+
+    .bee-flow-box.bee-flow-read strong {
+        color: #ff8f8f;
+    }
+
+    .bee-flow-box code {
+        font-family: var(--bee-mono);
+        font-size: 12.5px;
+        color: #fcd34d;
+    }
+
+    .bee-flow-arrow {
+        color: var(--bee-honey);
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1;
+        padding: 0 6px;
+        flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+        .bee-flow-step {
+            width: 100%;
+        }
+
+        .bee-flow-box {
+            max-width: none;
+            flex-grow: 1;
+        }
+    }
 </style>
 
 <!-- HEADER FISSA -->
 <header class="bee-docs-header">
     <a href="#" class="bee-header-logo">
-        <span class="bee-header-title">BeeAssetManager</span>
+        <span class="bee-header-title">BeeLayer</span>
     </a>
     <span class="bee-header-badge">v2.2.0</span>
 </header>
@@ -771,94 +864,346 @@
     <!-- AREA CONTENUTI (TUTTI I MODULI VANNO QUI DENTRO) -->
     <main class="bee-docs-content">
 
-        <!-- SEZIONE 1 -->
-        <h2 class="bee-section-title">BeeAssetManager — Documentazione Tecnica
+        <div
+            style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
+            <div>
+                <h2 class="bee-section-title" style="margin: 0;">BeeLayer — Documentazione Tecnica</h2>
+                <p style="margin-top: 5px;">Pipeline di disegno:
+                    <code class="bee-inline-code">background</code>,
+                    <code class="bee-inline-code">world</code>,
+                    <code class="bee-inline-code">ysort</code>,
+                    <code class="bee-inline-code">ui</code>
+                </p>
+            </div>
+            <img src="https://beeenginejs.com/wp-content/uploads/2026/09/Gemini_Generated_Image_bg7xjjbg7xjjbg7x-1-1.jpg"
+                alt="BeeEngine Mascot" width="80" height="80" style="width: 80px; height: auto; flex-shrink: 0;">
+        </div>
 
-            Modulo core di BeeEngine per il caricamento centralizzato delle risorse di gioco</h2>
+        <div class="bee-class-card" id="BeeLayer">
 
-        <div class="bee-class-card" id="BeeAssetManager">
-            <h3> </h3>
+            <h3>📁 Panoramica</h3>
 
-            <p></p>
+            <p><code>BeeLayer</code> mette in ordine chi va disegnato, e in quale pass.
+                Vive in <code>src/graphics/BeeLayer.js</code>.
+                <code>BeeEngine</code> ne crea una:
+                <code>gioco.layers = new BeeLayer()</code>.
+                Il loop la chiama due volte: <code>drawWorld</code> sotto la camera,
+                <code>drawScreen</code> dopo <code>ctx.restore</code>.
+            </p>
 
-            <p> </p>
+            <p>I quattro pass di default, in ordine:</p>
 
-            <p>📁 </p>
+            <table class="bee-api-table">
+                <thead>
+                    <tr>
+                        <th>Nome</th>
+                        <th>order</th>
+                        <th>Spazio</th>
+                        <th>Sort</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>background</code></td>
+                        <td>0</td>
+                        <td>mondo</td>
+                        <td>stabile</td>
+                    </tr>
+                    <tr>
+                        <td><code>world</code></td>
+                        <td>10</td>
+                        <td>mondo</td>
+                        <td>stabile</td>
+                    </tr>
+                    <tr>
+                        <td><code>ysort</code></td>
+                        <td>20</td>
+                        <td>mondo</td>
+                        <td>piedi, dal basso</td>
+                    </tr>
+                    <tr>
+                        <td><code>ui</code></td>
+                        <td>100</td>
+                        <td>schermo</td>
+                        <td>stabile</td>
+                    </tr>
+                </tbody>
+            </table>
 
-            <div class="bee-code-block"></div>
+            <p>Senza <code>drawLayer</code> l'entità sta su <code>world</code>.
+                <code>BeeText</code> nasce già con <code>drawLayer = 'ui'</code>.
+                Un layer aggiunto da te si infila in base a <code>order</code>:
+                a parità vince chi è stato aggiunto prima.
+            </p>
 
-            <p>📁</p>
+            <p><code>BEE_LAYER</code> di <code>BeeRigidBody</code> è un'altra cosa:
+                bitmask della fisica (<code>DEFAULT</code>, <code>PLAYER</code>,
+                <code>WORLD</code>, <code>TRIGGER</code>, <code>PROJECTILE</code>,
+                <code>GHOST</code>). I pass di disegno sono le stringhe
+                <code>BEE_DRAW</code>.
+            </p>
 
-            <div class="bee-code-block"></div>
+            <div class="bee-code-block"><span class="token keyword">import</span> <span
+                    class="token punctuation">{</span> <span class="token class-name">BeeEngine</span><span
+                    class="token punctuation">,</span> <span class="token constant">BEE_DRAW</span> <span
+                    class="token punctuation">}</span> <span class="token keyword">from</span> <span
+                    class="token string">'beeengine'</span><span class="token punctuation">;</span>
 
-            <p>📁</p>
+                <span class="token keyword">const</span> gioco <span class="token operator">=</span> <span
+                    class="token keyword">new</span> <span class="token class-name">BeeEngine</span><span
+                    class="token punctuation">(</span><span class="token string">'testCanvas'</span><span
+                    class="token punctuation">,</span> <span class="token number">800</span><span
+                    class="token punctuation">,</span> <span class="token number">600</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
 
-            <div class="bee-code-block"> </div>
+                hero<span class="token punctuation">.</span>drawLayer <span class="token operator">=</span> <span
+                    class="token constant">BEE_DRAW</span><span class="token punctuation">.</span><span
+                    class="token constant">YSORT</span><span class="token punctuation">;</span>
+                gioco<span class="token punctuation">.</span>layers<span class="token punctuation">.</span><span
+                    class="token function">add</span><span class="token punctuation">(</span><span
+                    class="token string">'fx'</span><span class="token punctuation">,</span> <span
+                    class="token punctuation">{</span> space<span class="token punctuation">:</span> <span
+                    class="token string">'world'</span><span class="token punctuation">,</span> sort<span
+                    class="token punctuation">:</span> <span class="token string">'stable'</span><span
+                    class="token punctuation">,</span> order<span class="token punctuation">:</span> <span
+                    class="token number">25</span> <span class="token punctuation">}</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
+            </div>
 
-            <p>📁</p>
+            <h3>📁 Raccolta</h3>
 
-            <div class="bee-code-block"></div>
+            <div class="bee-flow" role="region" aria-label="Flusso di collect">
+                <p class="bee-flow-caption"><code>collect</code> legge
+                    <code>currentScene.entities</code> e poi
+                    <code>engine.entities</code>. L'ordine dentro la lista
+                    non sposta un figlio davanti al padre.
+                    La stessa entità nelle due liste entra una volta.
+                </p>
+                <ol class="bee-flow-row">
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>1. radici</strong>Solo chi non ha
+                            <code>parent</code>. Da lì scende
+                            su <code>children</code>.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>2. orfani</strong>Chi è in lista e
+                            non è ancora stato visto.
+                            Parte dal più alto antenato
+                            ancora in lista.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box bee-flow-read"><strong>3. bucket</strong>Radice, oppure
+                            <code>drawLayer</code> diverso da
+                            quello ereditato. Poi la
+                            y-sort, se il pass è
+                            <code>y</code>.</span>
+                    </li>
+                </ol>
+            </div>
 
-            <p>📁</p>
+            <p>Un figlio senza <code>drawLayer</code>, o con lo stesso del padre,
+                resta fuori dal bucket. Lo disegna <code>drawEntity</code> mentre
+                dipinge il padre, nello stesso pass. Un figlio con un
+                <code>drawLayer</code> diverso entra nel suo pass:
+                <code>drawEntity</code> sul padre lo salta, così non esce due volte.
+            </p>
 
-            <div class="bee-code-block"></div>
+            <p>La chiave y-sort è <code>sortY</code> se è un numero finito
+                (anche <code>0</code>). Altrimenti i piedi: il box di
+                <code>getEntityDrawBounds</code>, se c'è, senno
+                <code>worldY + height</code> (o <code>y + height</code>).
+                A parità di chiave resta l'ordine di raccolta.
+            </p>
 
-            <p>📁 </p>
+            <p><code>drawWorld</code> raccoglie e disegna solo i pass
+                <code>world</code>. <code>drawScreen</code> riusa quella raccolta
+                e disegna solo i pass <code>screen</code>.
+                Chiamata da sola, <code>drawScreen</code> raccoglie lei.
+                <code>ctx</code> assente: il flush esce, i bucket restano.
+            </p>
 
-            <div class="bee-class-card"></div>
+            <h3>📁 Nel frame</h3>
 
-            <p>📁 </p>
+            <p>Sotto <code>ctx.save</code> e la camera:
+                <code>scenes.drawWorld</code> (lo sfondo che metti tu sulla scena),
+                poi <code>layers.drawWorld</code>, poi il callback
+                <code>render</code>, poi l'overlay mondo di Ladybug.
+                Dopo <code>restore</code>: <code>layers.drawScreen</code>,
+                <code>scenes.drawUI</code> (<code>scene.draw</code>),
+                <code>ui.draw</code>, i controlli touch, l'overlay di Ladybug.
+            </p>
 
-            <div class="bee-class-card"></div>
+            <p><code>drawEntity</code> applica <code>alpha</code> se è sotto 1,
+                e salta <code>entity.draw</code> quando il box ha larghezza e
+                altezza e sta fuori vista (camera in mondo, canvas in schermo).
+                I figli li visita lo stesso. Un box senza size viene disegnato.
+                <code>active === false</code> non c'entra: ferma l'update, non il draw.
+            </p>
+        </div>
 
-            <p> 📁 </p>
+        <div class="bee-class-card bee-ladybug" id="BeeLayer-note">
+            <h3>📁 Dove è facile sbagliare</h3>
 
-            <div class="bee-class-card"></div>
+            <p><strong>Il cappello sta col corpo.</strong> Se padre e figlio
+                hanno lo stesso <code>drawLayer</code> (o il figlio non lo ha),
+                il figlio non ha una chiave y-sort sua. Esce dentro il draw
+                del padre, in ordine di <code>children</code>. Per farlo
+                mescolare con gli altri, il suo <code>drawLayer</code> deve
+                essere un pass diverso, per esempio <code>'ysort'</code> su un
+                padre che resta su <code>'world'</code>.
+            </p>
 
-            <p> 📁 </p>
+            <p><strong>Padre invisibile o destroyed.</strong> Il sottoalbero
+                non si disegna, anche se il figlio è in lista e ha
+                <code>drawLayer: 'ui'</code>. Vale anche se il padre destroyed
+                non è lui stesso in lista.
+            </p>
 
-            <div class="bee-class-card"></div>
+            <p><strong>Padre fuori dalle liste.</strong> I figli che ci sono
+                vengono disegnati come radici. Il padre no.
+                I children di un prefab nascono con
+                <code>addToScene: false</code>: li raggiunge la visita dal padre,
+                se il padre è in scena.
+            </p>
 
-            <p>📁 </p>
+            <p><strong>Nome layer sconosciuto.</strong> Il nodo cade nel bucket
+                <code>world</code>, se quel pass esiste. I figli ereditano
+                però la stringa che hai scritto, non <code>world</code>.
+                <code>space: 'Screen'</code> e <code>sort: 'Y'</code> non
+                lanciano: diventano mondo e stabile. I valori letti sono
+                <code>'screen'</code>, e <code>'y'</code> oppure <code>'ysort'</code>.
+            </p>
 
-            <div class="bee-class-card"> </div>
+            <p><strong>Dopo <code>add</code> il pass è fissato.</strong>
+                <code>get</code> torna una copia. Per cambiare
+                <code>order</code>, <code>visible</code> o <code>sort</code>
+                fai <code>remove</code> e <code>add</code>.
+                <code>new BeeLayer({ defaults: false })</code> non installa
+                i quattro pass: senza un layer <code>world</code> il fallback
+                non ha dove andare.
+            </p>
+        </div>
 
-            <p>📁 </p>
+        <div class="bee-class-card" id="BeeLayer-esempio">
+            <h3>📁 Esempio: corpo, cappello, etichetta</h3>
 
-            <div class="bee-class-card"></div>
+            <div class="bee-code-block">hero<span class="token punctuation">.</span>drawLayer <span
+                    class="token operator">=</span> <span class="token constant">BEE_DRAW</span><span
+                    class="token punctuation">.</span><span class="token constant">YSORT</span><span
+                    class="token punctuation">;</span>
 
-            <p>📁</p>
+                <span class="token keyword">const</span> hat <span class="token operator">=</span> <span
+                    class="token keyword">new</span> <span class="token class-name">BeeEntity</span><span
+                    class="token punctuation">(</span><span class="token number">4</span><span
+                    class="token punctuation">,</span> <span class="token operator">-</span><span
+                    class="token number">8</span><span class="token punctuation">,</span> <span
+                    class="token number">12</span><span class="token punctuation">,</span> <span
+                    class="token number">12</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+                hero<span class="token punctuation">.</span><span class="token function">addChild</span><span
+                    class="token punctuation">(</span>hat<span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
 
-            <div class="bee-class-card"> </div>
+                <span class="token keyword">const</span> label <span class="token operator">=</span> <span
+                    class="token keyword">new</span> <span class="token class-name">BeeText</span><span
+                    class="token punctuation">(</span><span class="token string">'HP'</span><span
+                    class="token punctuation">,</span> <span class="token number">8</span><span
+                    class="token punctuation">,</span> <span class="token number">8</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
+                hero<span class="token punctuation">.</span><span class="token function">addChild</span><span
+                    class="token punctuation">(</span>label<span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+            </div>
 
-            <p>📁 </p>
+            <p><code>hat</code> non ha <code>drawLayer</code>: esce nel pass
+                <code>ysort</code> del padre, insieme a lui.
+                <code>label</code> è un <code>BeeText</code>, quindi
+                <code>'ui'</code>: va nel pass schermo, dopo il restore.
+                Il loop fa già <code>drawWorld</code> e <code>drawScreen</code>.
+                <code>renderEntities</code> è solo la metà mondo.
+            </p>
+        </div>
 
-            <div class="bee-class-card"> </div>
-
-            <p> 📁 </p>
-
-            <div class="bee-code-block"></div>
-
-            <p>📁</p>
-
-            <div class="bee-code-block"></div>
-
-
-            <p>📁 </p>
-
-            <div class="bee-code-block"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-code-block"></div>
-
-            <p> 📁</p>
-
-            <div class="bee-code-block"> </div>
-
-
-
-
+        <div class="bee-class-card" id="BeeLayer-api">
+            <h3>📁 Riepilogo API</h3>
+            <p>Non estende <code>BeeEntity</code>.
+                <code>BEE_DRAW</code>, <code>BEE_SPACE</code> e
+                <code>BEE_LAYER_DEFAULTS</code> escono dal barrel.
+                I default di <code>add</code> sono spazio mondo, sort stabile,
+                visibile, <code>order</code> 0.
+            </p>
+            <table class="bee-api-table">
+                <thead>
+                    <tr>
+                        <th>Membro</th>
+                        <th>Ritorna</th>
+                        <th>Scopo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>new BeeLayer({ defaults? })</code></td>
+                        <td><code>BeeLayer</code></td>
+                        <td><code>defaults: false</code> salta i quattro pass.
+                            Altrimenti li installa.</td>
+                    </tr>
+                    <tr>
+                        <td><code>add(name, spec?)</code></td>
+                        <td><code>this</code></td>
+                        <td>Nome vuoto o già presente: lancia.
+                            <code>spec</code>: <code>space</code>,
+                            <code>sort</code>, <code>order</code>,
+                            <code>visible</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>remove(name)</code></td>
+                        <td><code>this</code></td>
+                        <td>Nome assente: nessun effetto.</td>
+                    </tr>
+                    <tr>
+                        <td><code>has(name)</code> / <code>get(name)</code> / <code>list()</code></td>
+                        <td>boolean / copia / array</td>
+                        <td><code>get</code> di un nome assente è
+                            <code>null</code>. <code>list</code> segue
+                            <code>order</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>size</code></td>
+                        <td>number</td>
+                        <td>Quanti pass, non quante entità.</td>
+                    </tr>
+                    <tr>
+                        <td><code>items(name)</code></td>
+                        <td>array</td>
+                        <td>Entità dell'ultimo <code>collect</code>,
+                            già ordinate se il pass è y-sort.
+                            Nome assente: <code>[]</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>collect(engine)</code></td>
+                        <td><code>this</code></td>
+                        <td>Svuota i bucket e li riempie.
+                            <code>engine</code> assente: liste vuote.</td>
+                    </tr>
+                    <tr>
+                        <td><code>drawWorld(ctx, engine)</code></td>
+                        <td><code>this</code></td>
+                        <td>Raccoglie sempre, poi i pass mondo.
+                            Chiama <code>engine.drawEntity</code>,
+                            senno <code>entity.draw</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>drawScreen(ctx, engine)</code></td>
+                        <td><code>this</code></td>
+                        <td>Raccoglie solo se serve, poi i pass
+                            schermo. A fine chiamata la raccolta
+                            è da rifare al frame dopo.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
     </main>
 
