@@ -806,7 +806,8 @@
                 <li><a
                         href="https://beeenginejs.com/state-machine-per-animazioni-in-javascript-transizioni-2d/">BeeAnimator.js</a>
                 </li>
-                <li><a href="#BeeCamera" class="is-current">BeeCamera.js</a></li>
+                <li><a href="https://beeenginejs.com/camera-2d-in-javascript-follow-scroll-e-screentoworld/"
+                        class="is-current">BeeCamera.js</a></li>
                 <li><a href="#BeeLayer">BeeLayer.js</a></li>
                 <li><a href="#BeeParticleSystem">BeeParticleSystem.js</a></li>
                 <li><a href="#BeeSprite">BeeSprite.js</a></li>
@@ -860,7 +861,7 @@
 
 
     <!-- AREA CONTENUTI (TUTTI I MODULI VANNO QUI DENTRO) -->
-        <main class="bee-docs-content">
+    <main class="bee-docs-content">
 
         <div
             style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
@@ -890,32 +891,35 @@
                 <code>host(true)</code>. Dopo scene, entità,
                 fisica e <code>gioco.update</code> chiama
                 <code>update(dt, true)</code> se non è in pausa e
-                c'è un target.</p>
+                c'è un target.
+            </p>
 
             <p>Poi <code>save</code> → <code>apply</code> →
                 mondo / tilemap / <code>drawEntity</code>
                 (già con culling) → <code>restore</code>. HUD,
                 <code>BeeUI</code> e overlay restano in pixel
-                schermo, sopra lo scroll.</p>
+                schermo, sopra lo scroll.
+            </p>
 
             <div class="bee-code-block">gioco<span class="token punctuation">.</span>camera <span
                     class="token operator">=</span> <span class="token keyword">new</span> <span
-                    class="token class-name">BeeCamera</span><span
-                    class="token punctuation">(</span>gioco<span class="token punctuation">.</span>canvas<span
-                    class="token punctuation">.</span>width<span class="token punctuation">,</span> gioco<span
-                    class="token punctuation">.</span>canvas<span class="token punctuation">.</span>height<span
-                    class="token punctuation">)</span><span class="token punctuation">;</span>
-gioco<span class="token punctuation">.</span>camera
-    <span class="token punctuation">.</span><span class="token function">setBounds</span><span
+                    class="token class-name">BeeCamera</span><span class="token punctuation">(</span>gioco<span
+                    class="token punctuation">.</span>canvas<span class="token punctuation">.</span>width<span
+                    class="token punctuation">,</span> gioco<span class="token punctuation">.</span>canvas<span
+                    class="token punctuation">.</span>height<span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+                gioco<span class="token punctuation">.</span>camera
+                <span class="token punctuation">.</span><span class="token function">setBounds</span><span
                     class="token punctuation">(</span><span class="token number">0</span><span
                     class="token punctuation">,</span> <span class="token number">0</span><span
                     class="token punctuation">,</span> <span class="token number">1600</span><span
                     class="token punctuation">,</span> <span class="token number">900</span><span
                     class="token punctuation">)</span>
-    <span class="token punctuation">.</span><span class="token function">follow</span><span
+                <span class="token punctuation">.</span><span class="token function">follow</span><span
                     class="token punctuation">(</span>hero<span class="token punctuation">,</span> <span
                     class="token number">0.08</span><span class="token punctuation">)</span><span
-                    class="token punctuation">;</span></div>
+                    class="token punctuation">;</span>
+            </div>
 
             <h3>📁 Update</h3>
 
@@ -925,7 +929,8 @@ gioco<span class="token punctuation">.</span>camera
                     <code>x/y</code>. Senza width/height: 0.
                     Target <code>destroyed</code> o
                     <code>dt ≤ 0</code>: non segue, ma
-                    reclampa sui bounds.</p>
+                    reclampa sui bounds.
+                </p>
                 <ol class="bee-flow-row">
                     <li class="bee-flow-step">
                         <span class="bee-flow-box"><strong>1. follow</strong>Una volta (enter o
@@ -945,7 +950,8 @@ gioco<span class="token punctuation">.</span>camera
                         <span class="bee-flow-arrow" aria-hidden="true">→</span>
                     </li>
                     <li class="bee-flow-step">
-                        <span class="bee-flow-box bee-flow-read"><strong>3. apply</strong><code>translate(-round(x), -round(y))</code>.
+                        <span class="bee-flow-box bee-flow-read"><strong>3.
+                                apply</strong><code>translate(-round(x), -round(y))</code>.
                             Il clamp tiene quel round
                             dentro i bounds.</span>
                     </li>
@@ -957,18 +963,20 @@ gioco<span class="token punctuation">.</span>camera
             <h3>📁 Dove è facile sbagliare</h3>
 
             <p><strong><code>follow</code> basta su
-                <code>gioco.camera</code>.</strong> Il loop la
+                    <code>gioco.camera</code>.</strong> Il loop la
                 hosta e chiama <code>update(dt, true)</code>
                 dopo <code>gioco.update</code>. Un
                 <code>camera.update(dt)</code> a mano è no-op
                 (evita il doppio lerp). Fuori da
-                <code>gioco.camera</code> la ticks tu.</p>
+                <code>gioco.camera</code> la ticks tu.
+            </p>
 
             <p><strong>Size sul canvas.</strong> Ogni frame il
                 motore fa <code>setSize(canvas.width,
                 canvas.height)</code> sulla camera hostata.
                 <code>setSize</code> ricalcola anche il clamp sui
-                bounds.</p>
+                bounds.
+            </p>
 
             <p><strong>Bounds.</strong>
                 <code>setBounds</code> clampa subito (non
@@ -978,13 +986,15 @@ gioco<span class="token punctuation">.</span>camera
                 NaN o lati negativi lasciano quelli già
                 settati. Il clamp tiene
                 <code>Math.round(x/y)</code> dentro i bounds,
-                così <code>apply</code> non esce di un pixel.</p>
+                così <code>apply</code> non esce di un pixel.
+            </p>
 
             <p><strong>HUD e click.</strong> Dopo
                 <code>restore</code> il canvas è in pixel
                 schermo. Per un click nel mondo:
                 <code>screenToWorld</code> (stesso round di
-                <code>apply</code>).</p>
+                <code>apply</code>).
+            </p>
         </div>
 
         <div class="bee-class-card" id="BeeCamera-esempio">
@@ -992,50 +1002,50 @@ gioco<span class="token punctuation">.</span>camera
 
             <div class="bee-code-block">gioco<span class="token punctuation">.</span>camera <span
                     class="token operator">=</span> <span class="token keyword">new</span> <span
-                    class="token class-name">BeeCamera</span><span
-                    class="token punctuation">(</span><span class="token number">800</span><span
-                    class="token punctuation">,</span> <span class="token number">600</span><span
-                    class="token punctuation">)</span><span class="token punctuation">;</span>
-gioco<span class="token punctuation">.</span>camera<span class="token punctuation">.</span><span
-                    class="token function">setBounds</span><span
-                    class="token punctuation">(</span><span class="token number">0</span><span
-                    class="token punctuation">,</span> <span class="token number">0</span><span
-                    class="token punctuation">,</span> <span class="token number">1600</span><span
-                    class="token punctuation">,</span> <span class="token number">900</span><span
-                    class="token punctuation">)</span><span class="token punctuation">;</span>
-gioco<span class="token punctuation">.</span>camera<span class="token punctuation">.</span><span
-                    class="token function">follow</span><span
-                    class="token punctuation">(</span>hero<span class="token punctuation">,</span> <span
-                    class="token number">0.08</span><span class="token punctuation">)</span><span
-                    class="token punctuation">;</span></div>
+                    class="token class-name">BeeCamera</span><span class="token punctuation">(</span><span
+                    class="token number">800</span><span class="token punctuation">,</span> <span
+                    class="token number">600</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+                gioco<span class="token punctuation">.</span>camera<span class="token punctuation">.</span><span
+                    class="token function">setBounds</span><span class="token punctuation">(</span><span
+                    class="token number">0</span><span class="token punctuation">,</span> <span
+                    class="token number">0</span><span class="token punctuation">,</span> <span
+                    class="token number">1600</span><span class="token punctuation">,</span> <span
+                    class="token number">900</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+                gioco<span class="token punctuation">.</span>camera<span class="token punctuation">.</span><span
+                    class="token function">follow</span><span class="token punctuation">(</span>hero<span
+                    class="token punctuation">,</span> <span class="token number">0.08</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span></div>
             <p><code>drawEntity</code> e la tilemap già saltano
                 ciò che sta fuori vista. Per un punto schermo
                 (click, puntatore) usa
-                <code>screenToWorld</code>.</p>
-            <div class="bee-code-block"><span class="token keyword">const</span> r <span
-                    class="token operator">=</span> canvas<span class="token punctuation">.</span><span
-                    class="token function">getBoundingClientRect</span><span
-                    class="token punctuation">(</span><span class="token punctuation">)</span><span
-                    class="token punctuation">;</span>
-<span class="token keyword">const</span> sx <span class="token operator">=</span> <span
+                <code>screenToWorld</code>.
+            </p>
+            <div class="bee-code-block"><span class="token keyword">const</span> r <span class="token operator">=</span>
+                canvas<span class="token punctuation">.</span><span
+                    class="token function">getBoundingClientRect</span><span class="token punctuation">(</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token keyword">const</span> sx <span class="token operator">=</span> <span
                     class="token punctuation">(</span>e<span class="token punctuation">.</span>clientX <span
                     class="token operator">-</span> r<span class="token punctuation">.</span>left<span
                     class="token punctuation">)</span> <span class="token operator">*</span> <span
                     class="token punctuation">(</span>canvas<span class="token punctuation">.</span>width <span
                     class="token operator">/</span> r<span class="token punctuation">.</span>width<span
                     class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token keyword">const</span> sy <span class="token operator">=</span> <span
+                <span class="token keyword">const</span> sy <span class="token operator">=</span> <span
                     class="token punctuation">(</span>e<span class="token punctuation">.</span>clientY <span
                     class="token punctuation">-</span> r<span class="token punctuation">.</span>top<span
                     class="token punctuation">)</span> <span class="token operator">*</span> <span
                     class="token punctuation">(</span>canvas<span class="token punctuation">.</span>height <span
                     class="token operator">/</span> r<span class="token punctuation">.</span>height<span
                     class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token keyword">const</span> mondo <span class="token operator">=</span> gioco<span
+                <span class="token keyword">const</span> mondo <span class="token operator">=</span> gioco<span
                     class="token punctuation">.</span>camera<span class="token punctuation">.</span><span
-                    class="token function">screenToWorld</span><span
-                    class="token punctuation">(</span>sx<span class="token punctuation">,</span> sy<span
-                    class="token punctuation">)</span><span class="token punctuation">;</span></div>
+                    class="token function">screenToWorld</span><span class="token punctuation">(</span>sx<span
+                    class="token punctuation">,</span> sy<span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+            </div>
         </div>
 
         <div class="bee-class-card" id="BeeCamera-api">
@@ -1057,7 +1067,8 @@ gioco<span class="token punctuation">.</span>camera<span class="token punctuatio
                         <td><code>BeeCamera</code></td>
                         <td><code>x/y</code> 0.
                             <code>target</code> null.
-                            <code>smooth</code> 0.1.</td>
+                            <code>smooth</code> 0.1.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>follow(target, smooth?)</code></td>
@@ -1065,7 +1076,8 @@ gioco<span class="token punctuation">.</span>camera<span class="token punctuatio
                         <td>Memorizza il bersaglio.
                             <code>follow(null)</code> stacca.
                             Secondo argomento omesso: tiene lo
-                            <code>smooth</code> attuale.</td>
+                            <code>smooth</code> attuale.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>host(on)</code></td>
@@ -1073,7 +1085,8 @@ gioco<span class="token punctuation">.</span>camera<span class="token punctuatio
                         <td><code>true</code> quando è
                             <code>gioco.camera</code>. Il loop
                             lo setta; al
-                            <code>destroy</code> lo toglie.</td>
+                            <code>destroy</code> lo toglie.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>update(dt, fromHost?)</code></td>
@@ -1083,7 +1096,8 @@ gioco<span class="token punctuation">.</span>camera<span class="token punctuatio
                             <code>true</code>. Senza target,
                             <code>destroyed</code> o
                             <code>dt ≤ 0</code>: non segue,
-                            i bounds si riallineano lo stesso.</td>
+                            i bounds si riallineano lo stesso.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>apply(ctx)</code></td>
@@ -1093,25 +1107,30 @@ gioco<span class="token punctuation">.</span>camera<span class="token punctuatio
                     </tr>
                     <tr>
                         <td><code>setBounds(x, y, w, h)</code> /
-                            <code>setSize(w, h)</code></td>
+                            <code>setSize(w, h)</code>
+                        </td>
                         <td><code>this</code></td>
                         <td><code>setBounds(null)</code> toglie
                             i limiti. NaN / lati &lt; 0: ignora.
                             Entrambi reclampano subito. Su
                             <code>gioco.camera</code> w/h
-                            seguono il canvas ogni frame.</td>
+                            seguono il canvas ogni frame.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>getViewBounds()</code> /
-                            <code>isRectVisible(x,y,w,h)</code></td>
+                            <code>isRectVisible(x,y,w,h)</code>
+                        </td>
                         <td>rect / boolean</td>
                         <td>Stesso round di
                             <code>apply</code>. Width/height ≤ 0:
-                            non visibile.</td>
+                            non visibile.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>screenToWorld(sx, sy)</code> /
-                            <code>worldToScreen(wx, wy)</code></td>
+                            <code>worldToScreen(wx, wy)</code>
+                        </td>
                         <td><code>{ x, y }</code></td>
                         <td>Pixel canvas ↔ mondo, stesso
                             round di <code>apply</code>.</td>
