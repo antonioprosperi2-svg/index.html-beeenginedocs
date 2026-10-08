@@ -809,8 +809,11 @@
                 <li><a
                         href="https://beeenginejs.com/camera-2d-in-javascript-follow-scroll-e-screentoworld/">BeeCamera.js</a>
                 </li>
-                <li><a href="https://beeenginejs.com/layer-di-disegno-in-javascript-y-sort-e-ui-su-canvas/">BeeLayer.js</a></li>
-                <li><a href="#BeeParticleSystem" class="is-current">BeeParticleSystem.js</a></li>
+                <li><a
+                        href="https://beeenginejs.com/layer-di-disegno-in-javascript-y-sort-e-ui-su-canvas/">BeeLayer.js</a>
+                </li>
+                <li><a href="https://beeenginejs.com/sistema-di-particelle-in-javascript-burst-pool-e-culling/"
+                        class="is-current">BeeParticleSystem.js</a></li>
                 <li><a href="#BeeSprite">BeeSprite.js</a></li>
                 <li><a href="#BeeSpriteSheet">BeeSpriteSheet.js</a></li>
                 <li><a href="#BeeText">BeeText.js</a></li>
@@ -862,7 +865,7 @@
 
 
     <!-- AREA CONTENUTI (TUTTI I MODULI VANNO QUI DENTRO) -->
-        <main class="bee-docs-content">
+    <main class="bee-docs-content">
 
         <div
             style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
@@ -888,7 +891,8 @@
                 <code>src/graphics/BeeParticleSystem.js</code>.
                 Lo crei e lo metti nel gioco con
                 <code>gioco.addEntity</code>. Il loop chiama
-                <code>update</code> e <code>draw</code>.</p>
+                <code>update</code> e <code>draw</code>.
+            </p>
 
             <p>Ogni particella nasce in coordinate mondo, da
                 <code>worldX</code> / <code>worldY</code> al
@@ -898,21 +902,22 @@
                 Il pool interno non fa
                 <code>new</code> né <code>filter</code> a ogni
                 frame: i morti tornano in
-                <code>particlePool</code> e l'array si compatta.</p>
+                <code>particlePool</code> e l'array si compatta.
+            </p>
 
             <div class="bee-code-block"><span class="token keyword">const</span> burst <span
                     class="token operator">=</span> <span class="token keyword">new</span> <span
-                    class="token class-name">BeeParticleSystem</span><span
-                    class="token punctuation">(</span><span class="token punctuation">{</span> <span
-                    class="token property">x</span><span class="token punctuation">:</span> hero<span
-                    class="token punctuation">.</span>worldX<span class="token punctuation">,</span> <span
-                    class="token property">y</span><span class="token punctuation">:</span> hero<span
-                    class="token punctuation">.</span>worldY <span class="token punctuation">}</span><span
-                    class="token punctuation">)</span><span class="token punctuation">;</span>
-gioco<span class="token punctuation">.</span><span class="token function">addEntity</span><span
+                    class="token class-name">BeeParticleSystem</span><span class="token punctuation">(</span><span
+                    class="token punctuation">{</span> <span class="token property">x</span><span
+                    class="token punctuation">:</span> hero<span class="token punctuation">.</span>worldX<span
+                    class="token punctuation">,</span> <span class="token property">y</span><span
+                    class="token punctuation">:</span> hero<span class="token punctuation">.</span>worldY <span
+                    class="token punctuation">}</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+                gioco<span class="token punctuation">.</span><span class="token function">addEntity</span><span
                     class="token punctuation">(</span>burst<span class="token punctuation">)</span><span
                     class="token punctuation">;</span>
-burst<span class="token punctuation">.</span><span class="token function">emit</span><span
+                burst<span class="token punctuation">.</span><span class="token function">emit</span><span
                     class="token punctuation">(</span><span class="token number">24</span><span
                     class="token punctuation">,</span> <span class="token punctuation">{</span> <span
                     class="token property">color</span><span class="token punctuation">:</span> <span
@@ -925,7 +930,8 @@ burst<span class="token punctuation">.</span><span class="token function">emit</
                 <p class="bee-flow-caption">Angolo casuale sul
                     cerchio intero. Velocità, vita e size escono
                     dal range dell'<code>emit</code>. Un solo
-                    <code>color</code> per burst.</p>
+                    <code>color</code> per burst.
+                </p>
                 <ol class="bee-flow-row">
                     <li class="bee-flow-step">
                         <span class="bee-flow-box"><strong>1. emit</strong>Prende dal pool.
@@ -963,7 +969,8 @@ burst<span class="token punctuation">.</span><span class="token function">emit</
                 Raggiunto <code>max</code> (default 512,
                 prewarm <code>initial</code> 64), le
                 <code>emit</code> in più non creano particelle.
-                Quelle vive restano fino a fine vita.</p>
+                Quelle vive restano fino a fine vita.
+            </p>
 
             <p><strong>Nascono in mondo e restano lì.</strong>
                 Sposti l'emitter: il burst già uscito non lo
@@ -971,7 +978,8 @@ burst<span class="token punctuation">.</span><span class="token function">emit</
                 nuovo <code>worldX</code> / <code>worldY</code>.
                 Dopo la simulazione delle particelle gira
                 <code>BeeEntity.update</code>: la gravità
-                sull'emitter non piega i cerchi già emessi.</p>
+                sull'emitter non piega i cerchi già emessi.
+            </p>
 
             <p><strong>Pausa e teardown.</strong>
                 <code>active = false</code> lascia vita e
@@ -980,7 +988,8 @@ burst<span class="token punctuation">.</span><span class="token function">emit</
                 svuotano <code>particlePool</code> e
                 <code>particles</code>. Un
                 <code>emit</code> dopo <code>destroy</code>
-                non fa nulla.</p>
+                non fa nulla.
+            </p>
 
             <p><strong>Culling sul burst.</strong>
                 <code>getWorldAABB</code> racchiude le
@@ -988,7 +997,8 @@ burst<span class="token punctuation">.</span><span class="token function">emit</
                 Lista vuota: lati 0, e
                 <code>drawEntity</code> chiama lo stesso
                 <code>draw</code> (il loop non ha nulla da
-                disegnare).</p>
+                disegnare).
+            </p>
         </div>
 
         <div class="bee-class-card" id="BeeParticleSystem-esempio">
@@ -996,38 +1006,40 @@ burst<span class="token punctuation">.</span><span class="token function">emit</
 
             <div class="bee-code-block"><span class="token keyword">const</span> burst <span
                     class="token operator">=</span> <span class="token keyword">new</span> <span
-                    class="token class-name">BeeParticleSystem</span><span
-                    class="token punctuation">(</span><span class="token punctuation">{</span>
-    <span class="token property">x</span><span class="token punctuation">:</span> hero<span
+                    class="token class-name">BeeParticleSystem</span><span class="token punctuation">(</span><span
+                    class="token punctuation">{</span>
+                <span class="token property">x</span><span class="token punctuation">:</span> hero<span
                     class="token punctuation">.</span>worldX<span class="token punctuation">,</span>
-    <span class="token property">y</span><span class="token punctuation">:</span> hero<span
+                <span class="token property">y</span><span class="token punctuation">:</span> hero<span
                     class="token punctuation">.</span>worldY<span class="token punctuation">,</span>
-    <span class="token property">max</span><span class="token punctuation">:</span> <span
+                <span class="token property">max</span><span class="token punctuation">:</span> <span
                     class="token number">128</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span
+                <span class="token punctuation">}</span><span class="token punctuation">)</span><span
                     class="token punctuation">;</span>
-gioco<span class="token punctuation">.</span><span class="token function">addEntity</span><span
+                gioco<span class="token punctuation">.</span><span class="token function">addEntity</span><span
                     class="token punctuation">(</span>burst<span class="token punctuation">)</span><span
                     class="token punctuation">;</span>
-burst<span class="token punctuation">.</span><span class="token function">emit</span><span
+                burst<span class="token punctuation">.</span><span class="token function">emit</span><span
                     class="token punctuation">(</span><span class="token number">24</span><span
                     class="token punctuation">,</span> <span class="token punctuation">{</span>
-    <span class="token property">color</span><span class="token punctuation">:</span> <span
+                <span class="token property">color</span><span class="token punctuation">:</span> <span
                     class="token string">'#ffcc66'</span><span class="token punctuation">,</span>
-    <span class="token property">speedMin</span><span class="token punctuation">:</span> <span
+                <span class="token property">speedMin</span><span class="token punctuation">:</span> <span
                     class="token number">40</span><span class="token punctuation">,</span>
-    <span class="token property">speedMax</span><span class="token punctuation">:</span> <span
+                <span class="token property">speedMax</span><span class="token punctuation">:</span> <span
                     class="token number">180</span><span class="token punctuation">,</span>
-    <span class="token property">lifeMin</span><span class="token punctuation">:</span> <span
+                <span class="token property">lifeMin</span><span class="token punctuation">:</span> <span
                     class="token number">0.2</span><span class="token punctuation">,</span>
-    <span class="token property">lifeMax</span><span class="token punctuation">:</span> <span
+                <span class="token property">lifeMax</span><span class="token punctuation">:</span> <span
                     class="token number">0.6</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span
-                    class="token punctuation">;</span></div>
+                <span class="token punctuation">}</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+            </div>
             <p><code>dt</code> non finito o <code>≤ 0</code> non
                 sposta e non consuma vita. Le particelle già a
                 <code>life ≤ 0</code> vengono comunque
-                rilasciate.</p>
+                rilasciate.
+            </p>
         </div>
 
         <div class="bee-class-card" id="BeeParticleSystem-api">
@@ -1037,7 +1049,8 @@ burst<span class="token punctuation">.</span><span class="token function">emit</
                 <code>worldY</code>, <code>active</code>,
                 <code>visible</code>, <code>addEntity</code>.
                 Il pool è un <code>BeePool</code> con
-                <code>reclaim: false</code>.</p>
+                <code>reclaim: false</code>.
+            </p>
             <table class="bee-api-table">
                 <thead>
                     <tr>
@@ -1052,7 +1065,8 @@ burst<span class="token punctuation">.</span><span class="token function">emit</
                         <td><code>BeeParticleSystem</code></td>
                         <td><code>initial</code> 64,
                             <code>max</code> 512.
-                            <code>particles</code> vuoto.</td>
+                            <code>particles</code> vuoto.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>emit(count?, options?)</code></td>
@@ -1066,7 +1080,8 @@ burst<span class="token punctuation">.</span><span class="token function">emit</
                             <code>sizeMax</code> 6,
                             <code>color</code>
                             <code>'orange'</code>.
-                            Origine: mondo dell'emitter.</td>
+                            Origine: mondo dell'emitter.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>update(dt, input?, engine?)</code></td>
@@ -1075,7 +1090,8 @@ burst<span class="token punctuation">.</span><span class="token function">emit</
                             <code>destroyed</code> o
                             <code>active === false</code>:
                             return. Poi
-                            <code>super.update</code>.</td>
+                            <code>super.update</code>.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>draw(ctx)</code></td>
@@ -1084,30 +1100,36 @@ burst<span class="token punctuation">.</span><span class="token function">emit</
                             Alpha <code>life / maxLife</code>,
                             oppure 0.
                             <code>visible === false</code>:
-                            return.</td>
+                            return.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>getWorldAABB()</code></td>
                         <td><code>{ x, y, width, height }</code></td>
                         <td>Unione delle particelle vive, ±
                             <code>size</code>. Lista vuota:
-                            lati 0. Stesso oggetto riusato.</td>
+                            lati 0. Stesso oggetto riusato.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>destroy()</code> /
-                            <code>dispose()</code></td>
+                            <code>dispose()</code>
+                        </td>
                         <td></td>
                         <td><code>particlePool.clear()</code> e
                             <code>particles.length = 0</code>,
-                            poi <code>BeeEntity</code>.</td>
+                            poi <code>BeeEntity</code>.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>particles</code> /
-                            <code>particlePool</code></td>
+                            <code>particlePool</code>
+                        </td>
                         <td>array / <code>BeePool</code></td>
                         <td>Lista viva e pool.
                             <code>inUse</code> /
-                            <code>available</code> sul pool.</td>
+                            <code>available</code> sul pool.
+                        </td>
                     </tr>
                 </tbody>
             </table>
