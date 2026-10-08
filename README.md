@@ -24,6 +24,7 @@ Questo spazio raccoglie le guide, gli esempi pratici e le spiegazioni di tutti i
 * **🎬 BeeAnimator (v2.9.2):** Grafo di stati (`src/graphics/BeeAnimator.html`): lock con score `when + dest`, `onComplete` una volta, lock morto se manca il clip.
 * **📷 BeeCamera (v2.9.5):** Inquadratura mondo (`src/graphics/BeeCamera.html`): `follow` + host dal loop, `setBounds` clampa subito, view arrotondato dentro i bounds.
 * **🗂️ BeeLayer:** Pipeline di disegno (`src/graphics/BeeLayer.html`): pass `background` / `world` / `ysort` / `ui`, y-sort ai piedi, figli sullo stesso layer dentro `drawEntity`.
+* **✨ BeeParticleSystem (v2.9.7):** Burst di cerchi (`src/graphics/BeeParticleSystem.html`): pool con `reclaim: false`, `emit` in mondo, culling sul rettangolo delle particelle vive.
 * **🐝 BeeEngine:** Facade e core loop (`src/core/BeeEngine.html`): `start`/`stop`/`pause`, scene vs `addEntity`, tween/timer/prefab/pathfinder.
 * **⏱ BeeTime:** Orologio unico del core loop (`src/core/BeeTime.html`): `dt` di simulazione, `unscaledDt` reale, pausa/F4, `timeScale`, accumulator per `BeePhysicsWorld`.
 * **⏱ BeeTimer:** Cooldown e loop di evento (`src/core/BeeTimer.html`): `gioco.after` / `gioco.every`, clock `gioco.timers`, assi scaled/unscaled.
