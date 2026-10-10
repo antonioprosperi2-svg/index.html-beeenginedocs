@@ -722,7 +722,8 @@
                 <li><a
                         href="https://beeenginejs.com/sistema-di-particelle-in-javascript-burst-pool-e-culling/">BeeParticleSystem.js</a>
                 </li>
-                <li><a href="#BeeSprite" class="is-current">BeeSprite.js</a></li>
+                <li><a href="https://beeenginejs.com/sprite-sheet-in-javascript-animazione-a-frame-su-canvas/"
+                        class="is-current">BeeSprite.js</a></li>
                 <li><a href="#BeeSpriteSheet">BeeSpriteSheet.js</a></li>
                 <li><a href="#BeeText">BeeText.js</a></li>
                 <li><a href="#BeeTilemap">BeeTilemap.js</a></li>
@@ -774,7 +775,7 @@
 
 
     <!-- AREA CONTENUTI (TUTTI I MODULI VANNO QUI DENTRO) -->
-        <main class="bee-docs-content">
+    <main class="bee-docs-content">
 
         <div
             style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
@@ -786,7 +787,7 @@
                     <code class="bee-inline-code">draw</code>
                 </p>
             </div>
-            <img src="https://beeenginejs.com/wp-content/uploads/2026/09/Gemini_Generated_Image_bg7xjjbg7xjjbg7x-1-1.jpg"
+            <img src="https://beeenginejs.com/wp-content/uploads/2026/10/bee-engine-logo-animated-ezgif.com-resize.gif"
                 alt="BeeEngine Mascot" width="80" height="80" style="width: 80px; height: auto; flex-shrink: 0;">
         </div>
 
@@ -800,24 +801,25 @@
                 <code>BeeAnimatedSprite</code> (niente clip, flip
                 o animator) e non è
                 <code>BeeSpriteSheet</code> (quello ritaglia un
-                indice, non tiene il tempo).</p>
+                indice, non tiene il tempo).
+            </p>
 
             <p><code>speed</code> è in frame al secondo,
                 default 8. <code>dt</code> è in secondi, lo stesso
                 di <code>BeeTime</code>. Se metti lo sprite su
                 <code>entity.sprite</code> e non c'è un animator,
                 il loop chiama <code>update(dt)</code>.
-                <code>draw</code> lo chiami tu.</p>
+                <code>draw</code> lo chiami tu.
+            </p>
 
             <div class="bee-code-block"><span class="token keyword">const</span> sprite <span
                     class="token operator">=</span> <span class="token keyword">new</span> <span
-                    class="token class-name">BeeSprite</span><span
-                    class="token punctuation">(</span>img<span class="token punctuation">,</span> <span
-                    class="token number">32</span><span class="token punctuation">,</span> <span
-                    class="token number">32</span><span class="token punctuation">,</span> <span
-                    class="token number">4</span><span class="token punctuation">)</span><span
-                    class="token punctuation">;</span>
-hero<span class="token punctuation">.</span>sprite <span class="token operator">=</span> sprite<span
+                    class="token class-name">BeeSprite</span><span class="token punctuation">(</span>img<span
+                    class="token punctuation">,</span> <span class="token number">32</span><span
+                    class="token punctuation">,</span> <span class="token number">32</span><span
+                    class="token punctuation">,</span> <span class="token number">4</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
+                hero<span class="token punctuation">.</span>sprite <span class="token operator">=</span> sprite<span
                     class="token punctuation">;</span></div>
 
             <h3>📁 Ciclo</h3>
@@ -861,14 +863,16 @@ hero<span class="token punctuation">.</span>sprite <span class="token operator">
                 i 4 frame della prima riga.
                 <code>frameCount</code> è il sesto argomento:
                 <code>new BeeSprite(img, 32, 32, 4, 8, 8)</code>
-                percorre 8 frame, due righe da 4, e torna all'inizio.</p>
+                percorre 8 frame, due righe da 4, e torna all'inizio.
+            </p>
 
             <p><strong><code>update</code> sì, <code>draw</code> no.</strong>
                 <code>BeeEntity</code> avanza
                 <code>entity.sprite</code> solo se manca
                 l'animator. Il ritaglio lo fai nel tuo
                 <code>draw</code>, di solito in coordinate mondo
-                dopo <code>camera.apply</code>.</p>
+                dopo <code>camera.apply</code>.
+            </p>
 
             <p><strong>Foglio non valido.</strong>
                 <code>framesPerRow</code> o
@@ -876,7 +880,8 @@ hero<span class="token punctuation">.</span>sprite <span class="token operator">
                 <code>≤ 0</code>: <code>update</code> non avanza
                 e <code>draw</code> non chiama
                 <code>drawImage</code>. In pausa <code>dt</code>
-                è 0: il frame resta fermo.</p>
+                è 0: il frame resta fermo.
+            </p>
         </div>
 
         <div class="bee-class-card" id="BeeSprite-esempio">
@@ -884,26 +889,27 @@ hero<span class="token punctuation">.</span>sprite <span class="token operator">
 
             <div class="bee-code-block"><span class="token keyword">const</span> sprite <span
                     class="token operator">=</span> <span class="token keyword">new</span> <span
-                    class="token class-name">BeeSprite</span><span
-                    class="token punctuation">(</span>img<span class="token punctuation">,</span> <span
-                    class="token number">32</span><span class="token punctuation">,</span> <span
-                    class="token number">32</span><span class="token punctuation">,</span> <span
-                    class="token number">4</span><span class="token punctuation">,</span> <span
-                    class="token number">8</span><span class="token punctuation">,</span> <span
-                    class="token number">8</span><span class="token punctuation">)</span><span
-                    class="token punctuation">;</span>
-hero<span class="token punctuation">.</span>sprite <span class="token operator">=</span> sprite<span
+                    class="token class-name">BeeSprite</span><span class="token punctuation">(</span>img<span
+                    class="token punctuation">,</span> <span class="token number">32</span><span
+                    class="token punctuation">,</span> <span class="token number">32</span><span
+                    class="token punctuation">,</span> <span class="token number">4</span><span
+                    class="token punctuation">,</span> <span class="token number">8</span><span
+                    class="token punctuation">,</span> <span class="token number">8</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
+                hero<span class="token punctuation">.</span>sprite <span class="token operator">=</span> sprite<span
                     class="token punctuation">;</span>
 
-<span class="token comment">// nel draw del gioco, dopo camera.apply</span>
-sprite<span class="token punctuation">.</span><span class="token function">draw</span><span
+                <span class="token comment">// nel draw del gioco, dopo camera.apply</span>
+                sprite<span class="token punctuation">.</span><span class="token function">draw</span><span
                     class="token punctuation">(</span>ctx<span class="token punctuation">,</span> hero<span
                     class="token punctuation">.</span>worldX<span class="token punctuation">,</span> hero<span
                     class="token punctuation">.</span>worldY<span class="token punctuation">)</span><span
-                    class="token punctuation">;</span></div>
+                    class="token punctuation">;</span>
+            </div>
             <p>Il quinto argomento è <code>speed</code> (qui 8
                 frame al secondo). Il sesto è
-                <code>frameCount</code>.</p>
+                <code>frameCount</code>.
+            </p>
         </div>
 
         <div class="bee-class-card" id="BeeSprite-api">
@@ -921,12 +927,14 @@ sprite<span class="token punctuation">.</span><span class="token function">draw<
                 </thead>
                 <tbody>
                     <tr>
-                        <td><code>new BeeSprite(image, frameWidth, frameHeight, framesPerRow, speed?, frameCount?)</code></td>
+                        <td><code>new BeeSprite(image, frameWidth, frameHeight, framesPerRow, speed?, frameCount?)</code>
+                        </td>
                         <td><code>BeeSprite</code></td>
                         <td><code>speed</code> default 8.
                             <code>frameCount</code> omesso:
                             uguale a <code>framesPerRow</code>.
-                            <code>frame</code> parte da 0.</td>
+                            <code>frame</code> parte da 0.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>update(dt)</code></td>
@@ -935,7 +943,8 @@ sprite<span class="token punctuation">.</span><span class="token function">draw<
                             <code>dt</code> non finito, o
                             <code>framesPerRow</code> /
                             <code>frameCount</code> non validi:
-                            return. Non disegna.</td>
+                            return. Non disegna.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>draw(ctx, x, y)</code></td>
@@ -944,12 +953,14 @@ sprite<span class="token punctuation">.</span><span class="token function">draw<
                             a <code>x, y</code> nelle dimensioni
                             del frame. Senza <code>ctx</code> o
                             <code>image</code>, o con foglio non
-                            valido: return.</td>
+                            valido: return.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>frame</code> / <code>speed</code> /
                             <code>frameCount</code> /
-                            <code>framesPerRow</code></td>
+                            <code>framesPerRow</code>
+                        </td>
                         <td>number</td>
                         <td><code>speed</code> in frame al
                             secondo. <code>frameCount</code> è
@@ -958,7 +969,8 @@ sprite<span class="token punctuation">.</span><span class="token function">draw<
                     <tr>
                         <td><code>image</code> /
                             <code>frameWidth</code> /
-                            <code>frameHeight</code></td>
+                            <code>frameHeight</code>
+                        </td>
                         <td></td>
                         <td>Sorgente e dimensione del
                             fotogramma, in pixel.</td>
