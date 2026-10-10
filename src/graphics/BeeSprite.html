@@ -618,9 +618,9 @@
 <!-- HEADER FISSA -->
 <header class="bee-docs-header">
     <a href="#" class="bee-header-logo">
-        <span class="bee-header-title">Documentazione mettere la classe</span>
+        <span class="bee-header-title">BeeSprite</span>
     </a>
-    <span class="bee-header-badge">v2.2.0</span>
+    <span class="bee-header-badge">v2.10.1</span>
 </header>
 
 <!-- CONTENITORE PRINCIPALE -->
@@ -774,94 +774,198 @@
 
 
     <!-- AREA CONTENUTI (TUTTI I MODULI VANNO QUI DENTRO) -->
-    <main class="bee-docs-content">
+        <main class="bee-docs-content">
 
-        <!-- SEZIONE 1 -->
-        <h2 class="bee-section-title"></h2>
+        <div
+            style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
+            <div>
+                <h2 class="bee-section-title" style="margin: 0;">BeeSprite — Documentazione Tecnica</h2>
+                <p style="margin-top: 5px;">Un ciclo sul foglio:
+                    <code class="bee-inline-code">update(dt)</code>,
+                    <code class="bee-inline-code">frameCount</code>,
+                    <code class="bee-inline-code">draw</code>
+                </p>
+            </div>
+            <img src="https://beeenginejs.com/wp-content/uploads/2026/09/Gemini_Generated_Image_bg7xjjbg7xjjbg7x-1-1.jpg"
+                alt="BeeEngine Mascot" width="80" height="80" style="width: 80px; height: auto; flex-shrink: 0;">
+        </div>
 
-        <div class="bee-class-card" id="radme">****>>>>>>>> mettere id >>>>>>>>>>*****
-            <h3> </h3>
+        <div class="bee-class-card" id="BeeSprite">
 
-            <p></p>
+            <h3>📁 Panoramica</h3>
 
-            <p> </p>
+            <p><code>BeeSprite</code> fa girare un solo ciclo di
+                fotogrammi. Vive in
+                <code>src/graphics/BeeSprite.js</code>. Non è
+                <code>BeeAnimatedSprite</code> (niente clip, flip
+                o animator) e non è
+                <code>BeeSpriteSheet</code> (quello ritaglia un
+                indice, non tiene il tempo).</p>
 
-            <p>📁 </p>
+            <p><code>speed</code> è in frame al secondo,
+                default 8. <code>dt</code> è in secondi, lo stesso
+                di <code>BeeTime</code>. Se metti lo sprite su
+                <code>entity.sprite</code> e non c'è un animator,
+                il loop chiama <code>update(dt)</code>.
+                <code>draw</code> lo chiami tu.</p>
 
-            <div class="bee-code-block"></div>
+            <div class="bee-code-block"><span class="token keyword">const</span> sprite <span
+                    class="token operator">=</span> <span class="token keyword">new</span> <span
+                    class="token class-name">BeeSprite</span><span
+                    class="token punctuation">(</span>img<span class="token punctuation">,</span> <span
+                    class="token number">32</span><span class="token punctuation">,</span> <span
+                    class="token number">32</span><span class="token punctuation">,</span> <span
+                    class="token number">4</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+hero<span class="token punctuation">.</span>sprite <span class="token operator">=</span> sprite<span
+                    class="token punctuation">;</span></div>
 
-            <p>📁</p>
+            <h3>📁 Ciclo</h3>
 
-            <div class="bee-code-block"></div>
+            <div class="bee-flow" role="region" aria-label="Flusso BeeSprite">
+                <p class="bee-flow-caption"><code>frameCount</code>
+                    omesso vale <code>framesPerRow</code>: cicla
+                    la prima riga. Il sesto argomento allunga il
+                    ciclo sulle righe sotto.</p>
+                <ol class="bee-flow-row">
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>1. update</strong><code>frame += speed * dt</code>.
+                            <code>dt</code> non finito, o foglio
+                            non valido: <code>frame</code> resta
+                            com'è. Non disegna.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>2. indice</strong><code>floor(frame) % frameCount</code>.
+                            Colonna <code>% framesPerRow</code>,
+                            riga <code>floor(indice / framesPerRow)</code>.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box bee-flow-read"><strong>3. draw</strong><code>drawImage</code>
+                            del rettangolo sorgente, disegnato
+                            <code>frameWidth</code> ×
+                            <code>frameHeight</code>.
+                            Senza <code>ctx</code> o
+                            <code>image</code>: return.</span>
+                    </li>
+                </ol>
+            </div>
+        </div>
 
-            <p>📁</p>
+        <div class="bee-class-card bee-ladybug" id="BeeSprite-note">
+            <h3>📁 Dove è facile sbagliare</h3>
 
-            <div class="bee-code-block"> </div>
+            <p><strong>Una riga, se non dici altro.</strong>
+                <code>new BeeSprite(img, 32, 32, 4)</code> cicla
+                i 4 frame della prima riga.
+                <code>frameCount</code> è il sesto argomento:
+                <code>new BeeSprite(img, 32, 32, 4, 8, 8)</code>
+                percorre 8 frame, due righe da 4, e torna all'inizio.</p>
 
-            <p>📁</p>
+            <p><strong><code>update</code> sì, <code>draw</code> no.</strong>
+                <code>BeeEntity</code> avanza
+                <code>entity.sprite</code> solo se manca
+                l'animator. Il ritaglio lo fai nel tuo
+                <code>draw</code>, di solito in coordinate mondo
+                dopo <code>camera.apply</code>.</p>
 
-            <div class="bee-code-block"></div>
+            <p><strong>Foglio non valido.</strong>
+                <code>framesPerRow</code> o
+                <code>frameCount</code> non finiti o
+                <code>≤ 0</code>: <code>update</code> non avanza
+                e <code>draw</code> non chiama
+                <code>drawImage</code>. In pausa <code>dt</code>
+                è 0: il frame resta fermo.</p>
+        </div>
 
-            <p>📁</p>
+        <div class="bee-class-card" id="BeeSprite-esempio">
+            <h3>📁 Esempio: due righe</h3>
 
-            <div class="bee-code-block"></div>
+            <div class="bee-code-block"><span class="token keyword">const</span> sprite <span
+                    class="token operator">=</span> <span class="token keyword">new</span> <span
+                    class="token class-name">BeeSprite</span><span
+                    class="token punctuation">(</span>img<span class="token punctuation">,</span> <span
+                    class="token number">32</span><span class="token punctuation">,</span> <span
+                    class="token number">32</span><span class="token punctuation">,</span> <span
+                    class="token number">4</span><span class="token punctuation">,</span> <span
+                    class="token number">8</span><span class="token punctuation">,</span> <span
+                    class="token number">8</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+hero<span class="token punctuation">.</span>sprite <span class="token operator">=</span> sprite<span
+                    class="token punctuation">;</span>
 
-            <p>📁 </p>
+<span class="token comment">// nel draw del gioco, dopo camera.apply</span>
+sprite<span class="token punctuation">.</span><span class="token function">draw</span><span
+                    class="token punctuation">(</span>ctx<span class="token punctuation">,</span> hero<span
+                    class="token punctuation">.</span>worldX<span class="token punctuation">,</span> hero<span
+                    class="token punctuation">.</span>worldY<span class="token punctuation">)</span><span
+                    class="token punctuation">;</span></div>
+            <p>Il quinto argomento è <code>speed</code> (qui 8
+                frame al secondo). Il sesto è
+                <code>frameCount</code>.</p>
+        </div>
 
-            <div class="bee-class-card"></div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p> 📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p> 📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p>📁</p>
-
-            <div class="bee-class-card"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"> </div>
-
-            <p> 📁 </p>
-
-            <div class="bee-code-block"></div>
-
-            <p>📁</p>
-
-            <div class="bee-code-block"></div>
-
-
-            <p>📁 </p>
-
-            <div class="bee-code-block"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-code-block"></div>
-
-            <p> 📁</p>
-
-            <div class="bee-code-block"> </div>
-
-
-
-
+        <div class="bee-class-card" id="BeeSprite-api">
+            <h3>📁 Riepilogo API</h3>
+            <p>Non estende <code>BeeEntity</code>. Il tempo lo
+                tiene <code>frame</code>, un accumulatore: in
+                disegno conta <code>floor(frame) % frameCount</code>.</p>
+            <table class="bee-api-table">
+                <thead>
+                    <tr>
+                        <th>Membro</th>
+                        <th>Ritorna</th>
+                        <th>Scopo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>new BeeSprite(image, frameWidth, frameHeight, framesPerRow, speed?, frameCount?)</code></td>
+                        <td><code>BeeSprite</code></td>
+                        <td><code>speed</code> default 8.
+                            <code>frameCount</code> omesso:
+                            uguale a <code>framesPerRow</code>.
+                            <code>frame</code> parte da 0.</td>
+                    </tr>
+                    <tr>
+                        <td><code>update(dt)</code></td>
+                        <td></td>
+                        <td><code>frame += speed * dt</code>.
+                            <code>dt</code> non finito, o
+                            <code>framesPerRow</code> /
+                            <code>frameCount</code> non validi:
+                            return. Non disegna.</td>
+                    </tr>
+                    <tr>
+                        <td><code>draw(ctx, x, y)</code></td>
+                        <td></td>
+                        <td>Ritaglia colonna e riga e le disegna
+                            a <code>x, y</code> nelle dimensioni
+                            del frame. Senza <code>ctx</code> o
+                            <code>image</code>, o con foglio non
+                            valido: return.</td>
+                    </tr>
+                    <tr>
+                        <td><code>frame</code> / <code>speed</code> /
+                            <code>frameCount</code> /
+                            <code>framesPerRow</code></td>
+                        <td>number</td>
+                        <td><code>speed</code> in frame al
+                            secondo. <code>frameCount</code> è
+                            la lunghezza del ciclo.</td>
+                    </tr>
+                    <tr>
+                        <td><code>image</code> /
+                            <code>frameWidth</code> /
+                            <code>frameHeight</code></td>
+                        <td></td>
+                        <td>Sorgente e dimensione del
+                            fotogramma, in pixel.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
     </main>
 
