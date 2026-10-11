@@ -618,9 +618,9 @@
 <!-- HEADER FISSA -->
 <header class="bee-docs-header">
     <a href="#" class="bee-header-logo">
-        <span class="bee-header-title">Documentazione mettere la classe</span>
+        <span class="bee-header-title">BeeSpriteSheet</span>
     </a>
-    <span class="bee-header-badge">v2.2.0</span>
+    <span class="bee-header-badge">v2.10.2</span>
 </header>
 
 <!-- CONTENITORE PRINCIPALE -->
@@ -775,106 +775,202 @@
     </aside>
 
     <!-- AREA CONTENUTI (TUTTI I MODULI VANNO QUI DENTRO) -->
-    <main class="bee-docs-content">
+        <main class="bee-docs-content">
 
         <div
             style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
             <div>
-                <h2 class="bee-section-title" style="margin: 0;">BeeSprite — Documentazione Tecnica</h2>
-                <p style="margin-top: 5px;">Un ciclo sul foglio:
-                    <code class="bee-inline-code">update(dt)</code>,
-                    <code class="bee-inline-code">frameCount</code>,
-                    <code class="bee-inline-code">draw</code>
+                <h2 class="bee-section-title" style="margin: 0;">BeeSpriteSheet — Documentazione Tecnica</h2>
+                <p style="margin-top: 5px;">Ritaglio di un indice:
+                    <code class="bee-inline-code">drawFrame</code>,
+                    <code class="bee-inline-code">framesPerRow</code>,
+                    <code class="bee-inline-code">frameCount</code>
                 </p>
             </div>
-            <img src="https://beeenginejs.com/wp-content/uploads/2026/10/bee-engine-logo-animated-ezgif.com-resize.gif"
+            <img src="https://beeenginejs.com/wp-content/uploads/2026/09/Gemini_Generated_Image_bg7xjjbg7xjjbg7x-1-1.jpg"
                 alt="BeeEngine Mascot" width="80" height="80" style="width: 80px; height: auto; flex-shrink: 0;">
         </div>
 
+        <div class="bee-class-card" id="BeeSpriteSheet">
 
-        <div class="bee-class-card" id="radme">****>>>>>>>> mettere id >>>>>>>>>>*****
-            <h3> </h3>
+            <h3>📁 Panoramica</h3>
 
-            <p></p>
+            <p><code>BeeSpriteSheet</code> ritaglia una cella da un
+                foglio. Vive in
+                <code>src/graphics/BeeSpriteSheet.js</code>. Non
+                tiene il tempo: niente <code>update</code>, niente
+                clip. L'animazione sta su
+                <code>BeeAnimatedSprite</code> (chiama
+                <code>drawFrame</code>) o su
+                <code>BeeSprite</code>, che è un altro player e
+                non usa questa classe.</p>
 
-            <p> </p>
+            <p>Factory:
+                <code>gioco.createSpriteSheet(image, frameWidth, frameHeight, options)</code>.
+                <code>image</code> è qualunque sorgente di
+                <code>drawImage</code>, anche un canvas.
+                <code>framesPerRow</code> omesso vale 1.</p>
 
-            <p>📁 </p>
+            <div class="bee-code-block"><span class="token keyword">const</span> sheet <span
+                    class="token operator">=</span> gioco<span class="token punctuation">.</span><span
+                    class="token function">createSpriteSheet</span><span class="token punctuation">(</span>img<span
+                    class="token punctuation">,</span> <span class="token number">32</span><span
+                    class="token punctuation">,</span> <span class="token number">32</span><span
+                    class="token punctuation">,</span> <span class="token punctuation">{</span>
+    <span class="token property">framesPerRow</span><span class="token punctuation">:</span> <span
+                    class="token number">8</span><span class="token punctuation">,</span>
+    <span class="token property">frameCount</span><span class="token punctuation">:</span> <span
+                    class="token number">8</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span></div>
 
-            <div class="bee-code-block"></div>
+            <h3>📁 Indice</h3>
 
-            <p>📁</p>
+            <div class="bee-flow" role="region" aria-label="Flusso BeeSpriteSheet">
+                <p class="bee-flow-caption">L'indice 5 con
+                    <code>framesPerRow</code> 4 è colonna 1,
+                    riga 1. L'origine del ritaglio è
+                    <code>offsetX</code> / <code>offsetY</code>.</p>
+                <ol class="bee-flow-row">
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>1. griglia</strong>Colonna
+                            <code>indice % framesPerRow</code>,
+                            riga <code>floor(indice / framesPerRow)</code>.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>2. origine</strong><code>col</code> /
+                            <code>row</code> sono in celle.
+                            Se ne passi una sola, l'altra è 0.
+                            Senza quelle: <code>offsetX</code> /
+                            <code>offsetY</code> in pixel.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box bee-flow-read"><strong>3. drawFrame</strong>Sorgente
+                            <code>frameWidth</code> ×
+                            <code>frameHeight</code>.
+                            <code>destW</code> / <code>destH</code>
+                            omessi: stessa misura.</span>
+                    </li>
+                </ol>
+            </div>
+        </div>
 
-            <div class="bee-code-block"></div>
+        <div class="bee-class-card bee-ladybug" id="BeeSpriteSheet-note">
+            <h3>📁 Dove è facile sbagliare</h3>
 
-            <p>📁</p>
+            <p><strong><code>framesPerRow</code> omesso è 1.</strong>
+                L'indice 1 è la cella sotto, non quella a destra.
+                Un foglio in orizzontale va dichiarato:
+                <code>{ framesPerRow: 8 }</code>.
+                <code>0</code> o <code>NaN</code> restano così e
+                <code>drawFrame</code> non disegna.</p>
 
-            <div class="bee-code-block"> </div>
+            <p><strong><code>frameCount</code> è un tetto, se c'è.</strong>
+                Senza, l'indice 3 (e oltre) disegna lo stesso.
+                Con <code>frameCount: 4</code>, l'indice 4 non
+                chiama <code>drawImage</code>. Non è il ciclo di
+                <code>BeeSprite</code>: qui non avanza da solo.</p>
 
-            <p>📁</p>
+            <p><strong>Una regione del mega-foglio.</strong>
+                <code>{ col: 2 }</code> mette
+                <code>offsetX</code> a <code>2 * frameWidth</code>
+                e <code>offsetY</code> a 0.
+                <code>offsetX</code> / <code>offsetY</code> in
+                pixel valgono solo se non passi
+                <code>col</code> né <code>row</code>.</p>
+        </div>
 
-            <div class="bee-code-block"></div>
+        <div class="bee-class-card" id="BeeSpriteSheet-esempio">
+            <h3>📁 Esempio: una cella, e un pezzo di atlas</h3>
 
-            <p>📁</p>
+            <div class="bee-code-block">sheet<span class="token punctuation">.</span><span
+                    class="token function">drawFrame</span><span class="token punctuation">(</span>ctx<span
+                    class="token punctuation">,</span> <span class="token number">3</span><span
+                    class="token punctuation">,</span> hero<span class="token punctuation">.</span>worldX<span
+                    class="token punctuation">,</span> hero<span class="token punctuation">.</span>worldY<span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
 
-            <div class="bee-code-block"></div>
+<span class="token keyword">const</span> ape <span class="token operator">=</span> gioco<span
+                    class="token punctuation">.</span><span class="token function">createSpriteSheet</span><span
+                    class="token punctuation">(</span>atlas<span class="token punctuation">,</span> <span
+                    class="token number">32</span><span class="token punctuation">,</span> <span
+                    class="token number">32</span><span class="token punctuation">,</span> <span
+                    class="token punctuation">{</span>
+    <span class="token property">col</span><span class="token punctuation">:</span> <span
+                    class="token number">2</span><span class="token punctuation">,</span>
+    <span class="token property">row</span><span class="token punctuation">:</span> <span
+                    class="token number">1</span><span class="token punctuation">,</span>
+    <span class="token property">framesPerRow</span><span class="token punctuation">:</span> <span
+                    class="token number">4</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span></div>
+            <p>Senza <code>ctx</code> o senza
+                <code>image</code>, con misure non valide o con
+                un indice non finito, <code>drawFrame</code>
+                esce e non lancia.</p>
+        </div>
 
-            <p>📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p> 📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p> 📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p>📁</p>
-
-            <div class="bee-class-card"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"> </div>
-
-            <p> 📁 </p>
-
-            <div class="bee-code-block"></div>
-
-            <p>📁</p>
-
-            <div class="bee-code-block"></div>
-
-
-            <p>📁 </p>
-
-            <div class="bee-code-block"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-code-block"></div>
-
-            <p> 📁</p>
-
-            <div class="bee-code-block"> </div>
-
-
-
-
+        <div class="bee-class-card" id="BeeSpriteSheet-api">
+            <h3>📁 Riepilogo API</h3>
+            <p>Non estende <code>BeeEntity</code>. Non ha
+                <code>update</code>.</p>
+            <table class="bee-api-table">
+                <thead>
+                    <tr>
+                        <th>Membro</th>
+                        <th>Ritorna</th>
+                        <th>Scopo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>new BeeSpriteSheet(image, frameWidth, frameHeight, options?)</code></td>
+                        <td><code>BeeSpriteSheet</code></td>
+                        <td><code>framesPerRow</code> default 1.
+                            <code>frameCount</code> omesso:
+                            <code>undefined</code>, nessun tetto.
+                            <code>col</code> / <code>row</code>
+                            oppure <code>offsetX</code> /
+                            <code>offsetY</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>drawFrame(ctx, frameIndex, destX, destY, destW?, destH?)</code></td>
+                        <td></td>
+                        <td>Ritaglia la cella e la disegna.
+                            <code>destW</code> / <code>destH</code>
+                            omessi: misura del frame.
+                            Foglio non valido, indice non finito,
+                            o fuori da <code>frameCount</code>
+                            se c'è: return.</td>
+                    </tr>
+                    <tr>
+                        <td><code>framesPerRow</code> /
+                            <code>frameCount</code></td>
+                        <td>number</td>
+                        <td>Colonne della griglia, e lunghezza
+                            opzionale. <code>0</code> non diventa
+                            1: <code>drawFrame</code> non disegna.</td>
+                    </tr>
+                    <tr>
+                        <td><code>offsetX</code> / <code>offsetY</code></td>
+                        <td>number</td>
+                        <td>Origine del ritaglio, in pixel.
+                            Da <code>col</code> / <code>row</code>
+                            o dagli offset espliciti.</td>
+                    </tr>
+                    <tr>
+                        <td><code>image</code> /
+                            <code>frameWidth</code> /
+                            <code>frameHeight</code></td>
+                        <td></td>
+                        <td>Sorgente e dimensione di una cella,
+                            in pixel.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
     </main>
 
