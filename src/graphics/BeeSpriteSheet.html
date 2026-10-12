@@ -775,7 +775,7 @@
     </aside>
 
     <!-- AREA CONTENUTI (TUTTI I MODULI VANNO QUI DENTRO) -->
-        <main class="bee-docs-content">
+    <main class="bee-docs-content">
 
         <div
             style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
@@ -787,8 +787,7 @@
                     <code class="bee-inline-code">frameCount</code>
                 </p>
             </div>
-            <img src="https://beeenginejs.com/wp-content/uploads/2026/09/Gemini_Generated_Image_bg7xjjbg7xjjbg7x-1-1.jpg"
-                alt="BeeEngine Mascot" width="80" height="80" style="width: 80px; height: auto; flex-shrink: 0;">
+
         </div>
 
         <div class="bee-class-card" id="BeeSpriteSheet">
@@ -803,13 +802,15 @@
                 <code>BeeAnimatedSprite</code> (chiama
                 <code>drawFrame</code>) o su
                 <code>BeeSprite</code>, che è un altro player e
-                non usa questa classe.</p>
+                non usa questa classe.
+            </p>
 
             <p>Factory:
                 <code>gioco.createSpriteSheet(image, frameWidth, frameHeight, options)</code>.
                 <code>image</code> è qualunque sorgente di
                 <code>drawImage</code>, anche un canvas.
-                <code>framesPerRow</code> omesso vale 1.</p>
+                <code>framesPerRow</code> omesso vale 1.
+            </p>
 
             <div class="bee-code-block"><span class="token keyword">const</span> sheet <span
                     class="token operator">=</span> gioco<span class="token punctuation">.</span><span
@@ -817,12 +818,13 @@
                     class="token punctuation">,</span> <span class="token number">32</span><span
                     class="token punctuation">,</span> <span class="token number">32</span><span
                     class="token punctuation">,</span> <span class="token punctuation">{</span>
-    <span class="token property">framesPerRow</span><span class="token punctuation">:</span> <span
+                <span class="token property">framesPerRow</span><span class="token punctuation">:</span> <span
                     class="token number">8</span><span class="token punctuation">,</span>
-    <span class="token property">frameCount</span><span class="token punctuation">:</span> <span
+                <span class="token property">frameCount</span><span class="token punctuation">:</span> <span
                     class="token number">8</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span
-                    class="token punctuation">;</span></div>
+                <span class="token punctuation">}</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+            </div>
 
             <h3>📁 Indice</h3>
 
@@ -830,7 +832,8 @@
                 <p class="bee-flow-caption">L'indice 5 con
                     <code>framesPerRow</code> 4 è colonna 1,
                     riga 1. L'origine del ritaglio è
-                    <code>offsetX</code> / <code>offsetY</code>.</p>
+                    <code>offsetX</code> / <code>offsetY</code>.
+                </p>
                 <ol class="bee-flow-row">
                     <li class="bee-flow-step">
                         <span class="bee-flow-box"><strong>1. griglia</strong>Colonna
@@ -865,13 +868,15 @@
                 Un foglio in orizzontale va dichiarato:
                 <code>{ framesPerRow: 8 }</code>.
                 <code>0</code> o <code>NaN</code> restano così e
-                <code>drawFrame</code> non disegna.</p>
+                <code>drawFrame</code> non disegna.
+            </p>
 
             <p><strong><code>frameCount</code> è un tetto, se c'è.</strong>
                 Senza, l'indice 3 (e oltre) disegna lo stesso.
                 Con <code>frameCount: 4</code>, l'indice 4 non
                 chiama <code>drawImage</code>. Non è il ciclo di
-                <code>BeeSprite</code>: qui non avanza da solo.</p>
+                <code>BeeSprite</code>: qui non avanza da solo.
+            </p>
 
             <p><strong>Una regione del mega-foglio.</strong>
                 <code>{ col: 2 }</code> mette
@@ -879,7 +884,8 @@
                 e <code>offsetY</code> a 0.
                 <code>offsetX</code> / <code>offsetY</code> in
                 pixel valgono solo se non passi
-                <code>col</code> né <code>row</code>.</p>
+                <code>col</code> né <code>row</code>.
+            </p>
         </div>
 
         <div class="bee-class-card" id="BeeSpriteSheet-esempio">
@@ -892,30 +898,33 @@
                     class="token punctuation">,</span> hero<span class="token punctuation">.</span>worldY<span
                     class="token punctuation">)</span><span class="token punctuation">;</span>
 
-<span class="token keyword">const</span> ape <span class="token operator">=</span> gioco<span
+                <span class="token keyword">const</span> ape <span class="token operator">=</span> gioco<span
                     class="token punctuation">.</span><span class="token function">createSpriteSheet</span><span
                     class="token punctuation">(</span>atlas<span class="token punctuation">,</span> <span
                     class="token number">32</span><span class="token punctuation">,</span> <span
                     class="token number">32</span><span class="token punctuation">,</span> <span
                     class="token punctuation">{</span>
-    <span class="token property">col</span><span class="token punctuation">:</span> <span
+                <span class="token property">col</span><span class="token punctuation">:</span> <span
                     class="token number">2</span><span class="token punctuation">,</span>
-    <span class="token property">row</span><span class="token punctuation">:</span> <span
+                <span class="token property">row</span><span class="token punctuation">:</span> <span
                     class="token number">1</span><span class="token punctuation">,</span>
-    <span class="token property">framesPerRow</span><span class="token punctuation">:</span> <span
+                <span class="token property">framesPerRow</span><span class="token punctuation">:</span> <span
                     class="token number">4</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span
-                    class="token punctuation">;</span></div>
+                <span class="token punctuation">}</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+            </div>
             <p>Senza <code>ctx</code> o senza
                 <code>image</code>, con misure non valide o con
                 un indice non finito, <code>drawFrame</code>
-                esce e non lancia.</p>
+                esce e non lancia.
+            </p>
         </div>
 
         <div class="bee-class-card" id="BeeSpriteSheet-api">
             <h3>📁 Riepilogo API</h3>
             <p>Non estende <code>BeeEntity</code>. Non ha
-                <code>update</code>.</p>
+                <code>update</code>.
+            </p>
             <table class="bee-api-table">
                 <thead>
                     <tr>
@@ -933,7 +942,8 @@
                             <code>undefined</code>, nessun tetto.
                             <code>col</code> / <code>row</code>
                             oppure <code>offsetX</code> /
-                            <code>offsetY</code>.</td>
+                            <code>offsetY</code>.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>drawFrame(ctx, frameIndex, destX, destY, destW?, destH?)</code></td>
@@ -943,11 +953,13 @@
                             omessi: misura del frame.
                             Foglio non valido, indice non finito,
                             o fuori da <code>frameCount</code>
-                            se c'è: return.</td>
+                            se c'è: return.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>framesPerRow</code> /
-                            <code>frameCount</code></td>
+                            <code>frameCount</code>
+                        </td>
                         <td>number</td>
                         <td>Colonne della griglia, e lunghezza
                             opzionale. <code>0</code> non diventa
@@ -963,7 +975,8 @@
                     <tr>
                         <td><code>image</code> /
                             <code>frameWidth</code> /
-                            <code>frameHeight</code></td>
+                            <code>frameHeight</code>
+                        </td>
                         <td></td>
                         <td>Sorgente e dimensione di una cella,
                             in pixel.</td>
