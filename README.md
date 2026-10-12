@@ -27,6 +27,7 @@ Questo spazio raccoglie le guide, gli esempi pratici e le spiegazioni di tutti i
 * **✨ BeeParticleSystem (v2.9.7):** Burst di cerchi (`src/graphics/BeeParticleSystem.html`): pool con `reclaim: false`, `emit` in mondo, culling sul rettangolo delle particelle vive.
 * **🖼️ BeeSprite (v2.10.1):** Un ciclo sul foglio (`src/graphics/BeeSprite.html`): `speed` in frame al secondo, `frameCount` di default una riga, `draw` lo chiama il gioco.
 * **🗺️ BeeSpriteSheet (v2.10.2):** Ritaglio di un indice (`src/graphics/BeeSpriteSheet.html`): `drawFrame`, `framesPerRow` default 1, `frameCount` opzionale, `col` / `row` per l'atlas.
+* **🔤 BeeText (v2.10.3):** Etichetta sul pass ui (`src/graphics/BeeText.html`): `draw` in pixel schermo, `drawHUD` da `scene.draw`, score con segno davanti (`-00003`).
 * **🐝 BeeEngine:** Facade e core loop (`src/core/BeeEngine.html`): `start`/`stop`/`pause`, scene vs `addEntity`, tween/timer/prefab/pathfinder.
 * **⏱ BeeTime:** Orologio unico del core loop (`src/core/BeeTime.html`): `dt` di simulazione, `unscaledDt` reale, pausa/F4, `timeScale`, accumulator per `BeePhysicsWorld`.
 * **⏱ BeeTimer:** Cooldown e loop di evento (`src/core/BeeTimer.html`): `gioco.after` / `gioco.every`, clock `gioco.timers`, assi scaled/unscaled.
