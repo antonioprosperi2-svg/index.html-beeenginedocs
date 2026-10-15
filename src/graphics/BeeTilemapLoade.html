@@ -618,9 +618,9 @@
 <!-- HEADER FISSA -->
 <header class="bee-docs-header">
     <a href="#" class="bee-header-logo">
-        <span class="bee-header-title">Documentazione mettere la classe</span>
+        <span class="bee-header-title">BeeTilemapLoader</span>
     </a>
-    <span class="bee-header-badge">v2.2.0</span>
+    <span class="bee-header-badge">v2.10.5</span>
 </header>
 
 <!-- CONTENITORE PRINCIPALE -->
@@ -730,7 +730,7 @@
                 </li>
                 <li><a href="https://beeenginejs.com/testo-su-canvas-in-javascript-label-e-hud-di-gioco/">BeeText.js</a></li>
                 <li><a href="https://beeenginejs.com/tilemap-javascript-per-giochi-2d-griglia-tileset-e-collisioni/">BeeTilemap.js</a></li>
-                <li><a href="#BeeTilemapLoade" class="is-current">BeeTilemapLoade.js</a></li>
+                <li><a href="#BeeTilemapLoader" class="is-current">BeeTilemapLoader.js</a></li>
             </ul>
         </details>
         <details>
@@ -778,94 +778,208 @@
 
 
     <!-- AREA CONTENUTI (TUTTI I MODULI VANNO QUI DENTRO) -->
-    <main class="bee-docs-content">
+        <main class="bee-docs-content">
 
-        <!-- SEZIONE 1 -->
-        <h2 class="bee-section-title"></h2>
+        <div
+            style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
+            <div>
+                <h2 class="bee-section-title" style="margin: 0;">BeeTilemapLoader — Documentazione Tecnica</h2>
+                <p style="margin-top: 5px;">JSON di Tiled:
+                    tilelayer, muri a rettangoli,
+                    <code class="bee-inline-code">render</code>
+                </p>
+            </div>
+            <img src="https://beeenginejs.com/wp-content/uploads/2026/09/Gemini_Generated_Image_bg7xjjbg7xjjbg7x-1-1.jpg"
+                alt="BeeEngine Mascot" width="80" height="80" style="width: 80px; height: auto; flex-shrink: 0;">
+        </div>
 
-        <div class="bee-class-card" id="radme">****>>>>>>>> mettere id >>>>>>>>>>*****
-            <h3> </h3>
+        <div class="bee-class-card" id="BeeTilemapLoader">
 
-            <p></p>
+            <h3>📁 Panoramica</h3>
 
-            <p> </p>
+            <p><code>BeeTilemapLoader</code> legge una mappa
+                Tiled già in JSON. Vive in
+                <code>src/graphics/BeeTilemapLoader.js</code>.
+                Non è <code>BeeTilemap</code> e il loop non la
+                chiama: la costruisci con il motore, carichi
+                il JSON e disegni tu, nel pass mondo, dopo
+                <code>camera.apply</code>.</p>
 
-            <p>📁 </p>
+            <p>I <code>tilelayer</code> si disegnano.
+                I muri sono rettangoli fusi sulle celle piene
+                dei layer solidi. L'origine della mappa è
+                <code>0, 0</code>. La cella è
+                <code>tilewidth</code> della mappa, oppure 128.
+                Un gid <code>0</code> è vuoto. I bit di flip
+                di Tiled si tolgono con
+                <code>0x1FFFFFFF</code>: si disegna il tile
+                vero, non lo specchio.</p>
 
-            <div class="bee-code-block"></div>
+            <div class="bee-code-block"><span class="token keyword">const</span> tiled <span
+                    class="token operator">=</span> <span class="token keyword">new</span> <span
+                    class="token class-name">BeeTilemapLoader</span><span class="token punctuation">(</span>gioco<span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">await</span> tiled<span class="token punctuation">.</span><span
+                    class="token function">preloadAssets</span><span class="token punctuation">(</span>mapJson<span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
+tiled<span class="token punctuation">.</span><span class="token function">load</span><span
+                    class="token punctuation">(</span>mapJson<span class="token punctuation">)</span><span
+                    class="token punctuation">;</span></div>
 
-            <p>📁</p>
+            <h3>📁 Caricamento</h3>
 
-            <div class="bee-code-block"></div>
+            <div class="bee-flow" role="region" aria-label="Flusso BeeTilemapLoader">
+                <p class="bee-flow-caption">Un layer è solido
+                    se si chiama <code>solid</code>,
+                    <code>solids</code>, <code>platform</code>,
+                    <code>platforms</code>, <code>terrain</code>,
+                    <code>walls</code>, <code>collision</code>,
+                    <code>collisions</code>, oppure ha la
+                    proprietà <code>solid</code> a
+                    <code>true</code> o <code>"true"</code>.</p>
+                <ol class="bee-flow-row">
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>1. preload</strong>Le immagini del
+                            tileset, per nome file, sotto
+                            <code>assets/</code>. Poi
+                            <code>load</code>.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>2. muri</strong>Solo i layer solidi.
+                            Un layer <code>ground</code> da
+                            solo non crea collider. Le celle
+                            piene si fondono in rettangoli.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box bee-flow-read"><strong>3. render</strong>I tilelayer
+                            con <code>visible</code> diverso
+                            da <code>false</code>. Se manca
+                            il campo, il layer si vede.
+                            La view è
+                            <code>camera.getViewBounds</code>.</span>
+                    </li>
+                </ol>
+            </div>
+        </div>
 
-            <p>📁</p>
+        <div class="bee-class-card bee-ladybug" id="BeeTilemapLoader-note">
+            <h3>📁 Dove è facile sbagliare</h3>
 
-            <div class="bee-code-block"> </div>
+            <p><strong>Non entra nel loop.</strong>
+                <code>render</code> lo chiami dal draw del
+                mondo. <code>getColliders</code> restituisce
+                i rettangoli in pixel. Non vengono aggiunti
+                alla fisica: <code>x</code>, <code>y</code>,
+                <code>width</code>, <code>height</code> li
+                registri tu.</p>
 
-            <p>📁</p>
+            <p><strong>Il nome del layer conta.</strong>
+                <code>ground</code> si disegna e non è un
+                muro. Per i collider serve uno dei nomi
+                solidi, o la proprietà <code>solid</code>.
+                Un JSON senza <code>width</code> e
+                <code>height</code> finiti non carica:
+                <code>isLoaded</code> resta false.</p>
 
-            <div class="bee-code-block"></div>
+            <p><strong>Il file dell'immagine.</strong>
+                Dal path di Tiled si tiene solo il nome.
+                <code>preloadAssets(map, 'assets/')</code>
+                cerca <code>assets/sheet.png</code>, non la
+                cartella scritta nel JSON. Senza
+                <code>engine.assets</code> la cella non si
+                disegna e non lancia.</p>
+        </div>
 
-            <p>📁</p>
+        <div class="bee-class-card" id="BeeTilemapLoader-esempio">
+            <h3>📁 Esempio: draw e collider</h3>
 
-            <div class="bee-code-block"></div>
+            <div class="bee-code-block"><span class="token comment">// dopo camera.apply</span>
+tiled<span class="token punctuation">.</span><span class="token function">render</span><span
+                    class="token punctuation">(</span>ctx<span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
 
-            <p>📁 </p>
+<span class="token keyword">const</span> walls <span class="token operator">=</span> tiled<span
+                    class="token punctuation">.</span><span class="token function">getColliders</span><span
+                    class="token punctuation">(</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span></div>
+            <p>Senza <code>ctx</code>, <code>render</code>
+                esce. Un gid con il flip orizzontale di
+                Tiled (<code>1 | 0x80000000</code>) disegna
+                il tile <code>1</code>.</p>
+        </div>
 
-            <div class="bee-class-card"></div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p> 📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p> 📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p>📁</p>
-
-            <div class="bee-class-card"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"> </div>
-
-            <p> 📁 </p>
-
-            <div class="bee-code-block"></div>
-
-            <p>📁</p>
-
-            <div class="bee-code-block"></div>
-
-
-            <p>📁 </p>
-
-            <div class="bee-code-block"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-code-block"></div>
-
-            <p> 📁</p>
-
-            <div class="bee-code-block"> </div>
-
-
-
-
+        <div class="bee-class-card" id="BeeTilemapLoader-api">
+            <h3>📁 Riepilogo API</h3>
+            <p>La misura del riquadro nel tileset è
+                <code>tilewidth</code> / <code>tileheight</code>
+                del tileset, altrimenti quelli della mappa.
+                In disegno, un tile più basso della cella
+                si appoggia sul bordo inferiore.</p>
+            <table class="bee-api-table">
+                <thead>
+                    <tr>
+                        <th>Membro</th>
+                        <th>Ritorna</th>
+                        <th>Scopo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>new BeeTilemapLoader(engine)</code></td>
+                        <td><code>BeeTilemapLoader</code></td>
+                        <td><code>isLoaded</code> false.
+                            <code>solidColliders</code> vuoto.
+                            Cella di default 128, finché
+                            <code>load</code> non legge
+                            <code>tilewidth</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>preloadAssets(mapJson, basePath?)</code></td>
+                        <td><code>Promise</code></td>
+                        <td>Carica le immagini dei tileset.
+                            <code>basePath</code> default
+                            <code>assets/</code>, più il
+                            nome file.</td>
+                    </tr>
+                    <tr>
+                        <td><code>load(mapJson)</code></td>
+                        <td></td>
+                        <td>Tilelayer, lookup dei gid, muri.
+                            Senza JSON o senza
+                            <code>width</code> /
+                            <code>height</code> finiti:
+                            <code>isLoaded</code> false.</td>
+                    </tr>
+                    <tr>
+                        <td><code>getColliders()</code></td>
+                        <td><code>BeeRectCollider[]</code></td>
+                        <td>Rettangoli fusi, in pixel,
+                            origine <code>0, 0</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>render(ctx)</code></td>
+                        <td></td>
+                        <td>Disegna i tilelayer visibili.
+                            Senza <code>ctx</code> o se non
+                            è loaded: return. Con camera,
+                            usa <code>getViewBounds</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>isLoaded</code> /
+                            <code>solidColliders</code> /
+                            <code>mapWidth</code> /
+                            <code>mapHeight</code> /
+                            <code>gridCellSize</code></td>
+                        <td></td>
+                        <td>Stato dopo <code>load</code>.
+                            <code>gridCellSize</code> è il
+                            passo della griglia, in pixel.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
     </main>
 
