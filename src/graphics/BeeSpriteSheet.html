@@ -613,6 +613,99 @@
             white-space: nowrap;
         }
     }
+
+    /* ==========================================
+       5. FLUSSO (solo questa pagina)
+       ========================================== */
+    .bee-flow {
+        margin: 16px 0 4px 0;
+        padding: 16px 16px 14px 16px;
+        background: var(--bee-surface-2);
+        border: 1px solid var(--bee-line);
+        border-left: 4px solid var(--bee-honey);
+        border-radius: 10px;
+    }
+
+    .bee-flow-caption {
+        color: var(--bee-text-dim);
+        font-size: 13.5px;
+        line-height: 1.55;
+        margin: 0 0 12px 0;
+    }
+
+    .bee-flow-row {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: stretch;
+        gap: 8px 0;
+        margin: 0;
+        padding: 0;
+    }
+
+    .bee-flow-step {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        max-width: 100%;
+    }
+
+    .bee-flow-box {
+        display: block;
+        min-width: 7.5rem;
+        max-width: 14rem;
+        padding: 10px 12px;
+        background: var(--bee-surface);
+        border: 1px solid var(--bee-line-honey);
+        border-radius: 8px;
+        color: var(--bee-text);
+        font-size: 13.5px;
+        line-height: 1.45;
+    }
+
+    .bee-flow-box strong {
+        display: block;
+        color: var(--bee-honey);
+        font-family: var(--bee-mono);
+        font-size: 12.5px;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+        margin-bottom: 4px;
+    }
+
+    .bee-flow-box.bee-flow-read {
+        border-color: rgba(239, 68, 68, 0.45);
+    }
+
+    .bee-flow-box.bee-flow-read strong {
+        color: #ff8f8f;
+    }
+
+    .bee-flow-box code {
+        font-family: var(--bee-mono);
+        font-size: 12.5px;
+        color: #fcd34d;
+    }
+
+    .bee-flow-arrow {
+        color: var(--bee-honey);
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1;
+        padding: 0 6px;
+        flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+        .bee-flow-step {
+            width: 100%;
+        }
+
+        .bee-flow-box {
+            max-width: none;
+            flex-grow: 1;
+        }
+    }
 </style>
 
 <!-- HEADER FISSA -->
@@ -847,7 +940,8 @@
                         <span class="bee-flow-arrow" aria-hidden="true">→</span>
                     </li>
                     <li class="bee-flow-step">
-                        <span class="bee-flow-box"><strong>2. origine</strong><code>col</code> /
+                        <span class="bee-flow-box"><strong>2. origine</strong>
+                            <code>col</code> /
                             <code>row</code> sono in celle.
                             Se ne passi una sola, l'altra è 0.
                             Senza quelle: <code>offsetX</code> /

@@ -613,6 +613,99 @@
             white-space: nowrap;
         }
     }
+
+    /* ==========================================
+       5. FLUSSO (solo questa pagina)
+       ========================================== */
+    .bee-flow {
+        margin: 16px 0 4px 0;
+        padding: 16px 16px 14px 16px;
+        background: var(--bee-surface-2);
+        border: 1px solid var(--bee-line);
+        border-left: 4px solid var(--bee-honey);
+        border-radius: 10px;
+    }
+
+    .bee-flow-caption {
+        color: var(--bee-text-dim);
+        font-size: 13.5px;
+        line-height: 1.55;
+        margin: 0 0 12px 0;
+    }
+
+    .bee-flow-row {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: stretch;
+        gap: 8px 0;
+        margin: 0;
+        padding: 0;
+    }
+
+    .bee-flow-step {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        max-width: 100%;
+    }
+
+    .bee-flow-box {
+        display: block;
+        min-width: 7.5rem;
+        max-width: 14rem;
+        padding: 10px 12px;
+        background: var(--bee-surface);
+        border: 1px solid var(--bee-line-honey);
+        border-radius: 8px;
+        color: var(--bee-text);
+        font-size: 13.5px;
+        line-height: 1.45;
+    }
+
+    .bee-flow-box strong {
+        display: block;
+        color: var(--bee-honey);
+        font-family: var(--bee-mono);
+        font-size: 12.5px;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+        margin-bottom: 4px;
+    }
+
+    .bee-flow-box.bee-flow-read {
+        border-color: rgba(239, 68, 68, 0.45);
+    }
+
+    .bee-flow-box.bee-flow-read strong {
+        color: #ff8f8f;
+    }
+
+    .bee-flow-box code {
+        font-family: var(--bee-mono);
+        font-size: 12.5px;
+        color: #fcd34d;
+    }
+
+    .bee-flow-arrow {
+        color: var(--bee-honey);
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1;
+        padding: 0 6px;
+        flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+        .bee-flow-step {
+            width: 100%;
+        }
+
+        .bee-flow-box {
+            max-width: none;
+            flex-grow: 1;
+        }
+    }
 </style>
 
 <!-- HEADER FISSA -->
@@ -838,20 +931,23 @@
                     ciclo sulle righe sotto.</p>
                 <ol class="bee-flow-row">
                     <li class="bee-flow-step">
-                        <span class="bee-flow-box"><strong>1. update</strong><code>frame += speed * dt</code>.
+                        <span class="bee-flow-box"><strong>1. update</strong>
+                            <code>frame += speed * dt</code>.
                             <code>dt</code> non finito, o foglio
                             non valido: <code>frame</code> resta
                             com'è. Non disegna.</span>
                         <span class="bee-flow-arrow" aria-hidden="true">→</span>
                     </li>
                     <li class="bee-flow-step">
-                        <span class="bee-flow-box"><strong>2. indice</strong><code>floor(frame) % frameCount</code>.
+                        <span class="bee-flow-box"><strong>2. indice</strong>
+                            <code>floor(frame) % frameCount</code>.
                             Colonna <code>% framesPerRow</code>,
                             riga <code>floor(indice / framesPerRow)</code>.</span>
                         <span class="bee-flow-arrow" aria-hidden="true">→</span>
                     </li>
                     <li class="bee-flow-step">
-                        <span class="bee-flow-box bee-flow-read"><strong>3. draw</strong><code>drawImage</code>
+                        <span class="bee-flow-box bee-flow-read"><strong>3. draw</strong>
+                            <code>drawImage</code>
                             del rettangolo sorgente, disegnato
                             <code>frameWidth</code> ×
                             <code>frameHeight</code>.

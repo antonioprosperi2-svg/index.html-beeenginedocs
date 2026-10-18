@@ -613,6 +613,99 @@
             white-space: nowrap;
         }
     }
+
+    /* ==========================================
+       5. FLUSSO (solo questa pagina)
+       ========================================== */
+    .bee-flow {
+        margin: 16px 0 4px 0;
+        padding: 16px 16px 14px 16px;
+        background: var(--bee-surface-2);
+        border: 1px solid var(--bee-line);
+        border-left: 4px solid var(--bee-honey);
+        border-radius: 10px;
+    }
+
+    .bee-flow-caption {
+        color: var(--bee-text-dim);
+        font-size: 13.5px;
+        line-height: 1.55;
+        margin: 0 0 12px 0;
+    }
+
+    .bee-flow-row {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: stretch;
+        gap: 8px 0;
+        margin: 0;
+        padding: 0;
+    }
+
+    .bee-flow-step {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        max-width: 100%;
+    }
+
+    .bee-flow-box {
+        display: block;
+        min-width: 7.5rem;
+        max-width: 14rem;
+        padding: 10px 12px;
+        background: var(--bee-surface);
+        border: 1px solid var(--bee-line-honey);
+        border-radius: 8px;
+        color: var(--bee-text);
+        font-size: 13.5px;
+        line-height: 1.45;
+    }
+
+    .bee-flow-box strong {
+        display: block;
+        color: var(--bee-honey);
+        font-family: var(--bee-mono);
+        font-size: 12.5px;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+        margin-bottom: 4px;
+    }
+
+    .bee-flow-box.bee-flow-read {
+        border-color: rgba(239, 68, 68, 0.45);
+    }
+
+    .bee-flow-box.bee-flow-read strong {
+        color: #ff8f8f;
+    }
+
+    .bee-flow-box code {
+        font-family: var(--bee-mono);
+        font-size: 12.5px;
+        color: #fcd34d;
+    }
+
+    .bee-flow-arrow {
+        color: var(--bee-honey);
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1;
+        padding: 0 6px;
+        flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+        .bee-flow-step {
+            width: 100%;
+        }
+
+        .bee-flow-box {
+            max-width: none;
+            flex-grow: 1;
+        }
+    }
 </style>
 
 <!-- HEADER FISSA -->
@@ -783,7 +876,7 @@
 
 
     <!-- AREA CONTENUTI (TUTTI I MODULI VANNO QUI DENTRO) -->
-            <main class="bee-docs-content">
+    <main class="bee-docs-content">
 
         <div
             style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
@@ -810,7 +903,8 @@
                 <code>restore</code> della camera. Lo aggiungi
                 con <code>addEntity</code>. Il loop chiama
                 <code>update</code> e il pass ui chiama
-                <code>draw</code>.</p>
+                <code>draw</code>.
+            </p>
 
             <p>Il rettangolo è <code>worldX</code>,
                 <code>worldY</code>, <code>width</code>,
@@ -822,26 +916,28 @@
                 <code>input.mouse</code> di
                 <code>BeeInput</code>: <code>x</code>,
                 <code>y</code>, <code>pressed</code>,
-                <code>wasPressed</code>.</p>
+                <code>wasPressed</code>.
+            </p>
 
             <div class="bee-code-block"><span class="token keyword">const</span> play <span
                     class="token operator">=</span> <span class="token keyword">new</span> <span
                     class="token class-name">BeeButton</span><span class="token punctuation">({</span>
-    x<span class="token operator">:</span> <span class="token number">320</span><span
+                x<span class="token operator">:</span> <span class="token number">320</span><span
                     class="token punctuation">,</span>
-    y<span class="token operator">:</span> <span class="token number">240</span><span
+                y<span class="token operator">:</span> <span class="token number">240</span><span
                     class="token punctuation">,</span>
-    text<span class="token operator">:</span> <span class="token string">'Play'</span><span
+                text<span class="token operator">:</span> <span class="token string">'Play'</span><span
                     class="token punctuation">,</span>
-    <span class="token function">onClick</span><span class="token punctuation">(</span>button<span
+                <span class="token function">onClick</span><span class="token punctuation">(</span>button<span
                     class="token punctuation">)</span> <span class="token punctuation">{</span>
-        button<span class="token punctuation">.</span>text <span class="token operator">=</span> <span
+                button<span class="token punctuation">.</span>text <span class="token operator">=</span> <span
                     class="token string">'OK'</span><span class="token punctuation">;</span>
-    <span class="token punctuation">}</span>
-<span class="token punctuation">})</span><span class="token punctuation">;</span>
-gioco<span class="token punctuation">.</span><span class="token function">addEntity</span><span
+                <span class="token punctuation">}</span>
+                <span class="token punctuation">})</span><span class="token punctuation">;</span>
+                gioco<span class="token punctuation">.</span><span class="token function">addEntity</span><span
                     class="token punctuation">(</span>play<span class="token punctuation">)</span><span
-                    class="token punctuation">;</span></div>
+                    class="token punctuation">;</span>
+            </div>
 
             <h3>📁 Click</h3>
 
@@ -852,7 +948,8 @@ gioco<span class="token punctuation">.</span><span class="token function">addEnt
                     non basta.</p>
                 <ol class="bee-flow-row">
                     <li class="bee-flow-step">
-                        <span class="bee-flow-box"><strong>1. pressione</strong><code>wasPressed</code>
+                        <span class="bee-flow-box"><strong> pressione</strong>
+                            <code>wasPressed</code>
                             dentro il rettangolo:
                             <code>down</code> true e
                             <code>hover</code> true.
@@ -860,7 +957,8 @@ gioco<span class="token punctuation">.</span><span class="token function">addEnt
                         <span class="bee-flow-arrow" aria-hidden="true">→</span>
                     </li>
                     <li class="bee-flow-step">
-                        <span class="bee-flow-box"><strong>2. rilascio</strong><code>pressed</code>
+                        <span class="bee-flow-box"><strong>2. rilascio</strong>
+                            <code>pressed</code>
                             non è più <code>true</code>.
                             Ancora dentro:
                             <code>onClick(button)</code> una
@@ -886,7 +984,8 @@ gioco<span class="token punctuation">.</span><span class="token function">addEnt
                 frame il puntatore è già dentro.
                 <code>hover</code> richiede
                 <code>visible</code>, <code>active</code> e
-                non <code>destroyed</code>.</p>
+                non <code>destroyed</code>.
+            </p>
 
             <p><strong>Stato spento.</strong>
                 <code>active === false</code> o
@@ -896,7 +995,8 @@ gioco<span class="token punctuation">.</span><span class="token function">addEnt
                 <code>down</code> e non chiama
                 <code>onClick</code>. In pausa il motore non
                 aggiorna le entità: il bottone resta
-                all'ultimo frame.</p>
+                all'ultimo frame.
+            </p>
 
             <p><strong>Mouse assente.</strong>
                 Senza <code>input.mouse</code>, o con
@@ -905,7 +1005,8 @@ gioco<span class="token punctuation">.</span><span class="token function">addEnt
                 <code>draw</code> senza <code>ctx</code>
                 esce. Se <code>onClick</code> non è una
                 funzione, il rilascio azzera solo
-                <code>down</code>.</p>
+                <code>down</code>.
+            </p>
         </div>
 
         <div class="bee-class-card" id="BeeButton-api">
@@ -936,7 +1037,8 @@ gioco<span class="token punctuation">.</span><span class="token function">addEnt
                             <code>#222</code>. Testo
                             <code>white</code>.
                             <code>drawLayer</code>
-                            <code>ui</code>.</td>
+                            <code>ui</code>.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>update(dt, input, engine)</code></td>
@@ -945,7 +1047,8 @@ gioco<span class="token punctuation">.</span><span class="token function">addEnt
                             Aggiorna <code>hover</code> e
                             <code>down</code>. Al rilascio
                             dentro chiama
-                            <code>onClick(this)</code>.</td>
+                            <code>onClick(this)</code>.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>draw(ctx)</code></td>
@@ -954,7 +1057,8 @@ gioco<span class="token punctuation">.</span><span class="token function">addEnt
                             <code>worldX</code> /
                             <code>worldY</code>. Senza
                             <code>ctx</code>, o se non è
-                            <code>visible</code>: return.</td>
+                            <code>visible</code>: return.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>onClick</code></td>
@@ -962,17 +1066,20 @@ gioco<span class="token punctuation">.</span><span class="token function">addEnt
                         <td>Funzione
                             <code>(button) =&gt; void</code>,
                             oppure <code>null</code>.
-                            Una volta per rilascio valido.</td>
+                            Una volta per rilascio valido.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>hover</code> /
-                            <code>down</code></td>
+                            <code>down</code>
+                        </td>
                         <td><code>boolean</code></td>
                         <td><code>hover</code>: puntatore
                             nel rettangolo.
                             <code>down</code>: pressione
                             partita dentro, non ancora
-                            rilasciata.</td>
+                            rilasciata.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>text</code> /
@@ -980,13 +1087,15 @@ gioco<span class="token punctuation">.</span><span class="token function">addEnt
                             <code>color</code> /
                             <code>background</code> /
                             <code>hoverBackground</code> /
-                            <code>pressedBackground</code></td>
+                            <code>pressedBackground</code>
+                        </td>
                         <td></td>
                         <td>Contenuto e colori del
                             disegno. <code>down</code> usa
                             <code>pressedBackground</code>,
                             altrimenti l'hover, altrimenti
-                            <code>background</code>.</td>
+                            <code>background</code>.
+                        </td>
                     </tr>
                 </tbody>
             </table>
