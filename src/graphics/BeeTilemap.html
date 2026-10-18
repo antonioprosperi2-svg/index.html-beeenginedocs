@@ -728,9 +728,13 @@
                 <li><a
                         href="https://beeenginejs.com/ritagliare-frame-da-uno-sprite-sheet-in-javascript/">BeeSpriteSheet.js</a>
                 </li>
-                <li><a href="https://beeenginejs.com/testo-su-canvas-in-javascript-label-e-hud-di-gioco/">BeeText.js</a></li>
-                <li><a href="https://beeenginejs.com/tilemap-javascript-per-giochi-2d-griglia-tileset-e-collisioni/" class="is-current">BeeTilemap.js</a></li>
-                <li><a href="#BeeTilemapLoader">BeeTilemapLoader.js</a></li>
+                <li><a href="https://beeenginejs.com/testo-su-canvas-in-javascript-label-e-hud-di-gioco/">BeeText.js</a>
+                </li>
+                <li><a href="https://beeenginejs.com/tilemap-javascript-per-giochi-2d-griglia-tileset-e-collisioni/"
+                        class="is-current">BeeTilemap.js</a></li>
+                <li><a
+                        href="https://beeenginejs.com/caricare-mappe-tiled-json-in-javascript-tilelayer-e-muri/">BeeTilemapLoader.js</a>
+                </li>
             </ul>
         </details>
         <details>
@@ -778,7 +782,7 @@
 
 
     <!-- AREA CONTENUTI (TUTTI I MODULI VANNO QUI DENTRO) -->
-        <main class="bee-docs-content">
+    <main class="bee-docs-content">
 
         <div
             style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
@@ -804,7 +808,8 @@
                 mai solido. Gli id in <code>solidTiles</code>
                 sono muri. Il pathfinder li legge con
                 <code>isSolidTile</code> dopo
-                <code>useTilemap</code>.</p>
+                <code>useTilemap</code>.
+            </p>
 
             <p>Il tileset è 1-based: la cella <code>1</code> è
                 il primo riquadro dell'immagine
@@ -812,37 +817,39 @@
                 sono <code>#666</code> e le altre celle
                 <code>#999</code>. <code>rows</code> e
                 <code>cols</code> seguono <code>tiles</code>:
-                <code>cols</code> è la riga più lunga.</p>
+                <code>cols</code> è la riga più lunga.
+            </p>
 
             <div class="bee-code-block"><span class="token keyword">const</span> map <span
                     class="token operator">=</span> <span class="token keyword">new</span> <span
                     class="token class-name">BeeTilemap</span><span class="token punctuation">(</span><span
                     class="token punctuation">{</span>
-    <span class="token property">tileSize</span><span class="token punctuation">:</span> <span
+                <span class="token property">tileSize</span><span class="token punctuation">:</span> <span
                     class="token number">32</span><span class="token punctuation">,</span>
-    <span class="token property">tiles</span><span class="token punctuation">:</span> <span
+                <span class="token property">tiles</span><span class="token punctuation">:</span> <span
                     class="token punctuation">[</span>
-        <span class="token punctuation">[</span><span class="token number">1</span><span
+                <span class="token punctuation">[</span><span class="token number">1</span><span
                     class="token punctuation">,</span> <span class="token number">1</span><span
                     class="token punctuation">,</span> <span class="token number">1</span><span
                     class="token punctuation">]</span><span class="token punctuation">,</span>
-        <span class="token punctuation">[</span><span class="token number">0</span><span
+                <span class="token punctuation">[</span><span class="token number">0</span><span
                     class="token punctuation">,</span> <span class="token number">0</span><span
                     class="token punctuation">,</span> <span class="token number">0</span><span
                     class="token punctuation">]</span><span class="token punctuation">,</span>
-        <span class="token punctuation">[</span><span class="token number">2</span><span
+                <span class="token punctuation">[</span><span class="token number">2</span><span
                     class="token punctuation">,</span> <span class="token number">2</span><span
                     class="token punctuation">,</span> <span class="token number">2</span><span
                     class="token punctuation">]</span>
-    <span class="token punctuation">]</span><span class="token punctuation">,</span>
-    <span class="token property">solidTiles</span><span class="token punctuation">:</span> <span
+                <span class="token punctuation">]</span><span class="token punctuation">,</span>
+                <span class="token property">solidTiles</span><span class="token punctuation">:</span> <span
                     class="token punctuation">[</span><span class="token number">2</span><span
                     class="token punctuation">]</span>
-<span class="token punctuation">}</span><span class="token punctuation">)</span><span
+                <span class="token punctuation">}</span><span class="token punctuation">)</span><span
                     class="token punctuation">;</span>
-gioco<span class="token punctuation">.</span><span class="token function">addEntity</span><span
+                gioco<span class="token punctuation">.</span><span class="token function">addEntity</span><span
                     class="token punctuation">(</span>map<span class="token punctuation">)</span><span
-                    class="token punctuation">;</span></div>
+                    class="token punctuation">;</span>
+            </div>
 
             <h3>📁 Celle</h3>
 
@@ -851,7 +858,8 @@ gioco<span class="token punctuation">.</span><span class="token function">addEnt
                     griglia è <code>worldX</code> /
                     <code>worldY</code>. Una cella mancante
                     vale <code>0</code>. Fuori mappa,
-                    <code>getTile</code> torna <code>null</code>.</p>
+                    <code>getTile</code> torna <code>null</code>.
+                </p>
                 <ol class="bee-flow-row">
                     <li class="bee-flow-step">
                         <span class="bee-flow-box"><strong>1. misura</strong><code>getWorldAABB</code>
@@ -888,7 +896,8 @@ gioco<span class="token punctuation">.</span><span class="token function">addEnt
                 Anche se lo metti in <code>solidTiles</code>,
                 <code>isSolidTile</code> lo tratta come vuoto.
                 Il primo grafico del tileset è l'id
-                <code>1</code>, non <code>0</code>.</p>
+                <code>1</code>, non <code>0</code>.
+            </p>
 
             <p><strong>La collisione non parte da sola.</strong>
                 Il loop non chiama <code>entityCollides</code>.
@@ -897,7 +906,8 @@ gioco<span class="token punctuation">.</span><span class="token function">addEnt
                 0. Un box che finisce esattamente sul bordo
                 di una tile solida, senza entrarci, non
                 collide. Il pathfinder usa
-                <code>isSolidTile</code>, non questo metodo.</p>
+                <code>isSolidTile</code>, non questo metodo.
+            </p>
 
             <p><strong>Righe storte.</strong>
                 Se una riga è più corta, le celle che
@@ -906,7 +916,8 @@ gioco<span class="token punctuation">.</span><span class="token function">addEnt
                 <code>cols</code> si aggiornano. Il
                 pathfinder copia le misure in
                 <code>useTilemap</code>: dopo un cambio di
-                mappa va richiamato.</p>
+                mappa va richiamato.
+            </p>
         </div>
 
         <div class="bee-class-card" id="BeeTilemap-esempio">
@@ -914,29 +925,31 @@ gioco<span class="token punctuation">.</span><span class="token function">addEnt
 
             <div class="bee-code-block">map<span class="token punctuation">.</span>tileset <span
                     class="token operator">=</span> img<span class="token punctuation">;</span>
-map<span class="token punctuation">.</span>tilesetColumns <span
-                    class="token operator">=</span> <span class="token number">8</span><span
-                    class="token punctuation">;</span>
+                map<span class="token punctuation">.</span>tilesetColumns <span class="token operator">=</span> <span
+                    class="token number">8</span><span class="token punctuation">;</span>
 
-<span class="token keyword">if</span> <span class="token punctuation">(</span>map<span
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>map<span
                     class="token punctuation">.</span><span class="token function">entityCollides</span><span
                     class="token punctuation">(</span>hero<span class="token punctuation">)</span><span
                     class="token punctuation">)</span> <span class="token punctuation">{</span>
-    hero<span class="token punctuation">.</span>vx <span class="token operator">=</span> <span
+                hero<span class="token punctuation">.</span>vx <span class="token operator">=</span> <span
                     class="token number">0</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span></div>
+                <span class="token punctuation">}</span>
+            </div>
             <p>Senza <code>ctx</code>, o con
                 <code>tileSize</code> / <code>tilesetColumns</code>
                 non finiti o <code>≤ 0</code>,
                 <code>draw</code> esce e non chiama
-                <code>drawImage</code>.</p>
+                <code>drawImage</code>.
+            </p>
         </div>
 
         <div class="bee-class-card" id="BeeTilemap-api">
             <h3>📁 Riepilogo API</h3>
             <p>Sul pass mondo, insieme alla camera.
                 <code>tileSize</code> di default è 32.
-                <code>tilesetColumns</code> di default è 1.</p>
+                <code>tilesetColumns</code> di default è 1.
+            </p>
             <table class="bee-api-table">
                 <thead>
                     <tr>
@@ -947,26 +960,30 @@ map<span class="token punctuation">.</span>tilesetColumns <span
                 </thead>
                 <tbody>
                     <tr>
-                        <td><code>new BeeTilemap({ x, y, tiles, tileSize, solidTiles, tileset, tilesetColumns }?)</code></td>
+                        <td><code>new BeeTilemap({ x, y, tiles, tileSize, solidTiles, tileset, tilesetColumns }?)</code>
+                        </td>
                         <td><code>BeeTilemap</code></td>
                         <td>Griglia in <code>x, y</code>.
                             <code>tiles</code> è
                             <code>number[][]</code>, riga per
-                            riga.</td>
+                            riga.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>rows</code> / <code>cols</code></td>
                         <td>number</td>
                         <td>Seguono <code>tiles</code>.
                             <code>cols</code> è la riga più
-                            lunga.</td>
+                            lunga.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>getWorldAABB()</code></td>
                         <td><code>{ x, y, width, height }</code></td>
                         <td>Tutta la mappa. Vuota o
                             <code>tileSize</code> non valido:
-                            lati 0.</td>
+                            lati 0.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>getTile(col, row)</code></td>
@@ -974,15 +991,18 @@ map<span class="token punctuation">.</span>tilesetColumns <span
                         <td>Fuori mappa: <code>null</code>.
                             Cella mancante o
                             <code>undefined</code>:
-                            <code>0</code>.</td>
+                            <code>0</code>.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>worldToTile(px, py)</code> /
-                            <code>isSolidAtPixel(px, py)</code></td>
+                            <code>isSolidAtPixel(px, py)</code>
+                        </td>
                         <td>cella / boolean</td>
                         <td>Pixel mondo rispetto a
                             <code>worldX</code> /
-                            <code>worldY</code>.</td>
+                            <code>worldY</code>.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>isSolidTile(col, row)</code></td>
@@ -990,7 +1010,8 @@ map<span class="token punctuation">.</span>tilesetColumns <span
                         <td><code>0</code>, <code>null</code> e
                             le celle fuori sono vuote. Il
                             resto è solido se sta in
-                            <code>solidTiles</code>.</td>
+                            <code>solidTiles</code>.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>entityCollides(entity)</code></td>
@@ -998,7 +1019,8 @@ map<span class="token punctuation">.</span>tilesetColumns <span
                         <td>Senza collider, o con lati
                             <code>≤ 0</code>: false. Copre
                             le tile del rettangolo. Il bordo
-                            destro e basso è escluso.</td>
+                            destro e basso è escluso.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>draw(ctx, engine?)</code></td>
@@ -1007,7 +1029,8 @@ map<span class="token punctuation">.</span>tilesetColumns <span
                             <code>ctx</code>, o con misure non
                             valide: return.
                             <code>visible === false</code>:
-                            return.</td>
+                            return.
+                        </td>
                     </tr>
                 </tbody>
             </table>

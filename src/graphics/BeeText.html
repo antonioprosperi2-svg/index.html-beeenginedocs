@@ -777,7 +777,7 @@
     </aside>
 
     <!-- AREA CONTENUTI (TUTTI I MODULI VANNO QUI DENTRO) -->
-        <main class="bee-docs-content">
+    <main class="bee-docs-content">
 
         <div
             style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
@@ -787,8 +787,7 @@
                     <code class="bee-inline-code">drawHUD</code>
                 </p>
             </div>
-            <img src="https://beeenginejs.com/wp-content/uploads/2026/09/Gemini_Generated_Image_bg7xjjbg7xjjbg7x-1-1.jpg"
-                alt="BeeEngine Mascot" width="80" height="80" style="width: 80px; height: auto; flex-shrink: 0;">
+
         </div>
 
         <div class="bee-class-card" id="BeeText">
@@ -802,7 +801,8 @@
                 è in pixel schermo, dopo il
                 <code>restore</code> della camera.
                 <code>width</code> e <code>height</code> sono 0,
-                quindi il culling non la salta.</p>
+                quindi il culling non la salta.
+            </p>
 
             <p><code>draw</code> scrive <code>text</code> in
                 <code>worldX</code> / <code>worldY</code>, con
@@ -812,7 +812,8 @@
                 <code>text</code> costruisce la label da
                 <code>text</code>, <code>x</code>, <code>y</code>,
                 <code>font</code>, <code>color</code>,
-                <code>align</code>.</p>
+                <code>align</code>.
+            </p>
 
             <div class="bee-code-block"><span class="token keyword">const</span> label <span
                     class="token operator">=</span> <span class="token keyword">new</span> <span
@@ -821,7 +822,7 @@
                     class="token number">16</span><span class="token punctuation">,</span> <span
                     class="token number">12</span><span class="token punctuation">)</span><span
                     class="token punctuation">;</span>
-gioco<span class="token punctuation">.</span><span class="token function">addEntity</span><span
+                gioco<span class="token punctuation">.</span><span class="token function">addEntity</span><span
                     class="token punctuation">(</span>label<span class="token punctuation">)</span><span
                     class="token punctuation">;</span></div>
 
@@ -831,7 +832,8 @@ gioco<span class="token punctuation">.</span><span class="token function">addEnt
                 <p class="bee-flow-caption">La label usa il
                     baseline <code>top</code>. La barra fissa
                     <code>alphabetic</code>, perché i testi
-                    stanno a <code>y = 28</code>.</p>
+                    stanno a <code>y = 28</code>.
+                </p>
                 <ol class="bee-flow-row">
                     <li class="bee-flow-step">
                         <span class="bee-flow-box"><strong>1. label</strong>Pass <code>ui</code>.
@@ -869,7 +871,8 @@ gioco<span class="token punctuation">.</span><span class="token function">addEnt
                 <code>0, 0</code>. Va chiamata da
                 <code>scene.draw</code>, dopo il
                 <code>restore</code> della camera. Sotto la
-                camera la barra scrolla col mondo.</p>
+                camera la barra scrolla col mondo.
+            </p>
 
             <p><strong>Punteggio e vite.</strong>
                 <code>-3</code> diventa <code>-00003</code>: il
@@ -877,13 +880,15 @@ gioco<span class="token punctuation">.</span><span class="token function">addEnt
                 finito vale 0. Le vite si arrotondano per
                 difetto: <code>1.5</code> è un cuore.
                 Da 0 a 32 ripete l'icona; oltre scrive il
-                numero. <code>NaN</code> vale 0, non lancia.</p>
+                numero. <code>NaN</code> vale 0, non lancia.
+            </p>
 
             <p><strong>Un parent nel mondo.</strong>
                 La label resta sul pass <code>ui</code>.
                 <code>worldX</code> / <code>worldY</code>
                 includono il parent, ma quel pass non applica
-                la camera: la scritta non segue lo scroll.</p>
+                la camera: la scritta non segue lo scroll.
+            </p>
         </div>
 
         <div class="bee-class-card" id="BeeText-esempio">
@@ -896,20 +901,22 @@ gioco<span class="token punctuation">.</span><span class="token function">addEnt
                     class="token number">16</span><span class="token punctuation">,</span> <span
                     class="token number">12</span><span class="token punctuation">)</span><span
                     class="token punctuation">;</span>
-gioco<span class="token punctuation">.</span><span class="token function">addEntity</span><span
+                gioco<span class="token punctuation">.</span><span class="token function">addEntity</span><span
                     class="token punctuation">(</span>label<span class="token punctuation">)</span><span
                     class="token punctuation">;</span>
 
-<span class="token comment">// scene.draw, a camera già restaurata</span>
-<span class="token class-name">BeeText</span><span class="token punctuation">.</span><span
+                <span class="token comment">// scene.draw, a camera già restaurata</span>
+                <span class="token class-name">BeeText</span><span class="token punctuation">.</span><span
                     class="token function">drawHUD</span><span class="token punctuation">(</span>ctx<span
                     class="token punctuation">,</span> player<span class="token punctuation">.</span>score<span
                     class="token punctuation">,</span> player<span class="token punctuation">.</span>lives<span
                     class="token punctuation">,</span> <span class="token string">'LIVELLO 1'</span><span
-                    class="token punctuation">)</span><span class="token punctuation">;</span></div>
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
+            </div>
             <p>Senza <code>ctx</code>, o senza
                 <code>ctx.canvas</code> nella barra, i due
-                metodi escono e non lanciano.</p>
+                metodi escono e non lanciano.
+            </p>
         </div>
 
         <div class="bee-class-card" id="BeeText-api">
@@ -917,7 +924,8 @@ gioco<span class="token punctuation">.</span><span class="token function">addEnt
             <p>Una sola riga: <code>fillText</code> non va a
                 capo. Il font di default della label è
                 <code>bold 20px Arial</code>, colore
-                <code>#ffffff</code>, align <code>left</code>.</p>
+                <code>#ffffff</code>, align <code>left</code>.
+            </p>
             <table class="bee-api-table">
                 <thead>
                     <tr>
@@ -932,7 +940,8 @@ gioco<span class="token punctuation">.</span><span class="token function">addEnt
                         <td><code>BeeText</code></td>
                         <td>Testo vuoto in <code>0, 0</code>.
                             <code>baseline</code> <code>top</code>.
-                            Pass <code>ui</code>. Box 0×0.</td>
+                            Pass <code>ui</code>. Box 0×0.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>draw(ctx)</code></td>
@@ -942,7 +951,8 @@ gioco<span class="token punctuation">.</span><span class="token function">addEnt
                             <code>worldY</code>.
                             Senza <code>ctx</code> o con
                             <code>visible === false</code>:
-                            return.</td>
+                            return.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>BeeText.drawHUD(ctx, score?, lives?, title?, options?)</code></td>
@@ -951,22 +961,26 @@ gioco<span class="token punctuation">.</span><span class="token function">addEnt
                             <code>alphabetic</code>.
                             Senza <code>ctx</code> o
                             <code>canvas</code>: return.
-                            Titolo vuoto: non lo disegna.</td>
+                            Titolo vuoto: non lo disegna.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>options.scoreLabel</code> /
                             <code>livesLabel</code> /
-                            <code>livesIcon</code></td>
+                            <code>livesIcon</code>
+                        </td>
                         <td></td>
                         <td>Default <code>SCORE</code>,
                             <code>LIVES</code>, cuore.
                             Icona non stringa: torna il cuore.
-                            Vite 0–32: icone. Oltre: il numero.</td>
+                            Vite 0–32: icone. Oltre: il numero.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>options.barHeight</code> /
                             <code>titleColor</code> /
-                            <code>textColor</code></td>
+                            <code>textColor</code>
+                        </td>
                         <td></td>
                         <td>Barra 45 px,
                             titolo <code>#FFD700</code>,
@@ -976,7 +990,8 @@ gioco<span class="token punctuation">.</span><span class="token function">addEnt
                     <tr>
                         <td><code>text</code> / <code>font</code> /
                             <code>color</code> / <code>align</code> /
-                            <code>baseline</code></td>
+                            <code>baseline</code>
+                        </td>
                         <td></td>
                         <td>Stato della label. Si leggono a
                             ogni <code>draw</code>.</td>
