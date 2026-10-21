@@ -613,14 +613,106 @@
             white-space: nowrap;
         }
     }
+    /* ==========================================
+       5. FLUSSO (solo questa pagina)
+       ========================================== */
+    .bee-flow {
+        margin: 16px 0 4px 0;
+        padding: 16px 16px 14px 16px;
+        background: var(--bee-surface-2);
+        border: 1px solid var(--bee-line);
+        border-left: 4px solid var(--bee-honey);
+        border-radius: 10px;
+    }
+
+    .bee-flow-caption {
+        color: var(--bee-text-dim);
+        font-size: 13.5px;
+        line-height: 1.55;
+        margin: 0 0 12px 0;
+    }
+
+    .bee-flow-row {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: stretch;
+        gap: 8px 0;
+        margin: 0;
+        padding: 0;
+    }
+
+    .bee-flow-step {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        max-width: 100%;
+    }
+
+    .bee-flow-box {
+        display: block;
+        min-width: 7.5rem;
+        max-width: 14rem;
+        padding: 10px 12px;
+        background: var(--bee-surface);
+        border: 1px solid var(--bee-line-honey);
+        border-radius: 8px;
+        color: var(--bee-text);
+        font-size: 13.5px;
+        line-height: 1.45;
+    }
+
+    .bee-flow-box strong {
+        display: block;
+        color: var(--bee-honey);
+        font-family: var(--bee-mono);
+        font-size: 12.5px;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+        margin-bottom: 4px;
+    }
+
+    .bee-flow-box.bee-flow-read {
+        border-color: rgba(239, 68, 68, 0.45);
+    }
+
+    .bee-flow-box.bee-flow-read strong {
+        color: #ff8f8f;
+    }
+
+    .bee-flow-box code {
+        font-family: var(--bee-mono);
+        font-size: 12.5px;
+        color: #fcd34d;
+    }
+
+    .bee-flow-arrow {
+        color: var(--bee-honey);
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1;
+        padding: 0 6px;
+        flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+        .bee-flow-step {
+            width: 100%;
+        }
+
+        .bee-flow-box {
+            max-width: none;
+            flex-grow: 1;
+        }
+    }
 </style>
 
 <!-- HEADER FISSA -->
 <header class="bee-docs-header">
     <a href="#" class="bee-header-logo">
-        <span class="bee-header-title">Documentazione mettere la classe</span>
+        <span class="bee-header-title">BeeInput</span>
     </a>
-    <span class="bee-header-badge">v2.2.0</span>
+    <span class="bee-header-badge">v2.10.7</span>
 </header>
 
 <!-- CONTENITORE PRINCIPALE -->
@@ -783,94 +875,250 @@
 
 
     <!-- AREA CONTENUTI (TUTTI I MODULI VANNO QUI DENTRO) -->
-    <main class="bee-docs-content">
+            <main class="bee-docs-content">
 
-        <!-- SEZIONE 1 -->
-        <h2 class="bee-section-title"></h2>
+        <div
+            style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
+            <div>
+                <h2 class="bee-section-title" style="margin: 0;">BeeInput — Documentazione Tecnica</h2>
+                <p style="margin-top: 5px;">Tastiera, mouse e touch:
+                    <code class="bee-inline-code">isPressed</code>,
+                    <code class="bee-inline-code">wasPressed</code>
+                </p>
+            </div>
+            <img src="https://beeenginejs.com/wp-content/uploads/2026/09/Gemini_Generated_Image_bg7xjjbg7xjjbg7x-1-1.jpg"
+                alt="BeeEngine Mascot" width="80" height="80" style="width: 80px; height: auto; flex-shrink: 0;">
+        </div>
 
-        <div class="bee-class-card" id="radme">****>>>>>>>> mettere id >>>>>>>>>>*****
-            <h3> </h3>
+        <div class="bee-class-card" id="BeeInput">
 
-            <p></p>
+            <h3>📁 Panoramica</h3>
 
-            <p> </p>
+            <p><code>BeeInput</code> legge tastiera, mouse e
+                dita. Vive in
+                <code>src/input/BeeInput.js</code>.
+                Il motore la costruisce sul canvas
+                (<code>gioco.input</code>) e a fine frame
+                chiama <code>endFrame()</code>, anche in
+                pausa.</p>
 
-            <p>📁 </p>
+            <p>I tasti stanno su due strati.
+                La tastiera tiene il code
+                (<code>KeyA</code>, <code>Space</code>,
+                <code>ArrowLeft</code>, <code>ShiftLeft</code>)
+                e il carattere di quel
+                <code>keydown</code> (<code>a</code>,
+                <code>Shift</code>).
+                <code>setKey</code> tiene i tasti virtuali,
+                quelli di joystick e pulsanti touch.
+                <code>isPressed</code> è true se almeno uno
+                dei due strati è giù.</p>
 
-            <div class="bee-code-block"></div>
+            <p><code>wasPressed</code> è true solo nel frame
+                in cui quel nome passa da spento a premuto.
+                <code>endFrame</code> spegne l'edge.
+                Il tasto tenuto resta in
+                <code>isPressed</code>.</p>
 
-            <p>📁</p>
+            <div class="bee-code-block"><span class="token keyword">function</span> <span
+                    class="token function">update</span><span class="token punctuation">(</span>dt<span
+                    class="token punctuation">,</span> input<span class="token punctuation">)</span> <span
+                    class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>input<span
+                    class="token punctuation">.</span><span class="token function">wasPressed</span><span
+                    class="token punctuation">(</span><span class="token string">'Space'</span><span
+                    class="token punctuation">))</span> salto <span class="token operator">=</span> <span
+                    class="token boolean">true</span><span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>input<span
+                    class="token punctuation">.</span><span class="token function">isPressed</span><span
+                    class="token punctuation">(</span><span class="token string">'ArrowRight'</span><span
+                    class="token punctuation">)</span> <span class="token operator">||</span> input<span
+                    class="token punctuation">.</span><span class="token function">isPressed</span><span
+                    class="token punctuation">(</span><span class="token string">'KeyD'</span><span
+                    class="token punctuation">))</span> vx <span class="token operator">=</span> <span
+                    class="token number">180</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></div>
 
-            <div class="bee-code-block"></div>
+            <h3>📁 Frame</h3>
 
-            <p>📁</p>
+            <div class="bee-flow" role="region" aria-label="Flusso BeeInput">
+                <p class="bee-flow-caption">L'edge si legge
+                    durante update e draw. Poi
+                    <code>endFrame</code> lo azzera.</p>
+                <ol class="bee-flow-row">
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>pressione</strong>
+                            Il nome passa a giù:
+                            <code>wasPressed</code> e
+                            <code>isPressed</code> true.
+                            Il <code>keyup</code> usa il
+                            carattere del
+                            <code>keydown</code>.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>endFrame</strong>
+                            <code>wasPressed</code> torna
+                            false.
+                            <code>isPressed</code> resta
+                            true finché il tasto è tenuto.
+                            Vale anche per
+                            <code>mouse.wasPressed</code>.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box bee-flow-read"><strong>rilascio</strong>
+                            <code>keyup</code> o
+                            <code>blur</code> spengono la
+                            tastiera.
+                            <code>setKey</code> non si
+                            spegne con loro.</span>
+                    </li>
+                </ol>
+            </div>
+        </div>
 
-            <div class="bee-code-block"> </div>
+        <div class="bee-class-card bee-ladybug" id="BeeInput-note">
+            <h3>📁 Dove è facile sbagliare</h3>
 
-            <p>📁</p>
+            <p><strong>Il carattere è quello del keydown.</strong>
+                <code>KeyA</code> con <code>a</code>, poi
+                <code>keyup</code> con <code>A</code> perché
+                è arrivato lo Shift: si spengono sia
+                <code>a</code> sia <code>KeyA</code>.
+                <code>isPressed('ShiftLeft')</code> è il code.
+                <code>isPressed('Shift')</code> è il carattere
+                di quel <code>keydown</code>, e resta true
+                se è ancora giù
+                <code>ShiftLeft</code> o
+                <code>ShiftRight</code>.</p>
 
-            <div class="bee-code-block"></div>
+            <p><strong>Pausa.</strong>
+                In pausa scene ed entità non fanno update.
+                Il callback <code>update</code> e
+                <code>BeeUI</code> sì. Poi
+                <code>endFrame</code> consuma l'edge.
+                Un tap solo in quel frame non arriva alle
+                entità dopo. Un tasto ancora tenuto si
+                rilegge con <code>isPressed</code>.</p>
 
-            <p>📁</p>
+            <p><strong>Mouse e dita.</strong>
+                <code>mousedown</code> è sul canvas, qualunque
+                bottone, e accende
+                <code>pressed</code> e
+                <code>wasPressed</code>.
+                <code>mousemove</code> e
+                <code>mouseup</code> sono sulla window:
+                il punto può essere negativo o oltre il
+                canvas, e il rilascio fuori spegne
+                <code>pressed</code>.
+                Un mouse con
+                <code>firesTouchEvents</code> si ignora.
+                L'ultimo dito spegne
+                <code>pressed</code> e prende la posizione
+                da <code>changedTouches</code>.</p>
+        </div>
 
-            <div class="bee-code-block"></div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p> 📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p> 📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p>📁</p>
-
-            <div class="bee-class-card"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"> </div>
-
-            <p> 📁 </p>
-
-            <div class="bee-code-block"></div>
-
-            <p>📁</p>
-
-            <div class="bee-code-block"></div>
-
-
-            <p>📁 </p>
-
-            <div class="bee-code-block"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-code-block"></div>
-
-            <p> 📁</p>
-
-            <div class="bee-code-block"> </div>
-
-
-
-
+        <div class="bee-class-card" id="BeeInput-api">
+            <h3>📁 Riepilogo API</h3>
+            <p><code>keys</code> viene riallineato a
+                <code>isPressed</code>. Lo stato si legge
+                da <code>isPressed</code> e
+                <code>wasPressed</code>.
+                Senza canvas il costruttore lancia
+                <code>BeeInput: canvas required</code>.</p>
+            <table class="bee-api-table">
+                <thead>
+                    <tr>
+                        <th>Membro</th>
+                        <th>Ritorna</th>
+                        <th>Scopo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>new BeeInput(canvas)</code></td>
+                        <td><code>BeeInput</code></td>
+                        <td>Listener su window e canvas.
+                            Mouse a <code>0, 0</code>,
+                            niente tasti, niente tocchi.</td>
+                    </tr>
+                    <tr>
+                        <td><code>isPressed(name)</code></td>
+                        <td><code>boolean</code></td>
+                        <td>True se il code, il carattere
+                            ricordato o
+                            <code>setKey</code> tengono
+                            <code>name</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>wasPressed(name)</code></td>
+                        <td><code>boolean</code></td>
+                        <td>True solo nel frame in cui
+                            <code>name</code> è passato a
+                            giù. <code>endFrame</code> lo
+                            spegne.</td>
+                    </tr>
+                    <tr>
+                        <td><code>setKey(name, down)</code></td>
+                        <td></td>
+                        <td>Strato virtuale.
+                            <code>down</code> true lo accende,
+                            false lo spegne.
+                            Non toglie la tastiera, e la
+                            tastiera non toglie lui.
+                            Se prima era spento, segna
+                            l'edge.</td>
+                    </tr>
+                    <tr>
+                        <td><code>endFrame()</code></td>
+                        <td></td>
+                        <td>Svuota gli edge dei tasti e
+                            <code>mouse.wasPressed</code>.
+                            Non rilascia i tasti tenuti né
+                            <code>mouse.pressed</code>.
+                            Lo chiama il loop.</td>
+                    </tr>
+                    <tr>
+                        <td><code>getCanvasPosition(clientX, clientY)</code></td>
+                        <td><code>{ x, y }</code></td>
+                        <td>Pixel del bitmap:
+                            <code>(client - rect) * (canvas / rect)</code>.
+                            Rettangolo <code>0×0</code> o
+                            scala non finita:
+                            <code>{ x: 0, y: 0 }</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>mouse</code></td>
+                        <td></td>
+                        <td><code>x</code>, <code>y</code>,
+                            <code>pressed</code>,
+                            <code>wasPressed</code>.
+                            Il primo dito copia
+                            <code>x</code> e <code>y</code>
+                            sul mouse.</td>
+                    </tr>
+                    <tr>
+                        <td><code>touches</code></td>
+                        <td><code>{ id, x, y }[]</code></td>
+                        <td>Dita attive, in pixel canvas.
+                            <code>id</code> è
+                            <code>identifier</code>.
+                            Lista vuota quando non c'è
+                            nessun dito.</td>
+                    </tr>
+                    <tr>
+                        <td><code>destroy()</code></td>
+                        <td></td>
+                        <td>Toglie i listener.
+                            <code>BeeEngine.destroy</code>
+                            lo chiama. Dopo, un
+                            <code>keydown</code> non cambia
+                            <code>isPressed</code>.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
     </main>
 
