@@ -32,6 +32,7 @@ Questo spazio raccoglie le guide, gli esempi pratici e le spiegazioni di tutti i
 * **🗺️ BeeTilemapLoader (v2.10.5):** JSON di Tiled (`src/graphics/BeeTilemapLoade.html`): tilelayer, muri solo sui layer solidi, gid senza i bit di flip, `render` a mano.
 * **🔘 BeeButton (v2.10.6):** Pulsante sul pass ui (`src/input/BeeButton.html`): click al rilascio, `input.mouse`, rettangolo in pixel schermo.
 * **⌨️ BeeInput (v2.10.7):** Tastiera, mouse e touch (`src/input/BeeInput.html`): `isPressed` e `wasPressed`, `setKey` a parte, `endFrame` a fine loop.
+* **🕹️ BeeJoystick (v2.10.9):** Stick in basso a sinistra (`src/input/BeeJoystick.html`): dito o mouse, coppie freccia e WASD, `enableJoystick()`.
 * **🐝 BeeEngine:** Facade e core loop (`src/core/BeeEngine.html`): `start`/`stop`/`pause`, scene vs `addEntity`, tween/timer/prefab/pathfinder.
 * **⏱ BeeTime:** Orologio unico del core loop (`src/core/BeeTime.html`): `dt` di simulazione, `unscaledDt` reale, pausa/F4, `timeScale`, accumulator per `BeePhysicsWorld`.
 * **⏱ BeeTimer:** Cooldown e loop di evento (`src/core/BeeTimer.html`): `gioco.after` / `gioco.every`, clock `gioco.timers`, assi scaled/unscaled.

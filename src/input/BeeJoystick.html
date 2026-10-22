@@ -613,14 +613,106 @@
             white-space: nowrap;
         }
     }
+    /* ==========================================
+       5. FLUSSO (solo questa pagina)
+       ========================================== */
+    .bee-flow {
+        margin: 16px 0 4px 0;
+        padding: 16px 16px 14px 16px;
+        background: var(--bee-surface-2);
+        border: 1px solid var(--bee-line);
+        border-left: 4px solid var(--bee-honey);
+        border-radius: 10px;
+    }
+
+    .bee-flow-caption {
+        color: var(--bee-text-dim);
+        font-size: 13.5px;
+        line-height: 1.55;
+        margin: 0 0 12px 0;
+    }
+
+    .bee-flow-row {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: stretch;
+        gap: 8px 0;
+        margin: 0;
+        padding: 0;
+    }
+
+    .bee-flow-step {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        max-width: 100%;
+    }
+
+    .bee-flow-box {
+        display: block;
+        min-width: 7.5rem;
+        max-width: 14rem;
+        padding: 10px 12px;
+        background: var(--bee-surface);
+        border: 1px solid var(--bee-line-honey);
+        border-radius: 8px;
+        color: var(--bee-text);
+        font-size: 13.5px;
+        line-height: 1.45;
+    }
+
+    .bee-flow-box strong {
+        display: block;
+        color: var(--bee-honey);
+        font-family: var(--bee-mono);
+        font-size: 12.5px;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+        margin-bottom: 4px;
+    }
+
+    .bee-flow-box.bee-flow-read {
+        border-color: rgba(239, 68, 68, 0.45);
+    }
+
+    .bee-flow-box.bee-flow-read strong {
+        color: #ff8f8f;
+    }
+
+    .bee-flow-box code {
+        font-family: var(--bee-mono);
+        font-size: 12.5px;
+        color: #fcd34d;
+    }
+
+    .bee-flow-arrow {
+        color: var(--bee-honey);
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1;
+        padding: 0 6px;
+        flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+        .bee-flow-step {
+            width: 100%;
+        }
+
+        .bee-flow-box {
+            max-width: none;
+            flex-grow: 1;
+        }
+    }
 </style>
 
 <!-- HEADER FISSA -->
 <header class="bee-docs-header">
     <a href="#" class="bee-header-logo">
-        <span class="bee-header-title">Documentazione mettere la classe</span>
+        <span class="bee-header-title">BeeJoystick</span>
     </a>
-    <span class="bee-header-badge">v2.2.0</span>
+    <span class="bee-header-badge">v2.10.9</span>
 </header>
 
 <!-- CONTENITORE PRINCIPALE -->
@@ -783,94 +875,226 @@
 
 
     <!-- AREA CONTENUTI (TUTTI I MODULI VANNO QUI DENTRO) -->
-    <main class="bee-docs-content">
+            <main class="bee-docs-content">
 
-        <!-- SEZIONE 1 -->
-        <h2 class="bee-section-title"></h2>
+        <div
+            style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
+            <div>
+                <h2 class="bee-section-title" style="margin: 0;">BeeJoystick — Documentazione Tecnica</h2>
+                <p style="margin-top: 5px;">Stick in basso a sinistra:
+                    dito o mouse, frecce e WASD
+                </p>
+            </div>
+            <img src="https://beeenginejs.com/wp-content/uploads/2026/09/Gemini_Generated_Image_bg7xjjbg7xjjbg7x-1-1.jpg"
+                alt="BeeEngine Mascot" width="80" height="80" style="width: 80px; height: auto; flex-shrink: 0;">
+        </div>
 
-        <div class="bee-class-card" id="radme">****>>>>>>>> mettere id >>>>>>>>>>*****
-            <h3> </h3>
+        <div class="bee-class-card" id="BeeJoystick">
 
-            <p></p>
+            <h3>📁 Panoramica</h3>
 
-            <p> </p>
+            <p><code>BeeJoystick</code> è lo stick virtuale.
+                Vive in <code>src/input/BeeJoystick.js</code>.
+                Non parte da solo:
+                <code>gioco.enableJoystick()</code> lo crea,
+                distrugge il controllo touch precedente
+                e il loop lo disegna dopo il
+                <code>restore</code> della camera, in pixel
+                del canvas.</p>
 
-            <p>📁 </p>
+            <p>La base sta in basso a sinistra.
+                <code>margin</code> 35, <code>radius</code> 45,
+                <code>knobRadius</code> 18,
+                <code>deadZone</code> 10.
+                Si possono riassegnare dopo:
+                il disegno successivo li rilegge.
+                <code>baseX</code> è
+                <code>margin + radius</code>.
+                <code>baseY</code> è l'altezza del canvas
+                meno <code>margin + radius</code>.</p>
 
-            <div class="bee-code-block"></div>
+            <p>Il punto vale se dista dalla base al massimo
+                <code>radius + 20</code>. Il pomello non esce
+                dal raggio. Oltre la dead zone lo stick
+                accende una coppia:
+                <code>ArrowLeft</code> e <code>KeyA</code>,
+                <code>ArrowRight</code> e <code>KeyD</code>,
+                <code>ArrowUp</code> e <code>KeyW</code>,
+                <code>ArrowDown</code> e <code>KeyS</code>.
+                Nel canvas la y cresce verso il basso:
+                il puntatore sopra la base è su.</p>
 
-            <p>📁</p>
+            <div class="bee-code-block">gioco<span class="token punctuation">.</span><span
+                    class="token function">enableJoystick</span><span class="token punctuation">(</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
 
-            <div class="bee-code-block"></div>
+<span class="token keyword">function</span> <span class="token function">update</span><span
+                    class="token punctuation">(</span>dt<span class="token punctuation">,</span> input<span
+                    class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>input<span
+                    class="token punctuation">.</span><span class="token function">isPressed</span><span
+                    class="token punctuation">(</span><span class="token string">'ArrowLeft'</span><span
+                    class="token punctuation">)</span> <span class="token operator">||</span> input<span
+                    class="token punctuation">.</span><span class="token function">isPressed</span><span
+                    class="token punctuation">(</span><span class="token string">'KeyA'</span><span
+                    class="token punctuation">))</span> x <span class="token operator">-=</span> <span
+                    class="token number">180</span> <span class="token operator">*</span> dt<span
+                    class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>input<span
+                    class="token punctuation">.</span><span class="token function">isPressed</span><span
+                    class="token punctuation">(</span><span class="token string">'ArrowRight'</span><span
+                    class="token punctuation">)</span> <span class="token operator">||</span> input<span
+                    class="token punctuation">.</span><span class="token function">isPressed</span><span
+                    class="token punctuation">(</span><span class="token string">'KeyD'</span><span
+                    class="token punctuation">))</span> x <span class="token operator">+=</span> <span
+                    class="token number">180</span> <span class="token operator">*</span> dt<span
+                    class="token punctuation">;</span>
+<span class="token punctuation">}</span></div>
 
-            <p>📁</p>
+            <h3>📁 Presa</h3>
 
-            <div class="bee-code-block"> </div>
+            <div class="bee-flow" role="region" aria-label="Flusso BeeJoystick">
+                <p class="bee-flow-caption">Un solo controllo
+                    alla volta. Il secondo dito, o il mouse
+                    mentre c'è un dito, non entra.</p>
+                <ol class="bee-flow-row">
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>presa</strong>
+                            Il dito, o il tasto sinistro,
+                            parte dentro
+                            <code>radius + 20</code>.
+                            <code>active</code> diventa true.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>direzione</strong>
+                            Oltre la dead zone si accende
+                            la coppia di quell'asse.
+                            Il valore uguale a
+                            <code>deadZone</code> non basta:
+                            serve strettamente oltre.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box bee-flow-read"><strong>rilascio</strong>
+                            Fine del dito, mouse su,
+                            o il puntatore che esce dalla
+                            finestra. Pomello al centro,
+                            otto tasti spenti.</span>
+                    </li>
+                </ol>
+            </div>
+        </div>
 
-            <p>📁</p>
+        <div class="bee-class-card bee-ladybug" id="BeeJoystick-note">
+            <h3>📁 Dove è facile sbagliare</h3>
 
-            <div class="bee-code-block"></div>
+            <p><strong>Mouse e dito non si mischiano.</strong>
+                <code>mousedown</code> è sul canvas.
+                <code>mousemove</code> e
+                <code>mouseup</code> sono sulla window,
+                così il pomello segue anche fuori dalla
+                base. Il destro si ignora.
+                Un mouse con
+                <code>firesTouchEvents</code> si ignora:
+                quel gesto lo prende il dito.
+                <code>touchId</code> è l'id del dito;
+                col mouse resta <code>null</code>.</p>
 
-            <p>📁</p>
+            <p><strong>Le coordinate sono del bitmap.</strong>
+                <code>(client - rect) * (canvas / rettangolo CSS)</code>.
+                Se il rettangolo CSS ha lato 0, il divisore
+                usato è 1. Senza
+                <code>input.setKey</code> il pomello si
+                muove e non lancia.
+                <code>draw</code> senza <code>ctx</code>
+                esce.</p>
 
-            <div class="bee-code-block"></div>
+            <p><strong>Chi lo chiude.</strong>
+                <code>destroy</code> toglie i listener e
+                spegne le otto chiavi.
+                <code>BeeEngine.destroy</code> lo chiama
+                e mette <code>touchControls</code> a
+                <code>null</code>. Dopo, un
+                <code>mousedown</code> non riaccende
+                <code>ArrowLeft</code>.</p>
+        </div>
 
-            <p>📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p> 📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p> 📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p>📁</p>
-
-            <div class="bee-class-card"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"> </div>
-
-            <p> 📁 </p>
-
-            <div class="bee-code-block"></div>
-
-            <p>📁</p>
-
-            <div class="bee-code-block"></div>
-
-
-            <p>📁 </p>
-
-            <div class="bee-code-block"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-code-block"></div>
-
-            <p> 📁</p>
-
-            <div class="bee-code-block"> </div>
-
-
-
-
+        <div class="bee-class-card" id="BeeJoystick-api">
+            <h3>📁 Riepilogo API</h3>
+            <p>La base è bianca, il pomello è
+                <code>#ffcc00</code>. Da attivo l'alfa è
+                più alto. Due assi insieme sono una
+                diagonale: le due coppie stanno accese
+                nello stesso momento.</p>
+            <table class="bee-api-table">
+                <thead>
+                    <tr>
+                        <th>Membro</th>
+                        <th>Ritorna</th>
+                        <th>Scopo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>gioco.enableJoystick()</code></td>
+                        <td><code>BeeJoystick</code></td>
+                        <td>Crea lo stick, distrugge il
+                            controllo touch già presente
+                            e lo assegna a
+                            <code>touchControls</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>margin</code> /
+                            <code>radius</code> /
+                            <code>knobRadius</code> /
+                            <code>deadZone</code></td>
+                        <td><code>number</code></td>
+                        <td>35, 45, 18 e 10.
+                            La base e il colpo li
+                            rileggono al movimento e al
+                            disegno.</td>
+                    </tr>
+                    <tr>
+                        <td><code>baseX</code> /
+                            <code>baseY</code> /
+                            <code>stickX</code> /
+                            <code>stickY</code></td>
+                        <td><code>number</code></td>
+                        <td>Centro della base e centro
+                            del pomello, in pixel del
+                            bitmap.</td>
+                    </tr>
+                    <tr>
+                        <td><code>active</code> /
+                            <code>touchId</code></td>
+                        <td></td>
+                        <td><code>active</code> è true
+                            durante la presa.
+                            <code>touchId</code> è
+                            l'identifier del dito, oppure
+                            <code>null</code> se comanda
+                            il mouse.</td>
+                    </tr>
+                    <tr>
+                        <td><code>draw(ctx)</code></td>
+                        <td></td>
+                        <td>Base e pomello. Senza
+                            <code>ctx</code>: return.
+                            Lo chiama il loop, dopo la
+                            camera.</td>
+                    </tr>
+                    <tr>
+                        <td><code>destroy()</code></td>
+                        <td></td>
+                        <td>Toglie touch, mouse e
+                            resize. Spegne le otto
+                            chiavi. Il destroy del motore
+                            lo chiama.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
     </main>
 
