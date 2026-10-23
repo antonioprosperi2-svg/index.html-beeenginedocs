@@ -613,6 +613,7 @@
             white-space: nowrap;
         }
     }
+
     /* ==========================================
        5. FLUSSO (solo questa pagina)
        ========================================== */
@@ -833,7 +834,9 @@
         <details>
             <summary>📁 input</summary>
             <ul>
-                <li><a href="#BeeButton">BeeButton.js</a></li>
+                <li><a
+                        href="https://beeenginejs.com/pulsante-su-canvas-in-javascript-click-hover-e-ui/">BeeButton.js</a>
+                </li>
                 <li><a href="#BeeInput" class="is-current">BeeInput.js</a></li>
                 <li><a href="#BeeJoystick">BeeJoystick.js</a></li>
                 <li><a href="#BeeTouchButton">BeeTouchButton.js</a></li>
@@ -875,7 +878,7 @@
 
 
     <!-- AREA CONTENUTI (TUTTI I MODULI VANNO QUI DENTRO) -->
-            <main class="bee-docs-content">
+    <main class="bee-docs-content">
 
         <div
             style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
@@ -900,7 +903,8 @@
                 Il motore la costruisce sul canvas
                 (<code>gioco.input</code>) e a fine frame
                 chiama <code>endFrame()</code>, anche in
-                pausa.</p>
+                pausa.
+            </p>
 
             <p>I tasti stanno su due strati.
                 La tastiera tiene il code
@@ -912,24 +916,26 @@
                 <code>setKey</code> tiene i tasti virtuali,
                 quelli di joystick e pulsanti touch.
                 <code>isPressed</code> è true se almeno uno
-                dei due strati è giù.</p>
+                dei due strati è giù.
+            </p>
 
             <p><code>wasPressed</code> è true solo nel frame
                 in cui quel nome passa da spento a premuto.
                 <code>endFrame</code> spegne l'edge.
                 Il tasto tenuto resta in
-                <code>isPressed</code>.</p>
+                <code>isPressed</code>.
+            </p>
 
             <div class="bee-code-block"><span class="token keyword">function</span> <span
                     class="token function">update</span><span class="token punctuation">(</span>dt<span
                     class="token punctuation">,</span> input<span class="token punctuation">)</span> <span
                     class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>input<span
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>input<span
                     class="token punctuation">.</span><span class="token function">wasPressed</span><span
                     class="token punctuation">(</span><span class="token string">'Space'</span><span
                     class="token punctuation">))</span> salto <span class="token operator">=</span> <span
                     class="token boolean">true</span><span class="token punctuation">;</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>input<span
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>input<span
                     class="token punctuation">.</span><span class="token function">isPressed</span><span
                     class="token punctuation">(</span><span class="token string">'ArrowRight'</span><span
                     class="token punctuation">)</span> <span class="token operator">||</span> input<span
@@ -937,14 +943,16 @@
                     class="token punctuation">(</span><span class="token string">'KeyD'</span><span
                     class="token punctuation">))</span> vx <span class="token operator">=</span> <span
                     class="token number">180</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span></div>
+                <span class="token punctuation">}</span>
+            </div>
 
             <h3>📁 Frame</h3>
 
             <div class="bee-flow" role="region" aria-label="Flusso BeeInput">
                 <p class="bee-flow-caption">L'edge si legge
                     durante update e draw. Poi
-                    <code>endFrame</code> lo azzera.</p>
+                    <code>endFrame</code> lo azzera.
+                </p>
                 <ol class="bee-flow-row">
                     <li class="bee-flow-step">
                         <span class="bee-flow-box"><strong>pressione</strong>
@@ -991,7 +999,8 @@
                 di quel <code>keydown</code>, e resta true
                 se è ancora giù
                 <code>ShiftLeft</code> o
-                <code>ShiftRight</code>.</p>
+                <code>ShiftRight</code>.
+            </p>
 
             <p><strong>Pausa.</strong>
                 In pausa scene ed entità non fanno update.
@@ -1000,7 +1009,8 @@
                 <code>endFrame</code> consuma l'edge.
                 Un tap solo in quel frame non arriva alle
                 entità dopo. Un tasto ancora tenuto si
-                rilegge con <code>isPressed</code>.</p>
+                rilegge con <code>isPressed</code>.
+            </p>
 
             <p><strong>Mouse e dita.</strong>
                 <code>mousedown</code> è sul canvas, qualunque
@@ -1016,7 +1026,8 @@
                 <code>firesTouchEvents</code> si ignora.
                 L'ultimo dito spegne
                 <code>pressed</code> e prende la posizione
-                da <code>changedTouches</code>.</p>
+                da <code>changedTouches</code>.
+            </p>
         </div>
 
         <div class="bee-class-card" id="BeeInput-api">
@@ -1026,7 +1037,8 @@
                 da <code>isPressed</code> e
                 <code>wasPressed</code>.
                 Senza canvas il costruttore lancia
-                <code>BeeInput: canvas required</code>.</p>
+                <code>BeeInput: canvas required</code>.
+            </p>
             <table class="bee-api-table">
                 <thead>
                     <tr>
@@ -1049,7 +1061,8 @@
                         <td>True se il code, il carattere
                             ricordato o
                             <code>setKey</code> tengono
-                            <code>name</code>.</td>
+                            <code>name</code>.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>wasPressed(name)</code></td>
@@ -1057,7 +1070,8 @@
                         <td>True solo nel frame in cui
                             <code>name</code> è passato a
                             giù. <code>endFrame</code> lo
-                            spegne.</td>
+                            spegne.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>setKey(name, down)</code></td>
@@ -1068,7 +1082,8 @@
                             Non toglie la tastiera, e la
                             tastiera non toglie lui.
                             Se prima era spento, segna
-                            l'edge.</td>
+                            l'edge.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>endFrame()</code></td>
@@ -1077,7 +1092,8 @@
                             <code>mouse.wasPressed</code>.
                             Non rilascia i tasti tenuti né
                             <code>mouse.pressed</code>.
-                            Lo chiama il loop.</td>
+                            Lo chiama il loop.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>getCanvasPosition(clientX, clientY)</code></td>
@@ -1086,7 +1102,8 @@
                             <code>(client - rect) * (canvas / rect)</code>.
                             Rettangolo <code>0×0</code> o
                             scala non finita:
-                            <code>{ x: 0, y: 0 }</code>.</td>
+                            <code>{ x: 0, y: 0 }</code>.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>mouse</code></td>
@@ -1096,7 +1113,8 @@
                             <code>wasPressed</code>.
                             Il primo dito copia
                             <code>x</code> e <code>y</code>
-                            sul mouse.</td>
+                            sul mouse.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>touches</code></td>
@@ -1105,7 +1123,8 @@
                             <code>id</code> è
                             <code>identifier</code>.
                             Lista vuota quando non c'è
-                            nessun dito.</td>
+                            nessun dito.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>destroy()</code></td>
@@ -1114,7 +1133,8 @@
                             <code>BeeEngine.destroy</code>
                             lo chiama. Dopo, un
                             <code>keydown</code> non cambia
-                            <code>isPressed</code>.</td>
+                            <code>isPressed</code>.
+                        </td>
                     </tr>
                 </tbody>
             </table>
