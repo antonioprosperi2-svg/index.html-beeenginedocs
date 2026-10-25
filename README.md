@@ -33,6 +33,7 @@ Questo spazio raccoglie le guide, gli esempi pratici e le spiegazioni di tutti i
 * **🔘 BeeButton (v2.10.6):** Pulsante sul pass ui (`src/input/BeeButton.html`): click al rilascio, `input.mouse`, rettangolo in pixel schermo.
 * **⌨️ BeeInput (v2.10.7):** Tastiera, mouse e touch (`src/input/BeeInput.html`): `isPressed` e `wasPressed`, `setKey` a parte, `endFrame` a fine loop.
 * **🕹️ BeeJoystick (v2.10.9):** Stick in basso a sinistra (`src/input/BeeJoystick.html`): dito o mouse, coppie freccia e WASD, `enableJoystick()`.
+* **⭕ BeeTouchButton (v2.10.10):** Cerchio su schermo (`src/input/BeeTouchButton.html`): `isPressed` finché il pointer è giù, `render` dopo la camera.
 * **🐝 BeeEngine:** Facade e core loop (`src/core/BeeEngine.html`): `start`/`stop`/`pause`, scene vs `addEntity`, tween/timer/prefab/pathfinder.
 * **⏱ BeeTime:** Orologio unico del core loop (`src/core/BeeTime.html`): `dt` di simulazione, `unscaledDt` reale, pausa/F4, `timeScale`, accumulator per `BeePhysicsWorld`.
 * **⏱ BeeTimer:** Cooldown e loop di evento (`src/core/BeeTimer.html`): `gioco.after` / `gioco.every`, clock `gioco.timers`, assi scaled/unscaled.

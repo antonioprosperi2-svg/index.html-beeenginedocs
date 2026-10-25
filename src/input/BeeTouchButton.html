@@ -613,14 +613,106 @@
             white-space: nowrap;
         }
     }
+    /* ==========================================
+       5. FLUSSO (solo questa pagina)
+       ========================================== */
+    .bee-flow {
+        margin: 16px 0 4px 0;
+        padding: 16px 16px 14px 16px;
+        background: var(--bee-surface-2);
+        border: 1px solid var(--bee-line);
+        border-left: 4px solid var(--bee-honey);
+        border-radius: 10px;
+    }
+
+    .bee-flow-caption {
+        color: var(--bee-text-dim);
+        font-size: 13.5px;
+        line-height: 1.55;
+        margin: 0 0 12px 0;
+    }
+
+    .bee-flow-row {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: stretch;
+        gap: 8px 0;
+        margin: 0;
+        padding: 0;
+    }
+
+    .bee-flow-step {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        max-width: 100%;
+    }
+
+    .bee-flow-box {
+        display: block;
+        min-width: 7.5rem;
+        max-width: 14rem;
+        padding: 10px 12px;
+        background: var(--bee-surface);
+        border: 1px solid var(--bee-line-honey);
+        border-radius: 8px;
+        color: var(--bee-text);
+        font-size: 13.5px;
+        line-height: 1.45;
+    }
+
+    .bee-flow-box strong {
+        display: block;
+        color: var(--bee-honey);
+        font-family: var(--bee-mono);
+        font-size: 12.5px;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+        margin-bottom: 4px;
+    }
+
+    .bee-flow-box.bee-flow-read {
+        border-color: rgba(239, 68, 68, 0.45);
+    }
+
+    .bee-flow-box.bee-flow-read strong {
+        color: #ff8f8f;
+    }
+
+    .bee-flow-box code {
+        font-family: var(--bee-mono);
+        font-size: 12.5px;
+        color: #fcd34d;
+    }
+
+    .bee-flow-arrow {
+        color: var(--bee-honey);
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1;
+        padding: 0 6px;
+        flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+        .bee-flow-step {
+            width: 100%;
+        }
+
+        .bee-flow-box {
+            max-width: none;
+            flex-grow: 1;
+        }
+    }
 </style>
 
 <!-- HEADER FISSA -->
 <header class="bee-docs-header">
     <a href="#" class="bee-header-logo">
-        <span class="bee-header-title">Documentazione mettere la classe</span>
+        <span class="bee-header-title">BeeTouchButton</span>
     </a>
-    <span class="bee-header-badge">v2.2.0</span>
+    <span class="bee-header-badge">v2.10.10</span>
 </header>
 
 <!-- CONTENITORE PRINCIPALE -->
@@ -792,94 +884,210 @@
 
 
     <!-- AREA CONTENUTI (TUTTI I MODULI VANNO QUI DENTRO) -->
-    <main class="bee-docs-content">
+            <main class="bee-docs-content">
 
-        <!-- SEZIONE 1 -->
-        <h2 class="bee-section-title"></h2>
+        <div
+            style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
+            <div>
+                <h2 class="bee-section-title" style="margin: 0;">BeeTouchButton — Documentazione Tecnica</h2>
+                <p style="margin-top: 5px;">Cerchio su schermo:
+                    <code class="bee-inline-code">isPressed</code>,
+                    lo disegni tu
+                </p>
+            </div>
+            <img src="https://beeenginejs.com/wp-content/uploads/2026/09/Gemini_Generated_Image_bg7xjjbg7xjjbg7x-1-1.jpg"
+                alt="BeeEngine Mascot" width="80" height="80" style="width: 80px; height: auto; flex-shrink: 0;">
+        </div>
 
-        <div class="bee-class-card" id="radme">****>>>>>>>> mettere id >>>>>>>>>>*****
-            <h3> </h3>
+        <div class="bee-class-card" id="BeeTouchButton">
 
-            <p></p>
+            <h3>📁 Panoramica</h3>
 
-            <p> </p>
+            <p><code>BeeTouchButton</code> è un cerchio che
+                tieni premuto. Vive in
+                <code>src/input/BeeTouchButton.js</code>.
+                Non è <code>BeeButton</code> e non chiama
+                <code>setKey</code>. Il loop non lo disegna
+                e non lo legge: in update guardi
+                <code>isPressed</code>, e
+                <code>render</code> la chiami tu dopo il
+                <code>restore</code> della camera.</p>
 
-            <p>📁 </p>
+            <p><code>x</code> e <code>y</code> sono il centro,
+                in pixel del bitmap.
+                <code>radius</code> di default è 30,
+                <code>label</code> è <code>A</code>.
+                Il punto è dentro se la distanza dal centro
+                è minore o uguale al raggio. Vale il dito
+                e il mouse, anche il destro: l'evento è
+                <code>pointerdown</code>.</p>
 
-            <div class="bee-code-block"></div>
+            <div class="bee-code-block"><span class="token keyword">const</span> salto <span
+                    class="token operator">=</span> <span class="token keyword">new</span> <span
+                    class="token class-name">BeeTouchButton</span><span class="token punctuation">({</span>
+    canvas<span class="token operator">:</span> gioco<span class="token punctuation">.</span>canvas<span
+                    class="token punctuation">,</span>
+    x<span class="token operator">:</span> <span class="token number">700</span><span
+                    class="token punctuation">,</span>
+    y<span class="token operator">:</span> <span class="token number">500</span><span
+                    class="token punctuation">,</span>
+    radius<span class="token operator">:</span> <span class="token number">35</span><span
+                    class="token punctuation">,</span>
+    label<span class="token operator">:</span> <span class="token string">'A'</span>
+<span class="token punctuation">})</span><span class="token punctuation">;</span>
 
-            <p>📁</p>
+<span class="token keyword">function</span> <span class="token function">update</span><span
+                    class="token punctuation">(</span><span class="token punctuation">)</span> <span
+                    class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>salto<span
+                    class="token punctuation">.</span>isPressed <span class="token operator">&amp;&amp;</span> <span
+                    class="token operator">!</span>premutoPrima<span class="token punctuation">)</span> giocatore<span
+                    class="token punctuation">.</span><span class="token function">jump</span><span
+                    class="token punctuation">(</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+    premutoPrima <span class="token operator">=</span> salto<span class="token punctuation">.</span>isPressed<span
+                    class="token punctuation">;</span>
+<span class="token punctuation">}</span></div>
 
-            <div class="bee-code-block"></div>
+            <h3>📁 Pressione</h3>
 
-            <p>📁</p>
+            <div class="bee-flow" role="region" aria-label="Flusso BeeTouchButton">
+                <p class="bee-flow-caption"><code>isPressed</code>
+                    resta true finché quel pointer non si
+                    alza, anche se esce dal cerchio.</p>
+                <ol class="bee-flow-row">
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>presa</strong>
+                            <code>pointerdown</code> sul
+                            canvas, dentro il raggio.
+                            <code>isPressed</code> true e
+                            <code>pointerId</code> salvato.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>tenuta</strong>
+                            Nessun edge. Il gioco, se vuole
+                            un salto singolo, ricorda il
+                            frame prima. Un altro cerchio,
+                            se il punto non è dentro,
+                            resta spento.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box bee-flow-read"><strong>rilascio</strong>
+                            <code>pointerup</code> o
+                            <code>pointercancel</code> sulla
+                            window, solo se
+                            <code>pointerId</code> coincide.</span>
+                    </li>
+                </ol>
+            </div>
+        </div>
 
-            <div class="bee-code-block"> </div>
+        <div class="bee-class-card bee-ladybug" id="BeeTouchButton-note">
+            <h3>📁 Dove è facile sbagliare</h3>
 
-            <p>📁</p>
+            <p><strong>Lo spazio è lo schermo.</strong>
+                <code>render</code> dopo il
+                <code>restore</code>. Se la chiami sotto
+                la camera, il cerchio scrolla col mondo
+                mentre il colpo resta in pixel del canvas.
+                Le coordinate sono
+                <code>(client - rect) * (canvas / rettangolo CSS)</code>.
+                Lato CSS 0, o scala non finita: quel punto
+                non è un hit e non lancia.</p>
 
-            <div class="bee-code-block"></div>
+            <p><strong>Un pointer alla volta, per cerchio.</strong>
+                Un <code>pointerdown</code> nuovo dentro
+                lo stesso cerchio sostituisce
+                <code>pointerId</code>. Il rilascio del
+                pointer precedente non lo spegne più.
+                Se il punto cade in due cerchi, si accendono
+                entrambi. Senza canvas il costruttore lancia
+                <code>BeeTouchButton: canvas required</code>.</p>
 
-            <p>📁</p>
+            <p><strong>Chiusura.</strong>
+                <code>destroy</code> toglie i listener e
+                mette <code>isPressed</code> a false.
+                Dopo, un <code>pointerdown</code> non
+                riaccende il pulsante.
+                <code>render</code> senza <code>ctx</code>
+                esce.</p>
+        </div>
 
-            <div class="bee-code-block"></div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p> 📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p> 📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p>📁</p>
-
-            <div class="bee-class-card"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"> </div>
-
-            <p> 📁 </p>
-
-            <div class="bee-code-block"></div>
-
-            <p>📁</p>
-
-            <div class="bee-code-block"></div>
-
-
-            <p>📁 </p>
-
-            <div class="bee-code-block"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-code-block"></div>
-
-            <p> 📁</p>
-
-            <div class="bee-code-block"> </div>
-
-
-
-
+        <div class="bee-class-card" id="BeeTouchButton-api">
+            <h3>📁 Riepilogo API</h3>
+            <p>A riposo il riempimento è nero al 40% e il
+                testo è bianco. Premuto, il riempimento è
+                bianco all'80% e il testo è nero. Il bordo
+                è bianco. Il font è
+                <code>bold</code>,
+                <code>radius * 0.8</code> pixel,
+                <code>sans-serif</code>, centrato.</p>
+            <table class="bee-api-table">
+                <thead>
+                    <tr>
+                        <th>Membro</th>
+                        <th>Ritorna</th>
+                        <th>Scopo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>new BeeTouchButton({ canvas, x, y, radius?, label? })</code></td>
+                        <td><code>BeeTouchButton</code></td>
+                        <td>Centro <code>x</code>,
+                            <code>y</code>.
+                            <code>radius</code> 30,
+                            <code>label</code>
+                            <code>A</code>.
+                            <code>isPressed</code> false.</td>
+                    </tr>
+                    <tr>
+                        <td><code>isPressed</code></td>
+                        <td><code>boolean</code></td>
+                        <td>True dal
+                            <code>pointerdown</code> interno
+                            fino al rilascio di quel
+                            <code>pointerId</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>pointerId</code></td>
+                        <td><code>number | null</code></td>
+                        <td>Id del pointer che tiene il
+                            cerchio. <code>null</code> se
+                            è su.</td>
+                    </tr>
+                    <tr>
+                        <td><code>x</code> /
+                            <code>y</code> /
+                            <code>radius</code> /
+                            <code>label</code></td>
+                        <td></td>
+                        <td>Centro, raggio e testo.
+                            Il colpo e il disegno leggono
+                            i valori di adesso.</td>
+                    </tr>
+                    <tr>
+                        <td><code>render(ctx)</code></td>
+                        <td></td>
+                        <td>Cerchio e etichetta. Senza
+                            <code>ctx</code>: return.
+                            Chiamata dal gioco, dopo la
+                            camera.</td>
+                    </tr>
+                    <tr>
+                        <td><code>destroy()</code></td>
+                        <td></td>
+                        <td>Toglie
+                            <code>pointerdown</code>,
+                            <code>pointerup</code> e
+                            <code>pointercancel</code>.
+                            <code>isPressed</code> false.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
     </main>
 
