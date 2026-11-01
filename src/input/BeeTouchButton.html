@@ -880,6 +880,7 @@
             <ul>
                 <li><a href="#BeeLocale">BeeLocale.js</a></li>
                 <li><a href="#BeeInventory">BeeInventory.js</a></li>
+                <li><a href="#BeeDialogue">BeeDialogue.js</a></li>
             </ul>
         </details>
     </aside>
@@ -996,7 +997,7 @@
                 <code>render</code> dopo il
                 <code>restore</code>. Se la chiami sotto
                 la camera, il cerchio scrolla col mondo
-                mentre il colpo resta in pixel del canvas.
+                mentre il punto toccato resta in pixel del canvas.
                 Le coordinate sono
                 <code>(client - rect) * (canvas / rettangolo CSS)</code>.
                 Lato CSS 0, o scala non finita: quel punto
@@ -1077,7 +1078,7 @@
                         </td>
                         <td></td>
                         <td>Centro, raggio e testo.
-                            Il colpo e il disegno leggono
+                            Hit test e disegno leggono
                             i valori di adesso.</td>
                     </tr>
                     <tr>
