@@ -713,7 +713,7 @@
     <a href="#" class="bee-header-logo">
         <span class="bee-header-title">BeeTouchControls</span>
     </a>
-    <span class="bee-header-badge">v2.11.2</span>
+    <span class="bee-header-badge">v2.11.3</span>
 </header>
 
 <!-- CONTENITORE PRINCIPALE -->
@@ -1044,8 +1044,8 @@ eroe<span class="token punctuation">.</span>update <span class="token operator">
                 accendono col clic: per provarli usa la modalità
                 touch dei devtools. <code>draw</code> è chiamata dal
                 gioco; se crei l'istanza a mano, la disegni tu.
-                <code>draw</code> senza <code>ctx</code> lancia, a differenza
-                di <code>BeeTouchButton.render</code>.
+                <code>draw</code> senza <code>ctx</code> esce in silenzio, come
+                <code>BeeTouchButton.render</code>.
             </p>
 
             <p><strong>Il tocco su un pulsante non è un clic.</strong>
@@ -1064,12 +1064,20 @@ eroe<span class="token punctuation">.</span>update <span class="token operator">
                 usano ancora il blocker.
             </p>
 
-            <p><strong>I tasti si cambiano in <code>keys</code>.</strong>
+            <p><strong>I tasti si cambiano con <code>setButtonKeys</code>.</strong>
                 Il costruttore mette in ogni pulsante sia
                 <code>key</code> sia <code>keys</code>. Il controllo legge
                 <code>keys</code> quando è un array non vuoto;
                 <code>key</code> conta solo se <code>keys</code> manca o è
-                vuoto. Cambiare solo <code>key</code> non fa niente.
+                vuoto. Per questo scrivere
+                <code>buttons.action.key = 'KeyX'</code> non ha effetto:
+                l'azione continua ad accendere <code>Space</code>. Usa
+                <code>setButtonKeys('action', ['KeyX'])</code>: il primo
+                tasto diventa <code>key</code> e l'array è copiato in
+                <code>keys</code>. Se il pulsante è tenuto, i vecchi tasti
+                si rilasciano subito (restano giù solo se li accende
+                ancora un altro pulsante premuto) e i nuovi si
+                accendono al prossimo evento touch di quel dito.
             </p>
 
             <p><strong>Le posizioni si ricalcolano poco.</strong>
@@ -1104,8 +1112,8 @@ eroe<span class="token punctuation">.</span>update <span class="token operator">
 
             <div class="bee-code-block"><span class="token keyword">const</span> controlli <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeeTouchControls</span><span class="token punctuation">(</span>gioco<span class="token punctuation">.</span>canvas<span class="token punctuation">,</span> gioco<span class="token punctuation">.</span>input<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-<span class="token comment">// i tasti si cambiano in keys, non in key</span>
-controlli<span class="token punctuation">.</span>buttons<span class="token punctuation">.</span>action<span class="token punctuation">.</span>keys <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'KeyX'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
+<span class="token comment">// non buttons.action.key = 'KeyX': non ha effetto</span>
+controlli<span class="token punctuation">.</span><span class="token function">setButtonKeys</span><span class="token punctuation">(</span><span class="token string">'action'</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token string">'KeyX'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
 scena<span class="token punctuation">.</span>draw <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>ctx<span class="token punctuation">)</span> <span class="token punctuation">{</span>
     controlli<span class="token punctuation">.</span><span class="token function">draw</span><span class="token punctuation">(</span>ctx<span class="token punctuation">)</span><span class="token punctuation">;</span>
@@ -1150,13 +1158,25 @@ scena<span class="token punctuation">.</span>draw <span class="token operator">=
                         <td><code>left</code>, <code>right</code>, <code>up</code>,
                             <code>down</code>, <code>action</code>. Ognuno ha
                             <code>key</code>, <code>keys</code>, <code>x</code>,
-                            <code>y</code>.</td>
+                            <code>y</code>. Per i tasti usa
+                            <code>setButtonKeys</code>: scrivere
+                            <code>key</code> a mano non ha effetto.</td>
                     </tr>
                     <tr>
                         <td><code>activeTouches</code></td>
                         <td><code>object</code></td>
                         <td><code>identifier</code> del dito → nome del
                             pulsante su cui sta. Vuoto a riposo.</td>
+                    </tr>
+                    <tr>
+                        <td><code>setButtonKeys(nome, tasti)</code></td>
+                        <td></td>
+                        <td>Cambia i tasti di un pulsante. <code>tasti</code>
+                            è un array non vuoto di stringhe non vuote:
+                            il primo diventa <code>key</code>, l'array è
+                            copiato in <code>keys</code>. Pulsante sconosciuto
+                            o array non valido: non fa niente. Prima
+                            rilascia i tasti che il pulsante tiene.</td>
                     </tr>
                     <tr>
                         <td><code>updatePositions()</code></td>
@@ -1197,7 +1217,7 @@ scena<span class="token punctuation">.</span>draw <span class="token operator">=
                         <td></td>
                         <td>Disegna i cinque cerchi. Chiamata dal
                             loop se vive in <code>gioco.touchControls</code>.
-                            Senza <code>ctx</code> lancia.</td>
+                            Senza <code>ctx</code> esce in silenzio.</td>
                     </tr>
                     <tr>
                         <td><code>destroy()</code></td>
