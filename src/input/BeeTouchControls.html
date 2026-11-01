@@ -927,13 +927,38 @@
                 chi arriva dopo distrugge quello di prima.
             </p>
 
-            <div class="bee-code-block"><span class="token keyword">const</span> controlli <span class="token operator">=</span> gioco<span class="token punctuation">.</span><span class="token function">enableTouchControls</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <div class="bee-code-block"><span class="token keyword">const</span> controlli <span
+                    class="token operator">=</span> gioco<span class="token punctuation">.</span><span
+                    class="token function">enableTouchControls</span><span class="token punctuation">(</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
 
-eroe<span class="token punctuation">.</span>update <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>dt<span class="token punctuation">,</span> input<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>input<span class="token punctuation">.</span><span class="token function">isPressed</span><span class="token punctuation">(</span><span class="token string">'ArrowLeft'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> this<span class="token punctuation">.</span>worldX <span class="token operator">-</span><span class="token operator">=</span> <span class="token number">200</span> <span class="token operator">*</span> dt<span class="token punctuation">;</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>input<span class="token punctuation">.</span><span class="token function">isPressed</span><span class="token punctuation">(</span><span class="token string">'ArrowRight'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> this<span class="token punctuation">.</span>worldX <span class="token operator">+</span><span class="token operator">=</span> <span class="token number">200</span> <span class="token operator">*</span> dt<span class="token punctuation">;</span>
-    <span class="token keyword">if</span> <span class="token punctuation">(</span>input<span class="token punctuation">.</span><span class="token function">wasPressed</span><span class="token punctuation">(</span><span class="token string">'Space'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> this<span class="token punctuation">.</span><span class="token function">jump</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span class="token punctuation">;</span></div>
+                eroe<span class="token punctuation">.</span>update <span class="token operator">=</span> <span
+                    class="token keyword">function</span> <span class="token punctuation">(</span>dt<span
+                    class="token punctuation">,</span> input<span class="token punctuation">)</span> <span
+                    class="token punctuation">{</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>input<span
+                    class="token punctuation">.</span><span class="token function">isPressed</span><span
+                    class="token punctuation">(</span><span class="token string">'ArrowLeft'</span><span
+                    class="token punctuation">)</span><span class="token punctuation">)</span> this<span
+                    class="token punctuation">.</span>worldX <span class="token operator">-</span><span
+                    class="token operator">=</span> <span class="token number">200</span> <span
+                    class="token operator">*</span> dt<span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>input<span
+                    class="token punctuation">.</span><span class="token function">isPressed</span><span
+                    class="token punctuation">(</span><span class="token string">'ArrowRight'</span><span
+                    class="token punctuation">)</span><span class="token punctuation">)</span> this<span
+                    class="token punctuation">.</span>worldX <span class="token operator">+</span><span
+                    class="token operator">=</span> <span class="token number">200</span> <span
+                    class="token operator">*</span> dt<span class="token punctuation">;</span>
+                <span class="token keyword">if</span> <span class="token punctuation">(</span>input<span
+                    class="token punctuation">.</span><span class="token function">wasPressed</span><span
+                    class="token punctuation">(</span><span class="token string">'Space'</span><span
+                    class="token punctuation">)</span><span class="token punctuation">)</span> this<span
+                    class="token punctuation">.</span><span class="token function">jump</span><span
+                    class="token punctuation">(</span><span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+                <span class="token punctuation">}</span><span class="token punctuation">;</span>
+            </div>
 
             <h3>📁 Posizione e tasti</h3>
 
@@ -1110,14 +1135,28 @@ eroe<span class="token punctuation">.</span>update <span class="token operator">
                 mette <code>touchControls</code> a <code>null</code>.
             </p>
 
-            <div class="bee-code-block"><span class="token keyword">const</span> controlli <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeeTouchControls</span><span class="token punctuation">(</span>gioco<span class="token punctuation">.</span>canvas<span class="token punctuation">,</span> gioco<span class="token punctuation">.</span>input<span class="token punctuation">)</span><span class="token punctuation">;</span>
+            <div class="bee-code-block"><span class="token keyword">const</span> controlli <span
+                    class="token operator">=</span> <span class="token keyword">new</span> <span
+                    class="token class-name">BeeTouchControls</span><span class="token punctuation">(</span>gioco<span
+                    class="token punctuation">.</span>canvas<span class="token punctuation">,</span> gioco<span
+                    class="token punctuation">.</span>input<span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
 
-<span class="token comment">// non buttons.action.key = 'KeyX': non ha effetto</span>
-controlli<span class="token punctuation">.</span><span class="token function">setButtonKeys</span><span class="token punctuation">(</span><span class="token string">'action'</span><span class="token punctuation">,</span> <span class="token punctuation">[</span><span class="token string">'KeyX'</span><span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+                <span class="token comment">// non buttons.action.key = 'KeyX': non ha effetto</span>
+                controlli<span class="token punctuation">.</span><span class="token function">setButtonKeys</span><span
+                    class="token punctuation">(</span><span class="token string">'action'</span><span
+                    class="token punctuation">,</span> <span class="token punctuation">[</span><span
+                    class="token string">'KeyX'</span><span class="token punctuation">]</span><span
+                    class="token punctuation">)</span><span class="token punctuation">;</span>
 
-scena<span class="token punctuation">.</span>draw <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>ctx<span class="token punctuation">)</span> <span class="token punctuation">{</span>
-    controlli<span class="token punctuation">.</span><span class="token function">draw</span><span class="token punctuation">(</span>ctx<span class="token punctuation">)</span><span class="token punctuation">;</span>
-<span class="token punctuation">}</span><span class="token punctuation">;</span></div>
+                scena<span class="token punctuation">.</span>draw <span class="token operator">=</span> <span
+                    class="token keyword">function</span> <span class="token punctuation">(</span>ctx<span
+                    class="token punctuation">)</span> <span class="token punctuation">{</span>
+                controlli<span class="token punctuation">.</span><span class="token function">draw</span><span
+                    class="token punctuation">(</span>ctx<span class="token punctuation">)</span><span
+                    class="token punctuation">;</span>
+                <span class="token punctuation">}</span><span class="token punctuation">;</span>
+            </div>
         </div>
 
         <div class="bee-class-card" id="BeeTouchControls-api">
@@ -1144,7 +1183,8 @@ scena<span class="token punctuation">.</span>draw <span class="token operator">=
                             Calcola le posizioni, ascolta <code>resize</code>
                             e i quattro eventi touch, registra il
                             blocker. Lancia senza canvas o senza
-                            <code>input.setKey</code>.</td>
+                            <code>input.setKey</code>.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>btnSize</code> / <code>margin</code></td>
@@ -1160,7 +1200,8 @@ scena<span class="token punctuation">.</span>draw <span class="token operator">=
                             <code>key</code>, <code>keys</code>, <code>x</code>,
                             <code>y</code>. Per i tasti usa
                             <code>setButtonKeys</code>: scrivere
-                            <code>key</code> a mano non ha effetto.</td>
+                            <code>key</code> a mano non ha effetto.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>activeTouches</code></td>
@@ -1190,7 +1231,8 @@ scena<span class="token punctuation">.</span>draw <span class="token operator">=
                         <td><code>{ x, y } | null</code></td>
                         <td><code>(client - rect) * (canvas / rect)</code>.
                             <code>null</code> se il canvas non ha
-                            dimensione o il valore non è finito.</td>
+                            dimensione o il valore non è finito.
+                        </td>
                     </tr>
                     <tr>
                         <td><code>getButtonAt(x, y)</code></td>
