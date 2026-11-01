@@ -713,7 +713,7 @@
     <a href="#" class="bee-header-logo">
         <span class="bee-header-title">BeeInput</span>
     </a>
-    <span class="bee-header-badge">v2.10.7</span>
+    <span class="bee-header-badge">v2.11.2</span>
 </header>
 
 <!-- CONTENITORE PRINCIPALE -->
@@ -1037,6 +1037,21 @@
                 <code>pressed</code> e prende la posizione
                 da <code>changedTouches</code>.
             </p>
+
+            <p><strong>Pulsanti virtuali.</strong>
+                Un dito che nasce su un pulsante di
+                <code>BeeTouchControls</code> non è un clic:
+                non accende <code>pressed</code> né
+                <code>wasPressed</code> e non sposta
+                <code>mouse.x</code> e <code>mouse.y</code>.
+                Resta "del pulsante" finché non si alza, anche
+                se scivola fuori. Un dito nato fuori resta un
+                clic normale. <code>touches</code> li elenca
+                tutti. <code>BeeJoystick</code> e
+                <code>BeeTouchButton</code> non usano questo
+                filtro: un tocco su di loro muove ancora il
+                mouse.
+            </p>
         </div>
 
         <div class="bee-class-card" id="BeeInput-api">
@@ -1120,9 +1135,23 @@
                         <td><code>x</code>, <code>y</code>,
                             <code>pressed</code>,
                             <code>wasPressed</code>.
-                            Il primo dito copia
+                            Il primo dito che non è su un
+                            pulsante virtuale copia
                             <code>x</code> e <code>y</code>
                             sul mouse.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><code>addTouchBlocker(test)</code></td>
+                        <td><code>() =&gt; void</code></td>
+                        <td>Registra
+                            <code>(x, y) =&gt; boolean</code>
+                            in coordinate canvas. Un tocco che
+                            nasce dove risponde true non aggiorna
+                            <code>mouse</code>. Ritorna la
+                            funzione che lo toglie.
+                            <code>BeeTouchControls</code> lo
+                            registra da solo.
                         </td>
                     </tr>
                     <tr>
@@ -1138,7 +1167,7 @@
                     <tr>
                         <td><code>destroy()</code></td>
                         <td></td>
-                        <td>Toglie i listener.
+                        <td>Toglie i listener e i blocker.
                             <code>BeeEngine.destroy</code>
                             lo chiama. Dopo, un
                             <code>keydown</code> non cambia

@@ -613,14 +613,107 @@
             white-space: nowrap;
         }
     }
+
+    /* ==========================================
+       5. FLUSSO (solo questa pagina)
+       ========================================== */
+    .bee-flow {
+        margin: 16px 0 4px 0;
+        padding: 16px 16px 14px 16px;
+        background: var(--bee-surface-2);
+        border: 1px solid var(--bee-line);
+        border-left: 4px solid var(--bee-honey);
+        border-radius: 10px;
+    }
+
+    .bee-flow-caption {
+        color: var(--bee-text-dim);
+        font-size: 13.5px;
+        line-height: 1.55;
+        margin: 0 0 12px 0;
+    }
+
+    .bee-flow-row {
+        list-style: none;
+        display: flex;
+        flex-wrap: wrap;
+        align-items: stretch;
+        gap: 8px 0;
+        margin: 0;
+        padding: 0;
+    }
+
+    .bee-flow-step {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        max-width: 100%;
+    }
+
+    .bee-flow-box {
+        display: block;
+        min-width: 7.5rem;
+        max-width: 14rem;
+        padding: 10px 12px;
+        background: var(--bee-surface);
+        border: 1px solid var(--bee-line-honey);
+        border-radius: 8px;
+        color: var(--bee-text);
+        font-size: 13.5px;
+        line-height: 1.45;
+    }
+
+    .bee-flow-box strong {
+        display: block;
+        color: var(--bee-honey);
+        font-family: var(--bee-mono);
+        font-size: 12.5px;
+        font-weight: 600;
+        letter-spacing: 0.2px;
+        margin-bottom: 4px;
+    }
+
+    .bee-flow-box.bee-flow-read {
+        border-color: rgba(239, 68, 68, 0.45);
+    }
+
+    .bee-flow-box.bee-flow-read strong {
+        color: #ff8f8f;
+    }
+
+    .bee-flow-box code {
+        font-family: var(--bee-mono);
+        font-size: 12.5px;
+        color: #fcd34d;
+    }
+
+    .bee-flow-arrow {
+        color: var(--bee-honey);
+        font-size: 18px;
+        font-weight: 700;
+        line-height: 1;
+        padding: 0 6px;
+        flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+        .bee-flow-step {
+            width: 100%;
+        }
+
+        .bee-flow-box {
+            max-width: none;
+            flex-grow: 1;
+        }
+    }
 </style>
 
 <!-- HEADER FISSA -->
 <header class="bee-docs-header">
     <a href="#" class="bee-header-logo">
-        <span class="bee-header-title">Documentazione mettere la classe</span>
+        <span class="bee-header-title">BeeTouchControls</span>
     </a>
-    <span class="bee-header-badge">v2.2.0</span>
+    <span class="bee-header-badge">v2.11.2</span>
 </header>
 
 <!-- CONTENITORE PRINCIPALE -->
@@ -797,92 +890,325 @@
     <!-- AREA CONTENUTI (TUTTI I MODULI VANNO QUI DENTRO) -->
     <main class="bee-docs-content">
 
-        <!-- SEZIONE 1 -->
-        <h2 class="bee-section-title"></h2>
+        <div
+            style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
+            <div>
+                <h2 class="bee-section-title" style="margin: 0;">BeeTouchControls — Documentazione Tecnica</h2>
+                <p style="margin-top: 5px;">Croce e azione su schermo:
+                    <code class="bee-inline-code">setKey</code>,
+                    il gioco legge i tasti
+                </p>
+            </div>
+            <img src="https://beeenginejs.com/wp-content/uploads/2026/09/Gemini_Generated_Image_bg7xjjbg7xjjbg7x-1-1.jpg"
+                alt="BeeEngine Mascot" width="80" height="80" style="width: 80px; height: auto; flex-shrink: 0;">
+        </div>
 
-        <div class="bee-class-card" id="radme">****>>>>>>>> mettere id >>>>>>>>>>*****
-            <h3> </h3>
+        <div class="bee-class-card" id="BeeTouchControls">
 
-            <p></p>
+            <h3>📁 Panoramica</h3>
 
-            <p> </p>
+            <p><code>BeeTouchControls</code> disegna cinque cerchi
+                sul canvas: una croce con quattro frecce in basso
+                a sinistra e un pulsante azione in basso a destra.
+                Vive in <code>src/input/BeeTouchControls.js</code>.
+                Ascolta solo gli eventi touch del canvas e scrive
+                i tasti con <code>input.setKey</code>. Il gioco non
+                legge il controllo: in update guarda
+                <code>input.isPressed</code> e <code>input.wasPressed</code>,
+                come con la tastiera.
+            </p>
 
-            <p>📁 </p>
+            <p><code>gioco.enableTouchControls()</code> crea
+                l'istanza, la mette in <code>gioco.touchControls</code>
+                e il loop chiama <code>draw</code> dopo la UI, già
+                fuori dalla camera. <code>enableJoystick()</code> crea
+                invece <code>BeeJoystick</code>: è un altro controllo,
+                e c'è un solo <code>gioco.touchControls</code>, quindi
+                chi arriva dopo distrugge quello di prima.
+            </p>
 
-            <div class="bee-code-block"></div>
+            <div class="bee-code-block"><span class="token keyword">const</span> controlli <span class="token operator">=</span> gioco<span class="token punctuation">.</span><span class="token function">enableTouchControls</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-            <p>📁</p>
+eroe<span class="token punctuation">.</span>update <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>dt<span class="token punctuation">,</span> input<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>input<span class="token punctuation">.</span><span class="token function">isPressed</span><span class="token punctuation">(</span><span class="token string">'ArrowLeft'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> this<span class="token punctuation">.</span>worldX <span class="token operator">-</span><span class="token operator">=</span> <span class="token number">200</span> <span class="token operator">*</span> dt<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>input<span class="token punctuation">.</span><span class="token function">isPressed</span><span class="token punctuation">(</span><span class="token string">'ArrowRight'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> this<span class="token punctuation">.</span>worldX <span class="token operator">+</span><span class="token operator">=</span> <span class="token number">200</span> <span class="token operator">*</span> dt<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>input<span class="token punctuation">.</span><span class="token function">wasPressed</span><span class="token punctuation">(</span><span class="token string">'Space'</span><span class="token punctuation">)</span><span class="token punctuation">)</span> this<span class="token punctuation">.</span><span class="token function">jump</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span></div>
 
-            <div class="bee-code-block"></div>
+            <h3>📁 Posizione e tasti</h3>
 
-            <p>📁</p>
+            <p>Il raggio è <code>btnSize / 2</code>, cioè 25.
+                <code>margin</code> è 20. <code>w</code> e <code>h</code> sono
+                <code>canvas.width</code> e <code>canvas.height</code>, in
+                pixel del bitmap. I cerchi della croce si
+                toccano: i centri distano 50.
+            </p>
 
-            <div class="bee-code-block"> </div>
+            <table class="bee-api-table">
+                <thead>
+                    <tr>
+                        <th>Pulsante</th>
+                        <th>Centro</th>
+                        <th>Tasti che accende</th>
+                        <th>Simbolo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>left</code></td>
+                        <td><code>(45, h - 95)</code></td>
+                        <td><code>ArrowLeft</code></td>
+                        <td>◀</td>
+                    </tr>
+                    <tr>
+                        <td><code>right</code></td>
+                        <td><code>(145, h - 95)</code></td>
+                        <td><code>ArrowRight</code></td>
+                        <td>▶</td>
+                    </tr>
+                    <tr>
+                        <td><code>up</code></td>
+                        <td><code>(95, h - 145)</code></td>
+                        <td><code>ArrowUp</code></td>
+                        <td>▲</td>
+                    </tr>
+                    <tr>
+                        <td><code>down</code></td>
+                        <td><code>(95, h - 45)</code></td>
+                        <td><code>ArrowDown</code></td>
+                        <td>▼</td>
+                    </tr>
+                    <tr>
+                        <td><code>action</code></td>
+                        <td><code>(w - 45, h - 45)</code></td>
+                        <td><code>Space</code> e <code>' '</code></td>
+                        <td>●</td>
+                    </tr>
+                </tbody>
+            </table>
 
-            <p>📁</p>
+            <p>Non c'è <code>WASD</code>: le frecce bastano a
+                <code>BeePlayer</code> e <code>BeeMenuScene</code>. L'azione
+                scrive <code>Space</code>, che è quello che leggono
+                loro, e anche lo spazio come carattere.
+            </p>
 
-            <div class="bee-code-block"></div>
+            <h3>📁 Dito e tasti</h3>
 
-            <p>📁</p>
+            <div class="bee-flow" role="region" aria-label="Flusso BeeTouchControls">
+                <p class="bee-flow-caption">Un tasto si rilascia solo
+                    quando nessun dito è più su un pulsante che lo
+                    accende.</p>
+                <ol class="bee-flow-row">
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>dita</strong>
+                            <code>touchstart</code> o <code>touchmove</code>
+                            sul canvas. Ogni dito di <code>e.touches</code>
+                            diventa un punto in pixel del bitmap.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>pulsante</strong>
+                            <code>getButtonAt</code> dà il nome del
+                            cerchio, o niente. Il risultato è
+                            <code>activeTouches</code>.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box bee-flow-read"><strong>tasti</strong>
+                            <code>setKey(k, false)</code> per i tasti che
+                            non ha più nessuno, <code>setKey(k, true)</code>
+                            per gli altri.</span>
+                    </li>
+                </ol>
+            </div>
 
-            <div class="bee-code-block"></div>
+            <p><code>touchend</code> e <code>touchcancel</code> rifanno lo
+                stesso conto con i <code>e.touches</code> rimasti.
+                Un dito che nasce fuori e scivola su un pulsante lo
+                preme. Un dito che scivola da un pulsante a un
+                altro rilascia il primo e preme il secondo. Due dita
+                sullo stesso pulsante tengono il tasto finché non
+                le alzi tutte e due. Se il punto cade su due cerchi,
+                vince il primo in ordine: <code>left</code>,
+                <code>right</code>, <code>up</code>, <code>down</code>,
+                <code>action</code>.
+            </p>
+        </div>
 
-            <p>📁 </p>
+        <div class="bee-class-card bee-ladybug" id="BeeTouchControls-note">
+            <h3>📁 Dove è facile sbagliare</h3>
 
-            <div class="bee-class-card"></div>
+            <p><strong>Solo touch.</strong> Il controllo non
+                ascolta il mouse. Sul desktop i cerchi non si
+                accendono col clic: per provarli usa la modalità
+                touch dei devtools. <code>draw</code> è chiamata dal
+                gioco; se crei l'istanza a mano, la disegni tu.
+                <code>draw</code> senza <code>ctx</code> lancia, a differenza
+                di <code>BeeTouchButton.render</code>.
+            </p>
 
-            <p>📁 </p>
+            <p><strong>Il tocco su un pulsante non è un clic.</strong>
+                Il costruttore registra
+                <code>input.addTouchBlocker</code>. Un dito che nasce
+                su un cerchio non cambia <code>input.mouse</code>
+                (<code>pressed</code>, <code>wasPressed</code>, <code>x</code>,
+                <code>y</code>), quindi un <code>BeeButton</code> o un
+                <code>BeeMenuScene</code> sotto il pulsante non scatta.
+                Resta un dito del pulsante anche se scivola fuori.
+                Un dito nato fuori è un clic normale, e un secondo
+                dito fuori clicca come prima. <code>input.touches</code>
+                li elenca tutti. Con un <code>input</code> senza
+                <code>addTouchBlocker</code> non cambia niente.
+                <code>BeeJoystick</code> e <code>BeeTouchButton</code> non
+                usano ancora il blocker.
+            </p>
 
-            <div class="bee-class-card"></div>
+            <p><strong>I tasti si cambiano in <code>keys</code>.</strong>
+                Il costruttore mette in ogni pulsante sia
+                <code>key</code> sia <code>keys</code>. Il controllo legge
+                <code>keys</code> quando è un array non vuoto;
+                <code>key</code> conta solo se <code>keys</code> manca o è
+                vuoto. Cambiare solo <code>key</code> non fa niente.
+            </p>
 
-            <p> 📁 </p>
+            <p><strong>Le posizioni si ricalcolano poco.</strong>
+                <code>updatePositions</code> gira nel costruttore e a
+                ogni <code>resize</code> della window. Se cambi
+                <code>btnSize</code>, <code>margin</code> o la dimensione
+                del bitmap per conto tuo, richiamala. Scrivere
+                <code>x</code> e <code>y</code> a mano vale fino alla
+                prossima chiamata.
+            </p>
 
-            <div class="bee-class-card"></div>
+            <p><strong>Ogni tocco sul canvas è bloccato.</strong>
+                Gli handler chiamano <code>preventDefault</code> se
+                l'evento è cancellabile, quindi niente scroll né
+                zoom a pizzico su quel canvas.
+            </p>
 
-            <p> 📁 </p>
+            <p><strong>Errori e chiusura.</strong> Senza canvas il
+                costruttore lancia
+                <code>BeeTouchControls: canvas required</code>. Un
+                <code>input</code> senza <code>setKey</code> lancia
+                <code>BeeTouchControls: input required</code>.
+                <code>getCanvasCoords</code> dà <code>null</code> se il canvas
+                non ha dimensione, e quel dito è ignorato.
+                <code>destroy</code> toglie <code>resize</code>, i quattro
+                listener touch e il blocker, rilascia i tasti tenuti
+                e svuota <code>activeTouches</code>. Si può chiamare più
+                volte. <code>enableTouchControls()</code> la chiama sulla
+                precedente, e <code>BeeEngine.destroy</code> la chiama e
+                mette <code>touchControls</code> a <code>null</code>.
+            </p>
 
-            <div class="bee-class-card"></div>
+            <div class="bee-code-block"><span class="token keyword">const</span> controlli <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeeTouchControls</span><span class="token punctuation">(</span>gioco<span class="token punctuation">.</span>canvas<span class="token punctuation">,</span> gioco<span class="token punctuation">.</span>input<span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-            <p>📁 </p>
+<span class="token comment">// i tasti si cambiano in keys, non in key</span>
+controlli<span class="token punctuation">.</span>buttons<span class="token punctuation">.</span>action<span class="token punctuation">.</span>keys <span class="token operator">=</span> <span class="token punctuation">[</span><span class="token string">'KeyX'</span><span class="token punctuation">]</span><span class="token punctuation">;</span>
 
-            <div class="bee-class-card"> </div>
+scena<span class="token punctuation">.</span>draw <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>ctx<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    controlli<span class="token punctuation">.</span><span class="token function">draw</span><span class="token punctuation">(</span>ctx<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span></div>
+        </div>
 
-            <p>📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p>📁</p>
-
-            <div class="bee-class-card"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"> </div>
-
-            <p> 📁 </p>
-
-            <div class="bee-code-block"></div>
-
-            <p>📁</p>
-
-            <div class="bee-code-block"></div>
-
-
-            <p>📁 </p>
-
-            <div class="bee-code-block"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-code-block"></div>
-
-            <p> 📁</p>
-
-            <div class="bee-code-block"> </div>
-
-
-
-
+        <div class="bee-class-card" id="BeeTouchControls-api">
+            <h3>📁 Riepilogo API</h3>
+            <p>A riposo il cerchio è grigio (<code>#666666</code>) con
+                alpha 0.5 e il simbolo è bianco. Premuto il cerchio
+                è bianco con alpha 0.8 e il simbolo è nero. Il
+                bordo è bianco, 2 pixel. Il simbolo ha alpha 1 e
+                font <code>bold 22px sans-serif</code>, centrato.
+            </p>
+            <table class="bee-api-table">
+                <thead>
+                    <tr>
+                        <th>Membro</th>
+                        <th>Ritorna</th>
+                        <th>Scopo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>new BeeTouchControls(canvas, input)</code></td>
+                        <td><code>BeeTouchControls</code></td>
+                        <td><code>btnSize</code> 50, <code>margin</code> 20.
+                            Calcola le posizioni, ascolta <code>resize</code>
+                            e i quattro eventi touch, registra il
+                            blocker. Lancia senza canvas o senza
+                            <code>input.setKey</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>btnSize</code> / <code>margin</code></td>
+                        <td><code>number</code></td>
+                        <td>Diametro e distanza dal bordo. Il hit test
+                            usa <code>btnSize / 2</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>buttons</code></td>
+                        <td><code>object</code></td>
+                        <td><code>left</code>, <code>right</code>, <code>up</code>,
+                            <code>down</code>, <code>action</code>. Ognuno ha
+                            <code>key</code>, <code>keys</code>, <code>x</code>,
+                            <code>y</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>activeTouches</code></td>
+                        <td><code>object</code></td>
+                        <td><code>identifier</code> del dito → nome del
+                            pulsante su cui sta. Vuoto a riposo.</td>
+                    </tr>
+                    <tr>
+                        <td><code>updatePositions()</code></td>
+                        <td></td>
+                        <td>Ricalcola <code>x</code> e <code>y</code> dal bitmap
+                            (<code>canvas.width</code> e <code>height</code>, o il
+                            rettangolo CSS se sono 0).</td>
+                    </tr>
+                    <tr>
+                        <td><code>getCanvasCoords(touch)</code></td>
+                        <td><code>{ x, y } | null</code></td>
+                        <td><code>(client - rect) * (canvas / rect)</code>.
+                            <code>null</code> se il canvas non ha
+                            dimensione o il valore non è finito.</td>
+                    </tr>
+                    <tr>
+                        <td><code>getButtonAt(x, y)</code></td>
+                        <td><code>string | null</code></td>
+                        <td>Nome del primo cerchio con distanza dal
+                            centro minore o uguale al raggio.</td>
+                    </tr>
+                    <tr>
+                        <td><code>handleTouch(e)</code></td>
+                        <td></td>
+                        <td>Per <code>touchstart</code> e <code>touchmove</code>.
+                            Allinea i tasti ai <code>e.touches</code>.
+                            Dopo <code>destroy</code> esce.</td>
+                    </tr>
+                    <tr>
+                        <td><code>handleTouchEnd(e)</code></td>
+                        <td></td>
+                        <td>Per <code>touchend</code> e <code>touchcancel</code>.
+                            Fa lo stesso conto di <code>handleTouch</code>
+                            con le dita rimaste.</td>
+                    </tr>
+                    <tr>
+                        <td><code>draw(ctx)</code></td>
+                        <td></td>
+                        <td>Disegna i cinque cerchi. Chiamata dal
+                            loop se vive in <code>gioco.touchControls</code>.
+                            Senza <code>ctx</code> lancia.</td>
+                    </tr>
+                    <tr>
+                        <td><code>destroy()</code></td>
+                        <td></td>
+                        <td>Toglie listener e blocker, rilascia i
+                            tasti tenuti, svuota <code>activeTouches</code>.
+                            Idempotente.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
     </main>
 
