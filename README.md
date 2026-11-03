@@ -56,3 +56,16 @@ Puoi installare il motore di gioco direttamente da **NPM**:
 
 ```bash
 npm install beeengine
+
+---
+
+## 🎨 Come si cambia lo stile
+
+Lo stile e lo script comuni stanno in due file soli: `bee-docs.css` e `bee-docs.js`. Ogni pagina HTML resta autonoma (da incollare in WordPress) e li contiene dentro.
+
+Dopo aver modificato uno dei due file lancia:
+
+```bash
+node build-docs.mjs          # aggiorna tutte le pagine
+node build-docs.mjs --check  # elenca solo le pagine da aggiornare
+```
