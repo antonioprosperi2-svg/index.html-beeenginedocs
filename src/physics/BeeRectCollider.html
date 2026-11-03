@@ -45,8 +45,10 @@
     --bee-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, 'Cascadia Code', Consolas, 'Courier New', monospace;
 }
 
+/* Niente scroll-behavior: smooth. Su pagine lunghe rallenta il tasto "torna su"
+   del tema (che anima gia' lo scroll per conto suo) fino a bloccarlo sul telefono. */
 html {
-    scroll-behavior: smooth;
+    scroll-behavior: auto !important;
 }
 
 /* ==========================================
@@ -967,8 +969,17 @@ body:has(.bee-docs-container) .entry-content {
 }
 
 @media (max-width: 768px) {
+    /* telefono: sfondo e barra senza effetti che pesano durante lo scroll */
+    body,
+    html body {
+        background-attachment: scroll !important;
+    }
+
     .bee-docs-header {
         padding: 0 16px;
+        background: rgba(15, 17, 23, 0.96);
+        -webkit-backdrop-filter: none;
+        backdrop-filter: none;
     }
 
     body:has(> a[aria-label="BeeEngine home"]) .bee-docs-header {
