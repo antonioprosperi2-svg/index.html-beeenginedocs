@@ -118,45 +118,56 @@
 
         /* 2c. su schermi stretti l'indice si apre e si chiude con un pulsante
            (senza JavaScript resta sempre aperto) */
-        var toggle = document.createElement('button');
-        toggle.type = 'button';
-        toggle.className = 'bee-sidebar-toggle';
-        toggle.setAttribute('aria-expanded', 'false');
-        var currentName = current ? current.textContent.replace(/\s+/g, ' ').trim() : '';
-        toggle.textContent = currentName ? 'Indice · ' + currentName : 'Indice della documentazione';
+        /* Pulsante, ricerca e messaggio "nessun risultato" sono gia' nell'HTML
+           (li mette build-docs.mjs): cosi' la pagina non cambia altezza dopo il
+           caricamento. Se mancano (pagina vecchia) li creo qui. */
+        var toggle = side.querySelector('.bee-sidebar-toggle');
+        if (!toggle) {
+            toggle = document.createElement('button');
+            toggle.type = 'button';
+            toggle.className = 'bee-sidebar-toggle';
+            toggle.setAttribute('aria-expanded', 'false');
+            var currentName = current ? current.textContent.replace(/\s+/g, ' ').trim() : '';
+            toggle.textContent = currentName ? 'Indice · ' + currentName : 'Indice della documentazione';
+            side.insertBefore(toggle, side.firstChild);
+        }
         toggle.addEventListener('click', function () {
             var open = side.classList.toggle('bee-side-open');
             toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
         });
-        side.insertBefore(toggle, side.firstChild);
-        side.classList.add('bee-js');
 
         /* 2d. ricerca */
-        var wrap = document.createElement('div');
-        wrap.className = 'bee-sidebar-search';
-        var input = document.createElement('input');
-        input.type = 'search';
-        input.placeholder = 'Cerca una classe…';
-        input.setAttribute('aria-label', 'Cerca nella documentazione');
-        input.autocomplete = 'off';
-        input.spellcheck = false;
-        var hint = document.createElement('kbd');
-        hint.textContent = '/';
-        hint.setAttribute('aria-hidden', 'true');
-        wrap.appendChild(input);
-        wrap.appendChild(hint);
-
-        var empty = document.createElement('div');
-        empty.className = 'bee-sidebar-empty';
-        empty.textContent = 'Nessuna classe trovata.';
-
-        var title0 = side.querySelector('.bee-sidebar-title');
-        if (title0 && title0.nextSibling) {
-            side.insertBefore(wrap, title0.nextSibling);
-        } else {
-            side.insertBefore(wrap, side.firstChild);
+        var wrap = side.querySelector('.bee-sidebar-search');
+        var input = wrap && wrap.querySelector('input');
+        if (!input) {
+            wrap = document.createElement('div');
+            wrap.className = 'bee-sidebar-search';
+            input = document.createElement('input');
+            input.type = 'search';
+            input.placeholder = 'Cerca una classe…';
+            input.setAttribute('aria-label', 'Cerca nella documentazione');
+            input.autocomplete = 'off';
+            input.spellcheck = false;
+            var hint = document.createElement('kbd');
+            hint.textContent = '/';
+            hint.setAttribute('aria-hidden', 'true');
+            wrap.appendChild(input);
+            wrap.appendChild(hint);
+            var title0 = side.querySelector('.bee-sidebar-title');
+            if (title0 && title0.nextSibling) {
+                side.insertBefore(wrap, title0.nextSibling);
+            } else {
+                side.insertBefore(wrap, side.firstChild);
+            }
         }
-        side.insertBefore(empty, wrap.nextSibling);
+
+        var empty = side.querySelector('.bee-sidebar-empty');
+        if (!empty) {
+            empty = document.createElement('div');
+            empty.className = 'bee-sidebar-empty';
+            empty.textContent = 'Nessuna classe trovata.';
+            side.insertBefore(empty, wrap.nextSibling);
+        }
 
         var openBefore = null;
 

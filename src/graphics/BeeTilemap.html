@@ -3,1045 +3,12 @@
 <title>Documentazione - BeeEngine</title>
 
 <style>
-/* ==========================================================
-   BeeEngine Docs - foglio di stile unico
-   Sorgente di verita': questo file. Dopo ogni modifica lancia
-   `node build-docs.mjs` per copiarlo dentro tutte le pagine.
-   ========================================================== */
-
-/* ==========================================
-   0. PALETTE E FONT
-   ========================================== */
-:root {
-    /* Sfondi scuri desaturati (niente nero puro) */
-    --bee-bg: #0f1117;
-    --bee-surface: #171923;
-    --bee-surface-2: #1e212d;
-    --bee-code-bg: #0b0d14;
-
-    /* Testo */
-    --bee-text: #e6eaf2;
-    --bee-text-soft: #c4ccdb;
-    --bee-text-dim: #8b95ab;
-
-    /* Giallo/Arancione Ape */
-    --bee-honey: #f59e0b;
-    --bee-honey-light: #fbbf24;
-
-    /* Rosso Coccinella */
-    --bee-ladybug: #ef4444;
-    --bee-ladybug-deep: #dc2626;
-
-    /* Linee e raggi */
-    --bee-line: rgba(226, 232, 240, 0.08);
-    --bee-line-strong: rgba(226, 232, 240, 0.14);
-    --bee-line-honey: rgba(245, 158, 11, 0.24);
-    --bee-radius: 12px;
-
-    --bee-header-h: 56px;
-
-    /* Font di sistema moderni: nessuna richiesta a server esterni (GDPR) */
-    --bee-font: 'Inter', 'Segoe UI Variable Text', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Roboto, Arial, sans-serif;
-    --bee-mono: 'JetBrains Mono', 'Fira Code', ui-monospace, SFMono-Regular, 'Cascadia Code', Consolas, 'Courier New', monospace;
-}
-
-/* Niente scroll-behavior: smooth. Su pagine lunghe rallenta il tasto "torna su"
-   del tema (che anima gia' lo scroll per conto suo) fino a bloccarlo sul telefono. */
-html {
-    scroll-behavior: auto !important;
-}
-
-/* ==========================================
-   RESET E BASE PAGINA
-   (reset limitato al sottoalbero docs:
-    su WordPress non tocca il tema)
-   ========================================== */
-.bee-docs-header,
-.bee-docs-header *,
-.bee-ladybug-banner,
-.bee-ladybug-banner *,
-.bee-docs-container,
-.bee-docs-container * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    background-color: var(--bee-bg);
-    background-image:
-        radial-gradient(900px 420px at 12% -8%, rgba(245, 158, 11, 0.07), transparent 60%),
-        radial-gradient(760px 380px at 92% 0%, rgba(239, 68, 68, 0.06), transparent 62%);
-    background-attachment: fixed;
-    color: var(--bee-text);
-    font-family: var(--bee-font);
-    font-size: 16px;
-    padding-top: var(--bee-header-h);
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    text-rendering: optimizeLegibility;
-}
-
-.bee-docs-container :focus-visible,
-.bee-docs-header :focus-visible {
-    outline: 2px solid var(--bee-honey);
-    outline-offset: 2px;
-}
-
-/* ==========================================
-   0b. INTEGRAZIONE WORDPRESS (GeneratePress)
-   Una sola barra in alto, niente titolo del tema,
-   pagina a larghezza piena. Valgono solo dove
-   esiste il contenitore della documentazione.
-   ========================================== */
-/* barra del tema vuota: via */
-body:has(.bee-docs-container) #masthead {
-    display: none;
-}
-
-/* il titolo H1 resta nel DOM (SEO, screen reader) ma non si vede:
-   la pagina ha gia' il suo titolo nella documentazione.
-   Per rimetterlo visibile cancella questa regola. */
-body:has(.bee-docs-container) .entry-header {
-    position: absolute !important;
-    width: 1px;
-    height: 1px;
-    margin: -1px;
-    padding: 0;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-}
-
-/* il logo del sito (link BeeEngine home) entra nella barra fissa, in piccolo */
-body:has(.bee-docs-container) > a[aria-label="BeeEngine home"] {
-    position: fixed !important;
-    top: 12px;
-    left: 24px;
-    z-index: 1001;
-    transform: scale(0.5);
-    transform-origin: 0 0;
-    display: inline-flex !important;
-}
-
-body:has(.bee-docs-container) > a[aria-label="BeeEngine home"] > span > span:last-child {
-    display: none !important;
-}
-
-body:has(> a[aria-label="BeeEngine home"]) .bee-docs-header {
-    padding-left: 168px;
-}
-
-/* larghezza piena e niente riquadri del tema attorno al contenuto */
-body:has(.bee-docs-container) .site.grid-container,
-body:has(.bee-docs-container) .site-content,
-body:has(.bee-docs-container) .content-area {
-    max-width: none !important;
-    width: 100% !important;
-    padding: 0 !important;
-    margin: 0 !important;
-}
-
-body:has(.bee-docs-container) .site-main,
-body:has(.bee-docs-container) .inside-article,
-body:has(.bee-docs-container) .entry-content {
-    margin: 0 !important;
-    padding: 0 !important;
-    background: transparent !important;
-    box-shadow: none !important;
-    border: 0 !important;
-}
-
-.admin-bar .bee-docs-header {
-    top: 32px;
-}
-
-/* ==========================================
-   1. BARRA FISSA IN ALTO
-   ========================================== */
-.bee-docs-header {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: var(--bee-header-h);
-    background: rgba(15, 17, 23, 0.8);
-    -webkit-backdrop-filter: blur(14px) saturate(140%);
-    backdrop-filter: blur(14px) saturate(140%);
-    border-bottom: 1px solid var(--bee-line);
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 0 24px;
-    z-index: 1000;
-}
-
-/* Filo giallo/rosso brand sotto la barra */
-.bee-docs-header::after {
-    content: "";
-    position: absolute;
-    left: 0;
-    right: 0;
-    bottom: -1px;
-    height: 1px;
-    background: linear-gradient(90deg,
-            var(--bee-honey) 0%,
-            var(--bee-honey-light) 40%,
-            var(--bee-ladybug) 100%);
-    opacity: 0.55;
-}
-
-.bee-header-logo {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    text-decoration: none;
-}
-
-.bee-header-title {
-    color: var(--bee-text);
-    font-size: 15px;
-    font-weight: 600;
-    font-family: var(--bee-mono);
-    letter-spacing: 0;
-}
-
-.bee-header-title::before {
-    content: "docs /";
-    color: var(--bee-text-dim);
-    font-weight: 400;
-    margin-right: 8px;
-}
-
-/* Badge versione */
-.bee-header-badge {
-    background: rgba(239, 68, 68, 0.1);
-    color: #fca5a5;
-    padding: 4px 10px;
-    border-radius: 999px;
-    font-size: 12px;
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    font-family: var(--bee-mono);
-    letter-spacing: 0.3px;
-}
-
-/* ==========================================
-   1b. BANNER COCCINELLA (predisposizione)
-   ========================================== */
-.bee-ladybug-banner {
-    max-width: 1280px;
-    margin: 0 auto 18px auto;
-    display: flex;
-    align-items: center;
-    gap: 14px;
-    padding: 14px 18px;
-    border-radius: var(--bee-radius);
-    background: linear-gradient(135deg, rgba(220, 38, 38, 0.16), rgba(23, 25, 35, 0.9));
-    border: 1px solid rgba(239, 68, 68, 0.3);
-    color: var(--bee-text);
-    font-size: 14.5px;
-    line-height: 1.5;
-}
-
-.bee-ladybug-banner strong {
-    color: #ff8f8f;
-}
-
-.bee-ladybug-banner img {
-    width: 42px;
-    height: 42px;
-    border-radius: 50%;
-    flex-shrink: 0;
-}
-
-/* ==========================================
-   2. LAYOUT: BARRA LATERALE + CONTENUTO
-   Niente riquadro attorno a tutto.
-   ========================================== */
-.bee-docs-container {
-    position: relative;
-    z-index: 5;
-    display: grid;
-    grid-template-columns: 264px minmax(0, 1fr);
-    gap: 48px;
-    max-width: 1280px;
-    margin: 0 auto;
-    padding: 32px 24px 64px 24px;
-    color: var(--bee-text);
-}
-
-.bee-docs-content {
-    min-width: 0;
-    max-width: 880px;
-}
-
-/* ---------- barra laterale ---------- */
-.bee-docs-sidebar {
-    position: sticky;
-    top: calc(var(--bee-header-h) + 24px);
-    align-self: start;
-    max-height: calc(100vh - var(--bee-header-h) - 48px);
-    overflow-y: auto;
-    padding: 0 10px 24px 0;
-    scrollbar-width: thin;
-    scrollbar-color: rgba(226, 232, 240, 0.18) transparent;
-}
-
-.bee-docs-sidebar::-webkit-scrollbar {
-    width: 6px;
-}
-
-.bee-docs-sidebar::-webkit-scrollbar-thumb {
-    background: rgba(226, 232, 240, 0.16);
-    border-radius: 6px;
-}
-
-.bee-sidebar-title {
-    color: var(--bee-text-dim);
-    font-size: 11px;
-    font-weight: 600;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    margin-bottom: 12px;
-}
-
-/* ricerca (creata da bee-docs.js) */
-.bee-sidebar-search {
-    position: relative;
-    margin: 0 0 16px 0;
-}
-
-.bee-docs-sidebar .bee-sidebar-search input[type="search"] {
-    -webkit-appearance: none;
-    appearance: none;
-    display: block;
-    width: 100% !important;
-    height: 36px;
-    margin: 0 !important;
-    padding: 0 34px 0 12px !important;
-    background: var(--bee-surface-2) !important;
-    color: var(--bee-text) !important;
-    border: 1px solid var(--bee-line-strong) !important;
-    border-radius: 8px !important;
-    box-shadow: none !important;
-    font: 400 13.5px var(--bee-font) !important;
-    outline: none;
-    transition: border-color .15s ease, box-shadow .15s ease;
-}
-
-.bee-docs-sidebar .bee-sidebar-search input[type="search"]::placeholder {
-    color: var(--bee-text-dim);
-    opacity: 1;
-}
-
-.bee-docs-sidebar .bee-sidebar-search input[type="search"]::-webkit-search-cancel-button {
-    -webkit-appearance: none;
-}
-
-.bee-docs-sidebar .bee-sidebar-search input[type="search"]:focus {
-    border-color: var(--bee-honey) !important;
-    box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.16) !important;
-}
-
-.bee-sidebar-search kbd {
-    position: absolute;
-    right: 8px;
-    top: 50%;
-    transform: translateY(-50%);
-    font: 500 11px var(--bee-mono);
-    color: var(--bee-text-dim);
-    border: 1px solid var(--bee-line-strong);
-    border-radius: 4px;
-    padding: 1px 6px;
-    pointer-events: none;
-}
-
-.bee-sidebar-search input:focus+kbd,
-.bee-sidebar-search input:not(:placeholder-shown)+kbd {
-    display: none;
-}
-
-/* pulsante dell'indice: visibile solo su schermi stretti */
-.bee-docs-sidebar .bee-sidebar-toggle {
-    display: none;
-    align-items: center;
-    justify-content: space-between;
-    gap: 10px;
-    width: 100%;
-    padding: 11px 14px;
-    background: var(--bee-surface-2);
-    color: var(--bee-text);
-    border: 1px solid var(--bee-line-strong);
-    border-radius: 10px;
-    font: 500 14px var(--bee-font);
-    text-align: left;
-    cursor: pointer;
-}
-
-.bee-docs-sidebar .bee-sidebar-toggle::after {
-    content: "";
-    flex: none;
-    width: 7px;
-    height: 7px;
-    border-right: 1.5px solid currentColor;
-    border-bottom: 1.5px solid currentColor;
-    transform: rotate(45deg);
-    transition: transform .15s ease;
-}
-
-.bee-docs-sidebar .bee-sidebar-toggle[aria-expanded="true"]::after {
-    transform: rotate(-135deg);
-}
-
-.bee-sidebar-empty {
-    display: none;
-    color: var(--bee-text-dim);
-    font-size: 13px;
-    padding: 6px 8px;
-}
-
-/* gruppi (cartelle) */
-.bee-docs-sidebar details {
-    margin: 0 0 2px 0;
-    background: none;
-    border: 0;
-    border-radius: 0;
-}
-
-.bee-docs-sidebar summary {
-    list-style: none;
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 7px 8px;
-    border-radius: 6px;
-    font-size: 11.5px;
-    font-weight: 600;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--bee-text-dim);
-    cursor: pointer;
-    user-select: none;
-    transition: color .15s ease, background .15s ease;
-}
-
-.bee-docs-sidebar summary::-webkit-details-marker {
-    display: none;
-}
-
-.bee-docs-sidebar summary::marker {
-    content: "";
-}
-
-.bee-docs-sidebar summary::before {
-    content: "";
-    flex: none;
-    width: 6px;
-    height: 6px;
-    border-right: 1.5px solid currentColor;
-    border-bottom: 1.5px solid currentColor;
-    transform: rotate(-45deg);
-    transition: transform .15s ease;
-}
-
-.bee-docs-sidebar details[open]>summary::before {
-    transform: rotate(45deg);
-}
-
-.bee-docs-sidebar summary:hover {
-    color: var(--bee-text);
-    background: rgba(255, 255, 255, 0.04);
-}
-
-.bee-docs-sidebar details[open]>summary {
-    color: var(--bee-text);
-}
-
-.bee-docs-sidebar ul {
-    list-style: none;
-    margin: 2px 0 10px 11px;
-    padding: 0 0 0 10px;
-    border-left: 1px solid var(--bee-line);
-}
-
-.bee-docs-sidebar li {
-    margin: 0;
-}
-
-.bee-docs-sidebar a {
-    position: relative;
-    display: block;
-    padding: 5px 10px;
-    border-radius: 6px;
-    color: var(--bee-text-dim);
-    text-decoration: none;
-    font-family: var(--bee-mono);
-    font-size: 13px;
-    line-height: 1.45;
-    transition: color .15s ease, background .15s ease;
-}
-
-.bee-docs-sidebar a:hover {
-    color: var(--bee-text);
-    background: rgba(255, 255, 255, 0.05);
-}
-
-/* link esterni (Link Utili) */
-.bee-docs-sidebar a[target="_blank"]::after {
-    content: "\2197";
-    margin-left: 6px;
-    font-family: var(--bee-font);
-    opacity: 0.5;
-}
-
-/* pagina corrente */
-.bee-docs-sidebar a.is-current {
-    color: var(--bee-honey-light);
-    background: rgba(245, 158, 11, 0.1);
-}
-
-.bee-docs-sidebar a.is-current::before {
-    content: "";
-    position: absolute;
-    left: -11px;
-    top: 6px;
-    bottom: 6px;
-    width: 2px;
-    border-radius: 2px;
-    background: var(--bee-honey);
-}
-
-/* ==========================================
-   2b. CONTENUTO: TITOLI E SEZIONI
-   ========================================== */
-.bee-section-title {
-    color: var(--bee-text);
-    font-size: 34px;
-    font-weight: 700;
-    line-height: 1.2;
-    letter-spacing: -0.02em;
-    border: 0;
-    padding: 0;
-    margin: 0 0 8px 0;
-}
-
-.bee-section-title+p {
-    color: var(--bee-text-dim);
-    font-size: 16px;
-    line-height: 1.6;
-}
-
-.bee-docs-content>div:first-child:not(.bee-class-card) {
-    margin-bottom: 36px !important;
-    padding-bottom: 28px;
-    border-bottom: 1px solid var(--bee-line);
-}
-
-.bee-docs-content>div:first-child:not(.bee-class-card) img {
-    border-radius: 18px;
-}
-
-/* La scheda e' una sezione, non un riquadro */
-.bee-class-card {
-    background: none;
-    border: 0;
-    border-radius: 0;
-    padding: 0;
-    margin: 0 0 40px 0;
-    scroll-margin-top: calc(var(--bee-header-h) + 24px);
-}
-
-.bee-class-card+.bee-class-card {
-    padding-top: 36px;
-    border-top: 1px solid var(--bee-line);
-}
-
-.bee-class-card h3 {
-    color: var(--bee-text) !important;
-    font-family: var(--bee-font);
-    font-size: 21px;
-    font-weight: 650;
-    line-height: 1.3;
-    letter-spacing: -0.01em;
-    margin: 36px 0 12px 0;
-}
-
-.bee-class-card>h3:first-child {
-    margin-top: 0;
-}
-
-/* puntino al posto dell'emoji */
-.bee-class-card h3::before {
-    content: "";
-    display: inline-block;
-    width: 7px;
-    height: 7px;
-    margin-right: 11px;
-    border-radius: 50%;
-    background: var(--bee-honey);
-    vertical-align: middle;
-    position: relative;
-    top: -2px;
-}
-
-.bee-class-card p {
-    line-height: 1.75;
-    color: var(--bee-text-soft) !important;
-    font-size: 15.5px;
-    overflow-wrap: break-word;
-    margin-bottom: 14px;
-    font-weight: 400;
-}
-
-.bee-class-card p strong {
-    color: var(--bee-text);
-    font-weight: 650;
-}
-
-/* Nota "Dove e' facile sbagliare" = unico riquadro colorato */
-.bee-class-card.bee-debug,
-.bee-class-card.bee-ladybug {
-    background: rgba(239, 68, 68, 0.055);
-    border: 1px solid rgba(239, 68, 68, 0.24);
-    border-radius: var(--bee-radius);
-    padding: 24px 26px 12px 26px;
-    margin-bottom: 40px;
-}
-
-.bee-class-card.bee-debug h3,
-.bee-class-card.bee-ladybug h3 {
-    color: #ffb4b4 !important;
-}
-
-.bee-class-card.bee-debug h3::before,
-.bee-class-card.bee-ladybug h3::before {
-    background: var(--bee-ladybug);
-}
-
-/* Codice inline dentro i paragrafi */
-.bee-class-card p code,
-.bee-inline-code {
-    font-family: var(--bee-mono);
-    font-size: 0.87em;
-    background: rgba(245, 158, 11, 0.09);
-    color: #fcd34d;
-    padding: 2px 6px;
-    border-radius: 5px;
-    overflow-wrap: anywhere;
-}
-
-/* ==========================================
-   3. BLOCCO DI CODICE
-   ========================================== */
-.bee-code-wrap {
-    position: relative;
-    margin: 0 0 22px 0;
-}
-
-.bee-code-block,
-.bee-docs-content pre {
-    background: var(--bee-code-bg) !important;
-    border: 1px solid var(--bee-line-strong) !important;
-    padding: 20px 22px !important;
-    border-radius: var(--bee-radius) !important;
-    font-family: var(--bee-mono) !important;
-    font-size: 13.5px !important;
-    color: #cbd5e1 !important;
-    line-height: 1.75 !important;
-    white-space: pre !important;
-    overflow-x: auto !important;
-    word-break: normal !important;
-    width: 100% !important;
-    tab-size: 2;
-}
-
-.bee-code-block::-webkit-scrollbar,
-.bee-docs-content pre::-webkit-scrollbar {
-    height: 8px;
-}
-
-.bee-code-block::-webkit-scrollbar-thumb,
-.bee-docs-content pre::-webkit-scrollbar-thumb {
-    background: rgba(226, 232, 240, 0.16);
-    border-radius: 8px;
-}
-
-/* Pulsante "Copia codice": discreto, si vede al passaggio */
-.bee-copy-btn {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    z-index: 3;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-family: var(--bee-font);
-    font-size: 12px;
-    font-weight: 500;
-    line-height: 1;
-    padding: 7px 11px;
-    cursor: pointer;
-    color: var(--bee-text-soft);
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid var(--bee-line-strong);
-    border-radius: 7px;
-    opacity: 0;
-    transition: opacity .15s ease, background .15s ease, color .15s ease, border-color .15s ease;
-}
-
-.bee-code-wrap:hover .bee-copy-btn,
-.bee-copy-btn:focus-visible,
-.bee-copy-btn.bee-copied {
-    opacity: 1;
-}
-
-@media (hover: none) {
-    .bee-copy-btn {
-        opacity: 1;
-    }
-}
-
-.bee-copy-btn:hover {
-    background: rgba(245, 158, 11, 0.16);
-    color: #fde68a;
-    border-color: var(--bee-line-honey);
-}
-
-.bee-copy-btn.bee-copied {
-    color: #86efac;
-    background: rgba(34, 197, 94, 0.14);
-    border-color: rgba(34, 197, 94, 0.45);
-}
-
-/* ==========================================
-   3b. SYNTAX HIGHLIGHTING (token Prism.js)
-   ========================================== */
-.bee-code-block .token.comment,
-.bee-docs-content pre .token.comment,
-.bee-code-block .token.prolog,
-.bee-code-block .token.doctype,
-.bee-code-block .token.cdata {
-    color: #94a3b8;
-    font-style: italic;
-}
-
-.bee-code-block .token.punctuation,
-.bee-docs-content pre .token.punctuation {
-    color: #cbd5e1;
-}
-
-.bee-code-block .token.keyword,
-.bee-docs-content pre .token.keyword,
-.bee-code-block .token.control,
-.bee-code-block .token.important {
-    color: var(--bee-honey-light);
-    font-weight: 600;
-}
-
-.bee-code-block .token.string,
-.bee-docs-content pre .token.string,
-.bee-code-block .token.char,
-.bee-code-block .token.attr-value {
-    color: #7ee0b0;
-}
-
-.bee-code-block .token.number,
-.bee-docs-content pre .token.number,
-.bee-code-block .token.boolean,
-.bee-code-block .token.constant,
-.bee-code-block .token.symbol {
-    color: var(--bee-honey);
-}
-
-.bee-code-block .token.function,
-.bee-docs-content pre .token.function,
-.bee-code-block .token.method {
-    color: #7dd3fc;
-}
-
-.bee-code-block .token.class-name,
-.bee-docs-content pre .token.class-name {
-    color: #fcd34d;
-}
-
-.bee-code-block .token.operator,
-.bee-docs-content pre .token.operator,
-.bee-code-block .token.entity,
-.bee-code-block .token.url {
-    color: #c4b5fd;
-}
-
-.bee-code-block .token.property,
-.bee-docs-content pre .token.property,
-.bee-code-block .token.tag,
-.bee-code-block .token.attr-name {
-    color: #f0abfc;
-}
-
-.bee-code-block .token.deleted,
-.bee-docs-content pre .token.deleted {
-    color: var(--bee-ladybug);
-}
-
-/* Commenti/percorsi negli alberi di cartelle */
-.bee-code-block .bee-cm {
-    color: #94a3b8;
-    font-style: italic;
-}
-
-.bee-code-block .bee-new {
-    color: var(--bee-ladybug);
-    font-weight: 600;
-}
-
-/* ==========================================
-   3c. TABELLA API
-   ========================================== */
-.bee-api-table {
-    width: 100%;
-    border-collapse: separate;
-    border-spacing: 0;
-    margin: 0 0 24px 0;
-    font-size: 14px;
-    background: transparent;
-    border: 1px solid var(--bee-line-strong);
-    border-radius: var(--bee-radius);
-    overflow: hidden;
-}
-
-.bee-api-table thead th {
-    background: rgba(255, 255, 255, 0.035);
-    color: var(--bee-text-dim);
-    text-align: left;
-    font-family: var(--bee-font);
-    font-size: 11.5px;
-    font-weight: 600;
-    letter-spacing: 0.09em;
-    text-transform: uppercase;
-    padding: 11px 16px;
-    border-bottom: 1px solid var(--bee-line-strong);
-}
-
-.bee-api-table tbody td {
-    padding: 13px 16px;
-    border-top: 1px solid var(--bee-line);
-    color: var(--bee-text-soft);
-    line-height: 1.65;
-    vertical-align: top;
-}
-
-.bee-api-table tbody tr:first-child td {
-    border-top: 0;
-}
-
-.bee-api-table tbody tr:hover td {
-    background: rgba(255, 255, 255, 0.025);
-}
-
-.bee-api-table code {
-    font-family: var(--bee-mono);
-    font-size: 12.5px;
-    color: #fcd34d;
-    background: rgba(245, 158, 11, 0.09);
-    padding: 2px 6px;
-    border-radius: 5px;
-    overflow-wrap: anywhere;
-}
-
-/* ==========================================
-   4. FLUSSO (diagrammi a passi)
-   ========================================== */
-.bee-flow {
-    margin: 18px 0 6px 0;
-    padding: 18px;
-    background: rgba(255, 255, 255, 0.025);
-    border: 1px solid var(--bee-line-strong);
-    border-radius: var(--bee-radius);
-}
-
-.bee-flow+p,
-.bee-flow+.bee-code-wrap {
-    margin-top: 18px;
-}
-
-.bee-flow-caption {
-    color: var(--bee-text-dim) !important;
-    font-size: 13.5px !important;
-    line-height: 1.55;
-    margin: 0 0 14px 0 !important;
-}
-
-.bee-flow-row {
-    list-style: none;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: stretch;
-    gap: 8px 0;
-    margin: 0;
-    padding: 0;
-}
-
-.bee-flow-step {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    max-width: 100%;
-}
-
-.bee-flow-box {
-    display: block;
-    min-width: 7.5rem;
-    max-width: 14rem;
-    padding: 11px 13px;
-    background: var(--bee-surface);
-    border: 1px solid var(--bee-line-strong);
-    border-radius: 10px;
-    color: var(--bee-text-soft);
-    font-size: 13.5px;
-    line-height: 1.5;
-}
-
-.bee-flow-box strong {
-    display: block;
-    color: var(--bee-honey-light);
-    font-family: var(--bee-mono);
-    font-size: 12.5px;
-    font-weight: 600;
-    margin-bottom: 4px;
-}
-
-.bee-flow-box.bee-flow-read {
-    border-color: rgba(239, 68, 68, 0.4);
-}
-
-.bee-flow-box.bee-flow-read strong {
-    color: #ff9a9a;
-}
-
-.bee-flow-box code {
-    font-family: var(--bee-mono);
-    font-size: 12.5px;
-    color: #fcd34d;
-}
-
-.bee-flow-arrow {
-    color: var(--bee-text-dim);
-    font-size: 16px;
-    line-height: 1;
-    padding: 0 6px;
-    flex-shrink: 0;
-}
-
-/* ==========================================
-   5. TELEFONO E SCHERMI STRETTI
-   ========================================== */
-@media (max-width: 900px) {
-    .bee-docs-container {
-        grid-template-columns: minmax(0, 1fr);
-        gap: 24px;
-        padding: 20px 16px 48px 16px;
-    }
-
-    .bee-docs-sidebar {
-        position: static;
-        max-height: none;
-        padding: 0 0 16px 0;
-        border-bottom: 1px solid var(--bee-line);
-    }
-
-    .bee-docs-content {
-        max-width: none;
-    }
-
-    /* indice a scomparsa (solo se il JavaScript e' partito) */
-    .bee-docs-sidebar.bee-js .bee-sidebar-toggle {
-        display: flex;
-    }
-
-    .bee-docs-sidebar.bee-js:not(.bee-side-open)> :not(.bee-sidebar-toggle) {
-        display: none;
-    }
-
-    .bee-docs-sidebar.bee-js .bee-sidebar-toggle[aria-expanded="true"] {
-        margin-bottom: 14px;
-    }
-}
-
-@media (max-width: 768px) {
-    /* telefono: sfondo e barra senza effetti che pesano durante lo scroll */
-    body,
-    html body {
-        background-attachment: scroll !important;
-    }
-
-    .bee-docs-header {
-        padding: 0 16px;
-        background: rgba(15, 17, 23, 0.96);
-        -webkit-backdrop-filter: none;
-        backdrop-filter: none;
-    }
-
-    body:has(> a[aria-label="BeeEngine home"]) .bee-docs-header {
-        padding-left: 150px;
-    }
-
-    body:has(.bee-docs-container) > a[aria-label="BeeEngine home"] {
-        left: 16px;
-        transform: scale(0.44);
-    }
-
-    .bee-header-title {
-        font-size: 13px;
-    }
-
-    .bee-header-title::before {
-        display: none;
-    }
-
-    .bee-section-title {
-        font-size: 27px;
-    }
-
-    .bee-class-card h3 {
-        font-size: 19px;
-    }
-
-    .bee-class-card.bee-debug,
-    .bee-class-card.bee-ladybug {
-        padding: 20px 18px 8px 18px;
-    }
-
-    /* Leggibilita' su mobile: piu' corpo e contrasto,
-       SENZA azzerare il syntax highlighting */
-    .bee-code-block,
-    .bee-docs-content pre {
-        font-size: 14px !important;
-        line-height: 1.8 !important;
-        padding: 16px !important;
-        color: #dbe4f0 !important;
-    }
-
-    .bee-code-block.bee-has-copy,
-    .bee-docs-content pre.bee-has-copy {
-        padding-top: 46px !important;
-    }
-
-    .bee-copy-btn {
-        font-size: 11px;
-        padding: 6px 9px;
-    }
-
-    .bee-api-table {
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
-    }
-}
+:root{--bee-bg: #0f1117;--bee-surface: #171923;--bee-surface-2: #1e212d;--bee-code-bg: #0b0d14;--bee-text: #e6eaf2;--bee-text-soft: #c4ccdb;--bee-text-dim: #8b95ab;--bee-honey: #f59e0b;--bee-honey-light: #fbbf24;--bee-ladybug: #ef4444;--bee-ladybug-deep: #dc2626;--bee-line: rgba(226,232,240,0.08);--bee-line-strong: rgba(226,232,240,0.14);--bee-line-honey: rgba(245,158,11,0.24);--bee-radius: 12px;--bee-header-h: 56px;--bee-font: 'Inter','Segoe UI Variable Text','Segoe UI',system-ui,-apple-system,'Helvetica Neue',Roboto,Arial,sans-serif;--bee-mono: 'JetBrains Mono','Fira Code',ui-monospace,SFMono-Regular,'Cascadia Code',Consolas,'Courier New',monospace}html{scroll-behavior: auto !important}.bee-docs-header,.bee-docs-header *,.bee-ladybug-banner,.bee-ladybug-banner *,.bee-docs-container,.bee-docs-container *{box-sizing: border-box;margin: 0;padding: 0}body{background-color: var(--bee-bg);background-image: radial-gradient(900px 420px at 12% -8%,rgba(245,158,11,0.07),transparent 60%),radial-gradient(760px 380px at 92% 0%,rgba(239,68,68,0.06),transparent 62%);background-attachment: fixed;color: var(--bee-text);font-family: var(--bee-font);font-size: 16px;padding-top: var(--bee-header-h);-webkit-font-smoothing: antialiased;-moz-osx-font-smoothing: grayscale;text-rendering: optimizeLegibility}.bee-docs-container :focus-visible,.bee-docs-header :focus-visible{outline: 2px solid var(--bee-honey);outline-offset: 2px}body:has(.bee-docs-container) #masthead{display: none}body:has(.bee-docs-container) .entry-header{position: absolute !important;width: 1px;height: 1px;margin: -1px;padding: 0;overflow: hidden;clip: rect(0,0,0,0);white-space: nowrap;border: 0}body:has(.bee-docs-container)>a[aria-label="BeeEngine home"]{display: none !important}body:has(.bee-docs-container) .site.grid-container,body:has(.bee-docs-container) .site-content,body:has(.bee-docs-container) .content-area{max-width: none !important;width: 100% !important;padding: 0 !important;margin: 0 !important}body:has(.bee-docs-container) .site-main,body:has(.bee-docs-container) .inside-article,body:has(.bee-docs-container) .entry-content{margin: 0 !important;padding: 0 !important;background: transparent !important;box-shadow: none !important;border: 0 !important}.admin-bar .bee-docs-header{top: 32px}.bee-docs-header{position: fixed;top: 0;left: 0;width: 100%;height: var(--bee-header-h);background: rgba(15,17,23,0.8);-webkit-backdrop-filter: blur(14px) saturate(140%);backdrop-filter: blur(14px) saturate(140%);border-bottom: 1px solid var(--bee-line);display: flex;align-items: center;justify-content: space-between;padding: 0 24px;z-index: 1000}.bee-docs-header::after{content: "";position: absolute;left: 0;right: 0;bottom: -1px;height: 1px;background: linear-gradient(90deg,var(--bee-honey) 0%,var(--bee-honey-light) 40%,var(--bee-ladybug) 100%);opacity: 0.55}.bee-header-logo{display: flex;align-items: center;gap: 12px;min-width: 0;margin-right: auto;text-decoration: none}.bee-header-home{display: inline-flex;align-items: center;flex: none;gap: 8px;margin-right: 18px;color: var(--bee-text);font: 700 16px/1 var(--bee-font);letter-spacing: -0.01em;text-decoration: none}.bee-header-home svg{width: 20px;height: 20px;color: var(--bee-honey)}.bee-header-home strong{font-weight: 700}.bee-header-home span{color: var(--bee-honey-light)}.bee-header-home:hover{color: #fff}.bee-header-title{color: var(--bee-text);font-size: 15px;font-weight: 600;font-family: var(--bee-mono);letter-spacing: 0;white-space: nowrap;overflow: hidden;text-overflow: ellipsis}.bee-header-badge{flex: none;margin-left: 12px}.bee-header-title::before{content: "docs /";color: var(--bee-text-dim);font-weight: 400;margin-right: 8px}.bee-header-badge{background: rgba(239,68,68,0.1);color: #fca5a5;padding: 4px 10px;border-radius: 999px;font-size: 12px;border: 1px solid rgba(239,68,68,0.3);font-family: var(--bee-mono);letter-spacing: 0.3px}.bee-ladybug-banner{max-width: 1280px;margin: 0 auto 18px auto;display: flex;align-items: center;gap: 14px;padding: 14px 18px;border-radius: var(--bee-radius);background: linear-gradient(135deg,rgba(220,38,38,0.16),rgba(23,25,35,0.9));border: 1px solid rgba(239,68,68,0.3);color: var(--bee-text);font-size: 14.5px;line-height: 1.5}.bee-ladybug-banner strong{color: #ff8f8f}.bee-ladybug-banner img{width: 42px;height: 42px;border-radius: 50%;flex-shrink: 0}.bee-docs-container{position: relative;z-index: 5;display: grid;grid-template-columns: 264px minmax(0,1fr);gap: 48px;max-width: 1280px;margin: 0 auto;padding: 32px 24px 64px 24px;color: var(--bee-text)}.bee-docs-content{min-width: 0;max-width: 880px}.bee-docs-sidebar{position: sticky;top: calc(var(--bee-header-h) + 24px);align-self: start;max-height: calc(100vh - var(--bee-header-h) - 48px);overflow-y: auto;padding: 0 10px 24px 0;scrollbar-width: thin;scrollbar-color: rgba(226,232,240,0.18) transparent}.bee-docs-sidebar::-webkit-scrollbar{width: 6px}.bee-docs-sidebar::-webkit-scrollbar-thumb{background: rgba(226,232,240,0.16);border-radius: 6px}.bee-sidebar-title{color: var(--bee-text-dim);font-size: 11px;font-weight: 600;letter-spacing: 0.14em;text-transform: uppercase;margin-bottom: 12px}.bee-sidebar-search{position: relative;margin: 0 0 16px 0}.bee-docs-sidebar .bee-sidebar-search input[type="search"]{-webkit-appearance: none;appearance: none;display: block;width: 100% !important;height: 36px;margin: 0 !important;padding: 0 34px 0 12px !important;background: var(--bee-surface-2) !important;color: var(--bee-text) !important;border: 1px solid var(--bee-line-strong) !important;border-radius: 8px !important;box-shadow: none !important;font: 400 13.5px var(--bee-font) !important;outline: none;transition: border-color .15s ease,box-shadow .15s ease}.bee-docs-sidebar .bee-sidebar-search input[type="search"]::placeholder{color: var(--bee-text-dim);opacity: 1}.bee-docs-sidebar .bee-sidebar-search input[type="search"]::-webkit-search-cancel-button{-webkit-appearance: none}.bee-docs-sidebar .bee-sidebar-search input[type="search"]:focus{border-color: var(--bee-honey) !important;box-shadow: 0 0 0 3px rgba(245,158,11,0.16) !important}.bee-sidebar-search kbd{position: absolute;right: 8px;top: 50%;transform: translateY(-50%);font: 500 11px var(--bee-mono);color: var(--bee-text-dim);border: 1px solid var(--bee-line-strong);border-radius: 4px;padding: 1px 6px;pointer-events: none}.bee-sidebar-search input:focus+kbd,.bee-sidebar-search input:not(:placeholder-shown)+kbd{display: none}.bee-docs-sidebar .bee-sidebar-toggle{display: none;align-items: center;justify-content: space-between;gap: 10px;width: 100%;padding: 11px 14px;background: var(--bee-surface-2);color: var(--bee-text);border: 1px solid var(--bee-line-strong);border-radius: 10px;font: 500 14px var(--bee-font);text-align: left;cursor: pointer}.bee-docs-sidebar .bee-sidebar-toggle::after{content: "";flex: none;width: 7px;height: 7px;border-right: 1.5px solid currentColor;border-bottom: 1.5px solid currentColor;transform: rotate(45deg);transition: transform .15s ease}.bee-docs-sidebar .bee-sidebar-toggle[aria-expanded="true"]::after{transform: rotate(-135deg)}.bee-sidebar-empty{display: none;color: var(--bee-text-dim);font-size: 13px;padding: 6px 8px}.bee-docs-sidebar details{margin: 0 0 2px 0;background: none;border: 0;border-radius: 0}.bee-docs-sidebar summary{list-style: none;display: flex;align-items: center;gap: 8px;padding: 7px 8px;border-radius: 6px;font-size: 11.5px;font-weight: 600;letter-spacing: 0.1em;text-transform: uppercase;color: var(--bee-text-dim);cursor: pointer;user-select: none;transition: color .15s ease,background .15s ease}.bee-docs-sidebar summary::-webkit-details-marker{display: none}.bee-docs-sidebar summary::marker{content: ""}.bee-docs-sidebar summary::before{content: "";flex: none;width: 6px;height: 6px;border-right: 1.5px solid currentColor;border-bottom: 1.5px solid currentColor;transform: rotate(-45deg);transition: transform .15s ease}.bee-docs-sidebar details[open]>summary::before{transform: rotate(45deg)}.bee-docs-sidebar summary:hover{color: var(--bee-text);background: rgba(255,255,255,0.04)}.bee-docs-sidebar details[open]>summary{color: var(--bee-text)}.bee-docs-sidebar ul{list-style: none;margin: 2px 0 10px 11px;padding: 0 0 0 10px;border-left: 1px solid var(--bee-line)}.bee-docs-sidebar li{margin: 0}.bee-docs-sidebar a{position: relative;display: block;padding: 5px 10px;border-radius: 6px;color: var(--bee-text-dim);text-decoration: none;font-family: var(--bee-mono);font-size: 13px;line-height: 1.45;transition: color .15s ease,background .15s ease}.bee-docs-sidebar a:hover{color: var(--bee-text);background: rgba(255,255,255,0.05)}.bee-docs-sidebar a[target="_blank"]::after{content: "\2197";margin-left: 6px;font-family: var(--bee-font);opacity: 0.5}.bee-docs-sidebar a.is-current{color: var(--bee-honey-light);background: rgba(245,158,11,0.1)}.bee-docs-sidebar a.is-current::before{content: "";position: absolute;left: -11px;top: 6px;bottom: 6px;width: 2px;border-radius: 2px;background: var(--bee-honey)}.bee-section-title{color: var(--bee-text);font-size: 34px;font-weight: 700;line-height: 1.2;letter-spacing: -0.02em;border: 0;padding: 0;margin: 0 0 8px 0}.bee-section-title+p{color: var(--bee-text-dim);font-size: 16px;line-height: 1.6}.bee-docs-content>div:first-child:not(.bee-class-card){margin-bottom: 36px !important;padding-bottom: 28px;border-bottom: 1px solid var(--bee-line)}.bee-docs-content>div:first-child:not(.bee-class-card) img{border-radius: 18px}.bee-docs-content img{max-width: 100%;height: auto}.bee-docs-content>div:first-child:not(.bee-class-card) img{width: 80px;height: auto;flex: none}.bee-docs-content>div:first-child:not(.bee-class-card)>div{min-width: 0}.bee-section-title{overflow-wrap: anywhere}body:has(.bee-docs-container){overflow-x: clip}.bee-class-card{background: none;border: 0;border-radius: 0;padding: 0;margin: 0 0 40px 0;scroll-margin-top: calc(var(--bee-header-h) + 24px)}.bee-class-card+.bee-class-card{padding-top: 36px;border-top: 1px solid var(--bee-line)}.bee-class-card h3{color: var(--bee-text) !important;font-family: var(--bee-font);font-size: 21px;font-weight: 650;line-height: 1.3;letter-spacing: -0.01em;margin: 36px 0 12px 0}.bee-class-card>h3:first-child{margin-top: 0}.bee-class-card h3::before{content: "";display: inline-block;width: 7px;height: 7px;margin-right: 11px;border-radius: 50%;background: var(--bee-honey);vertical-align: middle;position: relative;top: -2px}.bee-class-card p{line-height: 1.75;color: var(--bee-text-soft) !important;font-size: 15.5px;overflow-wrap: break-word;margin-bottom: 14px;font-weight: 400}.bee-class-card p strong{color: var(--bee-text);font-weight: 650}.bee-class-card.bee-debug,.bee-class-card.bee-ladybug{background: rgba(239,68,68,0.055);border: 1px solid rgba(239,68,68,0.24);border-radius: var(--bee-radius);padding: 24px 26px 12px 26px;margin-bottom: 40px}.bee-class-card.bee-debug h3,.bee-class-card.bee-ladybug h3{color: #ffb4b4 !important}.bee-class-card.bee-debug h3::before,.bee-class-card.bee-ladybug h3::before{background: var(--bee-ladybug)}.bee-class-card p code,.bee-inline-code{font-family: var(--bee-mono);font-size: 0.87em;background: rgba(245,158,11,0.09);color: #fcd34d;padding: 2px 6px;border-radius: 5px;overflow-wrap: anywhere}.bee-code-wrap{position: relative;margin: 0 0 22px 0}.bee-code-block,.bee-docs-content pre{background: var(--bee-code-bg) !important;border: 1px solid var(--bee-line-strong) !important;padding: 20px 22px !important;border-radius: var(--bee-radius) !important;font-family: var(--bee-mono) !important;font-size: 13.5px !important;color: #cbd5e1 !important;line-height: 1.75 !important;white-space: pre !important;overflow-x: auto !important;word-break: normal !important;width: 100% !important;tab-size: 2}.bee-code-block::-webkit-scrollbar,.bee-docs-content pre::-webkit-scrollbar{height: 8px}.bee-code-block::-webkit-scrollbar-thumb,.bee-docs-content pre::-webkit-scrollbar-thumb{background: rgba(226,232,240,0.16);border-radius: 8px}.bee-copy-btn{position: absolute;top: 10px;right: 10px;z-index: 3;display: inline-flex;align-items: center;gap: 6px;font-family: var(--bee-font);font-size: 12px;font-weight: 500;line-height: 1;padding: 7px 11px;cursor: pointer;color: var(--bee-text-soft);background: rgba(255,255,255,0.06);border: 1px solid var(--bee-line-strong);border-radius: 7px;opacity: 0;transition: opacity .15s ease,background .15s ease,color .15s ease,border-color .15s ease}.bee-code-wrap:hover .bee-copy-btn,.bee-copy-btn:focus-visible,.bee-copy-btn.bee-copied{opacity: 1}@media (hover: none){.bee-copy-btn{opacity: 1}}.bee-copy-btn:hover{background: rgba(245,158,11,0.16);color: #fde68a;border-color: var(--bee-line-honey)}.bee-copy-btn.bee-copied{color: #86efac;background: rgba(34,197,94,0.14);border-color: rgba(34,197,94,0.45)}.bee-code-block .token.comment,.bee-docs-content pre .token.comment,.bee-code-block .token.prolog,.bee-code-block .token.doctype,.bee-code-block .token.cdata{color: #94a3b8;font-style: italic}.bee-code-block .token.punctuation,.bee-docs-content pre .token.punctuation{color: #cbd5e1}.bee-code-block .token.keyword,.bee-docs-content pre .token.keyword,.bee-code-block .token.control,.bee-code-block .token.important{color: var(--bee-honey-light);font-weight: 600}.bee-code-block .token.string,.bee-docs-content pre .token.string,.bee-code-block .token.char,.bee-code-block .token.attr-value{color: #7ee0b0}.bee-code-block .token.number,.bee-docs-content pre .token.number,.bee-code-block .token.boolean,.bee-code-block .token.constant,.bee-code-block .token.symbol{color: var(--bee-honey)}.bee-code-block .token.function,.bee-docs-content pre .token.function,.bee-code-block .token.method{color: #7dd3fc}.bee-code-block .token.class-name,.bee-docs-content pre .token.class-name{color: #fcd34d}.bee-code-block .token.operator,.bee-docs-content pre .token.operator,.bee-code-block .token.entity,.bee-code-block .token.url{color: #c4b5fd}.bee-code-block .token.property,.bee-docs-content pre .token.property,.bee-code-block .token.tag,.bee-code-block .token.attr-name{color: #f0abfc}.bee-code-block .token.deleted,.bee-docs-content pre .token.deleted{color: var(--bee-ladybug)}.bee-code-block .bee-cm{color: #94a3b8;font-style: italic}.bee-code-block .bee-new{color: var(--bee-ladybug);font-weight: 600}.bee-api-table{width: 100%;border-collapse: separate;border-spacing: 0;margin: 0 0 24px 0;font-size: 14px;background: transparent;border: 1px solid var(--bee-line-strong);border-radius: var(--bee-radius);overflow: hidden}.bee-api-table thead th{background: rgba(255,255,255,0.035);color: var(--bee-text-dim);text-align: left;font-family: var(--bee-font);font-size: 11.5px;font-weight: 600;letter-spacing: 0.09em;text-transform: uppercase;padding: 11px 16px;border-bottom: 1px solid var(--bee-line-strong)}.bee-api-table tbody td{padding: 13px 16px;border-top: 1px solid var(--bee-line);color: var(--bee-text-soft);line-height: 1.65;vertical-align: top}.bee-api-table tbody tr:first-child td{border-top: 0}.bee-api-table tbody tr:hover td{background: rgba(255,255,255,0.025)}.bee-api-table code{font-family: var(--bee-mono);font-size: 12.5px;color: #fcd34d;background: rgba(245,158,11,0.09);padding: 2px 6px;border-radius: 5px;overflow-wrap: anywhere}.bee-flow{margin: 18px 0 6px 0;padding: 18px;background: rgba(255,255,255,0.025);border: 1px solid var(--bee-line-strong);border-radius: var(--bee-radius)}.bee-flow+p,.bee-flow+.bee-code-wrap{margin-top: 18px}.bee-flow-caption{color: var(--bee-text-dim) !important;font-size: 13.5px !important;line-height: 1.55;margin: 0 0 14px 0 !important}.bee-flow-row{list-style: none;display: flex;flex-wrap: wrap;align-items: stretch;gap: 8px 0;margin: 0;padding: 0}.bee-flow-step{display: flex;align-items: center;gap: 8px;max-width: 100%}.bee-flow-box{display: block;min-width: 7.5rem;max-width: 14rem;padding: 11px 13px;background: var(--bee-surface);border: 1px solid var(--bee-line-strong);border-radius: 10px;color: var(--bee-text-soft);font-size: 13.5px;line-height: 1.5}.bee-flow-box strong{display: block;color: var(--bee-honey-light);font-family: var(--bee-mono);font-size: 12.5px;font-weight: 600;margin-bottom: 4px}.bee-flow-box.bee-flow-read{border-color: rgba(239,68,68,0.4)}.bee-flow-box.bee-flow-read strong{color: #ff9a9a}.bee-flow-box code{font-family: var(--bee-mono);font-size: 12.5px;color: #fcd34d}.bee-flow-arrow{color: var(--bee-text-dim);font-size: 16px;line-height: 1;padding: 0 6px;flex-shrink: 0}@media (max-width: 900px){.bee-docs-container{grid-template-columns: minmax(0,1fr);gap: 24px;padding: 20px 16px 48px 16px}.bee-docs-sidebar{position: static;max-height: none;padding: 0 0 16px 0;border-bottom: 1px solid var(--bee-line)}.bee-docs-content{max-width: none}.bee-docs-sidebar .bee-sidebar-toggle{display: flex}.bee-docs-sidebar:not(.bee-side-open)>:not(.bee-sidebar-toggle){display: none}.bee-docs-sidebar .bee-sidebar-toggle[aria-expanded="true"]{margin-bottom: 14px}}@media (max-width: 768px){body,html body{background-attachment: scroll !important}.bee-docs-header{padding: 0 16px;background: rgba(15,17,23,0.96);-webkit-backdrop-filter: none;backdrop-filter: none}.bee-header-home{margin-right: 10px;font-size: 14px}.bee-header-title{font-size: 13px}.bee-header-title::before{display: none}.bee-section-title{font-size: 27px}.bee-class-card h3{font-size: 19px}.bee-class-card.bee-debug,.bee-class-card.bee-ladybug{padding: 20px 18px 8px 18px}.bee-code-block,.bee-docs-content pre{font-size: 14px !important;line-height: 1.8 !important;padding: 16px !important;color: #dbe4f0 !important}.bee-code-block.bee-has-copy,.bee-docs-content pre.bee-has-copy{padding-top: 46px !important}.bee-copy-btn{font-size: 11px;padding: 6px 9px}.bee-api-table{display: block;overflow-x: auto;white-space: nowrap}}
 </style>
 
 <!-- HEADER FISSA -->
 <header class="bee-docs-header">
+    <a href="/" class="bee-header-home" aria-label="BeeEngine home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5l8.2 4.75v9.5L12 21.5l-8.2-4.75v-9.5z"/></svg><strong>Bee<span>Engine</span></strong></a>
     <a href="#" class="bee-header-logo">
         <span class="bee-header-title">BeeTilemap</span>
     </a>
@@ -1053,8 +20,10 @@ body:has(.bee-docs-container) .entry-content {
 
     <!-- SIDEBAR (UNICA PER TUTTA LA PAGINA) -->
     <aside class="bee-docs-sidebar">
+        <button type="button" class="bee-sidebar-toggle" aria-expanded="false">Indice · BeeTilemap.js</button>
         <div class="bee-sidebar-title">Documentazione</div>
-
+        <div class="bee-sidebar-search"><input type="search" placeholder="Cerca una classe…" aria-label="Cerca nella documentazione" autocomplete="off" spellcheck="false"><kbd aria-hidden="true">/</kbd></div>
+        <div class="bee-sidebar-empty">Nessuna classe trovata.</div>
         <details>
             <summary>Link Utili</summary>
             <ul>
@@ -1228,7 +197,7 @@ body:has(.bee-docs-container) .entry-content {
                     solidi, tileset 1-based
                 </p>
             </div>
-            <img src="https://beeenginejs.com/wp-content/uploads/2026/09/Gemini_Generated_Image_bg7xjjbg7xjjbg7x-1-1.jpg"
+            <img src="https://beeenginejs.com/wp-content/uploads/2026/10/bee-engine-logo-animated-ezgif.com-resize.gif"
                 alt="BeeEngine Mascot" width="80" height="80" style="width: 80px; height: auto; flex-shrink: 0;">
         </div>
 
@@ -1453,229 +422,196 @@ map<span class="token punctuation">.</span>tilesetColumns <span class="token ope
 <!-- PULSANTE "COPIA CODICE" (auto-applicato a .bee-code-block e <pre><code>) -->
 <script>
 (function () {
-    if (window.__beeDocsInit) return;
-    window.__beeDocsInit = true;
-
-    /* ============================================================
-       1. PULSANTE "COPIA CODICE" (auto-applicato a .bee-code-block e <pre><code>)
-       ============================================================ */
-    function copyText(text, btn) {
-        var done = function () {
-            btn.textContent = '✔ Copiato';
-            btn.classList.add('bee-copied');
-            setTimeout(function () {
-                btn.textContent = '⧉ Copia codice';
-                btn.classList.remove('bee-copied');
-            }, 1600);
-        };
-        if (navigator.clipboard && window.isSecureContext) {
-            navigator.clipboard.writeText(text).then(done, function () { fallback(text, done); });
-        } else {
-            fallback(text, done);
-        }
-    }
-
-    function fallback(text, done) {
-        var ta = document.createElement('textarea');
-        ta.value = text;
-        ta.setAttribute('readonly', '');
-        ta.style.position = 'fixed';
-        ta.style.top = '-1000px';
-        document.body.appendChild(ta);
-        ta.select();
-        try { document.execCommand('copy'); done(); } catch (e) { }
-        document.body.removeChild(ta);
-    }
-
-    /* Rimuove il rientro comune ereditato dall'indentazione dell'HTML,
-       senza toccare la struttura relativa del codice */
-    function dedent(block) {
-        var lines = block.innerHTML.split('\n');
-        if (lines.length < 2) return;
-
-        var min = Infinity;
-        for (var i = 1; i < lines.length; i++) {
-            if (!lines[i].trim()) continue;
-            var pad = lines[i].match(/^[ \t]*/)[0].length;
-            if (pad < min) min = pad;
-        }
-        if (!min || min === Infinity) return;
-
-        var re = new RegExp('^[ \\t]{0,' + min + '}');
-        for (var j = 1; j < lines.length; j++) lines[j] = lines[j].replace(re, '');
-        block.innerHTML = lines.join('\n').replace(/^\s*\n/, '').replace(/\s+$/, '');
-    }
-
-    function enhance(block) {
-        if (block.dataset.beeCopy === '1') return;
-        block.dataset.beeCopy = '1';
-        dedent(block);
-
-        var wrap = document.createElement('div');
-        wrap.className = 'bee-code-wrap';
-        block.parentNode.insertBefore(wrap, block);
-        wrap.appendChild(block);
-
-        var btn = document.createElement('button');
-        btn.type = 'button';
-        btn.className = 'bee-copy-btn';
-        btn.textContent = '⧉ Copia codice';
-        btn.setAttribute('aria-label', 'Copia il codice');
-        btn.addEventListener('click', function () {
-            copyText(block.innerText.replace(/^\s*\n/, '').replace(/\s+$/, ''), btn);
-        });
-        wrap.appendChild(btn);
-        block.classList.add('bee-has-copy');
-    }
-
-    function initCopy() {
-        var blocks = document.querySelectorAll('.bee-code-block');
-        for (var i = 0; i < blocks.length; i++) enhance(blocks[i]);
-
-        var codes = document.querySelectorAll('.bee-docs-content pre > code');
-        for (var j = 0; j < codes.length; j++) enhance(codes[j].parentNode);
-    }
-
-    /* ============================================================
-       2. BARRA LATERALE: pagina corrente, cartella aperta, ricerca
-       ============================================================ */
-    function initSidebar() {
-        var side = document.querySelector('.bee-docs-sidebar');
-        if (!side || side.dataset.beeSide === '1') return;
-        side.dataset.beeSide = '1';
-
-        var groups = Array.prototype.slice.call(side.querySelectorAll('details'));
-
-        /* 2a. pagina corrente: se manca is-current, la cerco dal titolo della barra in alto */
-        if (!side.querySelector('a.is-current')) {
-            var titleEl = document.querySelector('.bee-header-title');
-            var title = titleEl ? titleEl.textContent.replace(/\s+/g, '').toLowerCase() : '';
-            if (title) {
-                var links = side.querySelectorAll('a');
-                for (var i = 0; i < links.length; i++) {
-                    var name = links[i].textContent.replace(/\s+/g, '').toLowerCase().replace(/\.js$/, '');
-                    if (name === title) { links[i].classList.add('is-current'); break; }
-                }
-            }
-        }
-
-        /* 2b. apre la cartella della pagina corrente e porta il link in vista */
-        var current = side.querySelector('a.is-current');
-        if (current) {
-            var parent = current.closest('details');
-            if (parent) parent.open = true;
-            /* scorre solo la barra laterale, mai la pagina */
-            if (side.scrollHeight > side.clientHeight) {
-                side.scrollTop = Math.max(0, current.offsetTop - side.clientHeight / 2);
-            }
-        }
-
-        /* 2c. su schermi stretti l'indice si apre e si chiude con un pulsante
-           (senza JavaScript resta sempre aperto) */
-        var toggle = document.createElement('button');
-        toggle.type = 'button';
-        toggle.className = 'bee-sidebar-toggle';
-        toggle.setAttribute('aria-expanded', 'false');
-        var currentName = current ? current.textContent.replace(/\s+/g, ' ').trim() : '';
-        toggle.textContent = currentName ? 'Indice · ' + currentName : 'Indice della documentazione';
-        toggle.addEventListener('click', function () {
-            var open = side.classList.toggle('bee-side-open');
-            toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
-        });
-        side.insertBefore(toggle, side.firstChild);
-        side.classList.add('bee-js');
-
-        /* 2d. ricerca */
-        var wrap = document.createElement('div');
-        wrap.className = 'bee-sidebar-search';
-        var input = document.createElement('input');
-        input.type = 'search';
-        input.placeholder = 'Cerca una classe…';
-        input.setAttribute('aria-label', 'Cerca nella documentazione');
-        input.autocomplete = 'off';
-        input.spellcheck = false;
-        var hint = document.createElement('kbd');
-        hint.textContent = '/';
-        hint.setAttribute('aria-hidden', 'true');
-        wrap.appendChild(input);
-        wrap.appendChild(hint);
-
-        var empty = document.createElement('div');
-        empty.className = 'bee-sidebar-empty';
-        empty.textContent = 'Nessuna classe trovata.';
-
-        var title0 = side.querySelector('.bee-sidebar-title');
-        if (title0 && title0.nextSibling) {
-            side.insertBefore(wrap, title0.nextSibling);
-        } else {
-            side.insertBefore(wrap, side.firstChild);
-        }
-        side.insertBefore(empty, wrap.nextSibling);
-
-        var openBefore = null;
-
-        function filter() {
-            var q = input.value.trim().toLowerCase();
-
-            if (q && openBefore === null) {
-                openBefore = groups.map(function (g) { return g.open; });
-            }
-
-            var anyVisible = false;
-            groups.forEach(function (g) {
-                var items = g.querySelectorAll('li');
-                var visible = 0;
-                for (var i = 0; i < items.length; i++) {
-                    var text = items[i].textContent.replace(/\s+/g, ' ').toLowerCase();
-                    var hit = !q || text.indexOf(q) !== -1;
-                    items[i].style.display = hit ? '' : 'none';
-                    if (hit) visible++;
-                }
-                g.style.display = visible ? '' : 'none';
-                if (q && visible) g.open = true;
-                if (visible) anyVisible = true;
-            });
-            empty.style.display = q && !anyVisible ? 'block' : 'none';
-
-            if (!q && openBefore) {
-                groups.forEach(function (g, idx) { g.open = openBefore[idx]; });
-                openBefore = null;
-            }
-        }
-
-        input.addEventListener('input', filter);
-        input.addEventListener('keydown', function (e) {
-            if (e.key === 'Escape') {
-                input.value = '';
-                filter();
-                input.blur();
-            } else if (e.key === 'Enter') {
-                var first = side.querySelector('details li:not([style*="display: none"]) a');
-                if (first) first.click();
-            }
-        });
-
-        /* "/" porta il cursore nella ricerca (se non stai scrivendo altrove) */
-        document.addEventListener('keydown', function (e) {
-            if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey) return;
-            var t = e.target;
-            var tag = t && t.tagName;
-            if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (t && t.isContentEditable)) return;
-            e.preventDefault();
-            input.focus();
-            input.select();
-        });
-    }
-
-    function init() {
-        initCopy();
-        initSidebar();
-    }
-
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', init);
-    } else {
-        init();
-    }
+if (window.__beeDocsInit) return;
+window.__beeDocsInit = true;
+function copyText(text, btn) {
+var done = function () {
+btn.textContent = '✔ Copiato';
+btn.classList.add('bee-copied');
+setTimeout(function () {
+btn.textContent = '⧉ Copia codice';
+btn.classList.remove('bee-copied');
+}, 1600);
+};
+if (navigator.clipboard && window.isSecureContext) {
+navigator.clipboard.writeText(text).then(done, function () { fallback(text, done); });
+} else {
+fallback(text, done);
+}
+}
+function fallback(text, done) {
+var ta = document.createElement('textarea');
+ta.value = text;
+ta.setAttribute('readonly', '');
+ta.style.position = 'fixed';
+ta.style.top = '-1000px';
+document.body.appendChild(ta);
+ta.select();
+try { document.execCommand('copy'); done(); } catch (e) { }
+document.body.removeChild(ta);
+}
+function dedent(block) {
+var lines = block.innerHTML.split('\n');
+if (lines.length < 2) return;
+var min = Infinity;
+for (var i = 1; i < lines.length; i++) {
+if (!lines[i].trim()) continue;
+var pad = lines[i].match(/^[ \t]*/)[0].length;
+if (pad < min) min = pad;
+}
+if (!min || min === Infinity) return;
+var re = new RegExp('^[ \\t]{0,' + min + '}');
+for (var j = 1; j < lines.length; j++) lines[j] = lines[j].replace(re, '');
+block.innerHTML = lines.join('\n').replace(/^\s*\n/, '').replace(/\s+$/, '');
+}
+function enhance(block) {
+if (block.dataset.beeCopy === '1') return;
+block.dataset.beeCopy = '1';
+dedent(block);
+var wrap = document.createElement('div');
+wrap.className = 'bee-code-wrap';
+block.parentNode.insertBefore(wrap, block);
+wrap.appendChild(block);
+var btn = document.createElement('button');
+btn.type = 'button';
+btn.className = 'bee-copy-btn';
+btn.textContent = '⧉ Copia codice';
+btn.setAttribute('aria-label', 'Copia il codice');
+btn.addEventListener('click', function () {
+copyText(block.innerText.replace(/^\s*\n/, '').replace(/\s+$/, ''), btn);
+});
+wrap.appendChild(btn);
+block.classList.add('bee-has-copy');
+}
+function initCopy() {
+var blocks = document.querySelectorAll('.bee-code-block');
+for (var i = 0; i < blocks.length; i++) enhance(blocks[i]);
+var codes = document.querySelectorAll('.bee-docs-content pre > code');
+for (var j = 0; j < codes.length; j++) enhance(codes[j].parentNode);
+}
+function initSidebar() {
+var side = document.querySelector('.bee-docs-sidebar');
+if (!side || side.dataset.beeSide === '1') return;
+side.dataset.beeSide = '1';
+var groups = Array.prototype.slice.call(side.querySelectorAll('details'));
+if (!side.querySelector('a.is-current')) {
+var titleEl = document.querySelector('.bee-header-title');
+var title = titleEl ? titleEl.textContent.replace(/\s+/g, '').toLowerCase() : '';
+if (title) {
+var links = side.querySelectorAll('a');
+for (var i = 0; i < links.length; i++) {
+var name = links[i].textContent.replace(/\s+/g, '').toLowerCase().replace(/\.js$/, '');
+if (name === title) { links[i].classList.add('is-current'); break; }
+}
+}
+}
+var current = side.querySelector('a.is-current');
+if (current) {
+var parent = current.closest('details');
+if (parent) parent.open = true;
+if (side.scrollHeight > side.clientHeight) {
+side.scrollTop = Math.max(0, current.offsetTop - side.clientHeight / 2);
+}
+}
+var toggle = side.querySelector('.bee-sidebar-toggle');
+if (!toggle) {
+toggle = document.createElement('button');
+toggle.type = 'button';
+toggle.className = 'bee-sidebar-toggle';
+toggle.setAttribute('aria-expanded', 'false');
+var currentName = current ? current.textContent.replace(/\s+/g, ' ').trim() : '';
+toggle.textContent = currentName ? 'Indice · ' + currentName : 'Indice della documentazione';
+side.insertBefore(toggle, side.firstChild);
+}
+toggle.addEventListener('click', function () {
+var open = side.classList.toggle('bee-side-open');
+toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+});
+var wrap = side.querySelector('.bee-sidebar-search');
+var input = wrap && wrap.querySelector('input');
+if (!input) {
+wrap = document.createElement('div');
+wrap.className = 'bee-sidebar-search';
+input = document.createElement('input');
+input.type = 'search';
+input.placeholder = 'Cerca una classe…';
+input.setAttribute('aria-label', 'Cerca nella documentazione');
+input.autocomplete = 'off';
+input.spellcheck = false;
+var hint = document.createElement('kbd');
+hint.textContent = '/';
+hint.setAttribute('aria-hidden', 'true');
+wrap.appendChild(input);
+wrap.appendChild(hint);
+var title0 = side.querySelector('.bee-sidebar-title');
+if (title0 && title0.nextSibling) {
+side.insertBefore(wrap, title0.nextSibling);
+} else {
+side.insertBefore(wrap, side.firstChild);
+}
+}
+var empty = side.querySelector('.bee-sidebar-empty');
+if (!empty) {
+empty = document.createElement('div');
+empty.className = 'bee-sidebar-empty';
+empty.textContent = 'Nessuna classe trovata.';
+side.insertBefore(empty, wrap.nextSibling);
+}
+var openBefore = null;
+function filter() {
+var q = input.value.trim().toLowerCase();
+if (q && openBefore === null) {
+openBefore = groups.map(function (g) { return g.open; });
+}
+var anyVisible = false;
+groups.forEach(function (g) {
+var items = g.querySelectorAll('li');
+var visible = 0;
+for (var i = 0; i < items.length; i++) {
+var text = items[i].textContent.replace(/\s+/g, ' ').toLowerCase();
+var hit = !q || text.indexOf(q) !== -1;
+items[i].style.display = hit ? '' : 'none';
+if (hit) visible++;
+}
+g.style.display = visible ? '' : 'none';
+if (q && visible) g.open = true;
+if (visible) anyVisible = true;
+});
+empty.style.display = q && !anyVisible ? 'block' : 'none';
+if (!q && openBefore) {
+groups.forEach(function (g, idx) { g.open = openBefore[idx]; });
+openBefore = null;
+}
+}
+input.addEventListener('input', filter);
+input.addEventListener('keydown', function (e) {
+if (e.key === 'Escape') {
+input.value = '';
+filter();
+input.blur();
+} else if (e.key === 'Enter') {
+var first = side.querySelector('details li:not([style*="display: none"]) a');
+if (first) first.click();
+}
+});
+document.addEventListener('keydown', function (e) {
+if (e.key !== '/' || e.ctrlKey || e.metaKey || e.altKey) return;
+var t = e.target;
+var tag = t && t.tagName;
+if (tag === 'INPUT' || tag === 'TEXTAREA' || tag === 'SELECT' || (t && t.isContentEditable)) return;
+e.preventDefault();
+input.focus();
+input.select();
+});
+}
+function init() {
+initCopy();
+initSidebar();
+}
+if (document.readyState === 'loading') {
+document.addEventListener('DOMContentLoaded', init);
+} else {
+init();
+}
 })();
 </script>

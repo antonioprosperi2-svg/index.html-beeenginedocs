@@ -14,8 +14,29 @@ import { fileURLToPath } from 'node:url';
 const root = path.dirname(fileURLToPath(import.meta.url));
 const check = process.argv.includes('--check');
 
-const css = fs.readFileSync(path.join(root, 'bee-docs.css'), 'utf8').replace(/\r\n/g, '\n').trim();
-const js = fs.readFileSync(path.join(root, 'bee-docs.js'), 'utf8').replace(/\r\n/g, '\n').trim();
+// Nelle pagine finiscono versioni compatte (senza commenti ne' rientri):
+// PageSpeed le chiede e la pagina pesa meno. I sorgenti restano leggibili.
+function minifyCss(src) {
+    return src
+        .replace(/\/\*[\s\S]*?\*\//g, '')
+        .replace(/\s+/g, ' ')
+        .replace(/\s*([{};>,])\s*/g, '$1')
+        .replace(/;}/g, '}')
+        .trim();
+}
+
+function minifyJs(src) {
+    return src
+        .replace(/^[ \t]*\/\*[\s\S]*?\*\/[ \t]*(?:\n|$)/gm, '') // commenti a blocco su righe proprie
+        .split('\n')
+        .map((l) => l.trim())
+        .filter((l) => l && !l.startsWith('//'))
+        .join('\n');
+}
+
+const css = minifyCss(fs.readFileSync(path.join(root, 'bee-docs.css'), 'utf8').replace(/\r\n/g, '\n'));
+const js = minifyJs(fs.readFileSync(path.join(root, 'bee-docs.js'), 'utf8').replace(/\r\n/g, '\n'));
+try { new Function(js); } catch (err) { console.error('Lo script compattato non e\' valido:', err.message); process.exit(1); }
 
 // Emoji usate come icone: 📁 cartella, 🌐 link utili, 🐞 🐙 📦 link esterni
 const ICON = '(?:\\u{1F4C1}|\\u{1F310}|\\u{1F41E}|\\u{1F419}|\\u{1F4E6})\\uFE0F?';
@@ -122,9 +143,10 @@ function fixCodeBlock(tag, inner) {
 }
 
 function fixCodeBlocks(html) {
-    return html.replace(/<(div|pre) class="bee-code-block">([\s\S]*?)<\/\1>/g, (all, tag, inner) => {
-        // blocco gia' convertito e integro: lo lascio com'e'
-        if (tag === 'pre' && !/<[^>]*\n[^>]*>/.test(inner)) return all;
+    // il tag di apertura puo' essere spezzato dal formatter (<pre\n class="...">)
+    return html.replace(/<(div|pre)\s+class="bee-code-block"\s*>([\s\S]*?)<\/\1>/g, (all, tag, inner) => {
+        // blocco gia' convertito e integro: lo lascio com'e' (ma con il tag di apertura in ordine)
+        if (tag === 'pre' && !/<[^>]*\n[^>]*>/.test(inner)) return `<pre class="bee-code-block">${inner}</pre>`;
         return fixCodeBlock(tag, inner);
     });
 }
@@ -133,6 +155,53 @@ function fixCodeBlocks(html) {
 function openCurrentGroup(aside) {
     return aside.replace(/<details(?: open)?>([\s\S]*?)<\/details>/g, (all, inner) =>
         /class="is-current"/.test(inner) ? `<details open>${inner}</details>` : all);
+}
+
+// ---------------------------------------------------------------------------
+// Elementi fissi nell'HTML (niente CLS)
+//
+// Se pulsante dell'indice e ricerca nascono dal JavaScript, quando parte la
+// pagina cambia altezza e il contenuto salta (Cumulative Layout Shift).
+// Qui stanno gia' nel markup, con lo stesso spazio di prima e di dopo.
+// ---------------------------------------------------------------------------
+const stripStatic = (aside) => aside
+    .replace(/\s*<button\b[^>]*\bbee-sidebar-toggle\b[^>]*>[\s\S]*?<\/button>/g, '')
+    .replace(/\s*<div class="bee-sidebar-search">[\s\S]*?<\/kbd>\s*<\/div>/g, '')
+    .replace(/\s*<div class="bee-sidebar-empty">[\s\S]*?<\/div>/g, '');
+
+const escHtml = (s) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+
+function addSidebarControls(aside, headerTitle) {
+    let out = stripStatic(aside);
+
+    // nome della pagina corrente: link is-current, altrimenti il titolo della barra in alto
+    let name = '';
+    const cur = out.match(/<a\b[^>]*class="is-current"[^>]*>([\s\S]*?)<\/a>/);
+    if (cur) name = cur[1].replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+    else if (headerTitle) {
+        const want = headerTitle.replace(/\s+/g, '').toLowerCase();
+        for (const m of out.matchAll(/<a\b[^>]*>([\s\S]*?)<\/a>/g)) {
+            const text = m[1].replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim();
+            if (text.replace(/\s+/g, '').toLowerCase().replace(/\.js$/, '') === want) { name = text; break; }
+        }
+    }
+    const label = name ? 'Indice · ' + escHtml(name) : 'Indice della documentazione';
+
+    const toggle = `<button type="button" class="bee-sidebar-toggle" aria-expanded="false">${label}</button>`;
+    const search = '<div class="bee-sidebar-search"><input type="search" placeholder="Cerca una classe…" aria-label="Cerca nella documentazione" autocomplete="off" spellcheck="false"><kbd aria-hidden="true">/</kbd></div>';
+    const empty = '<div class="bee-sidebar-empty">Nessuna classe trovata.</div>';
+
+    out = out.replace(/(<aside class="bee-docs-sidebar">)/, `$1\n        ${toggle}`);
+    out = out.replace(/(<div class="bee-sidebar-title">[^<]*<\/div>)/, `$1\n        ${search}\n        ${empty}`);
+    return out;
+}
+
+// link alla home del sito, dentro la barra fissa: sempre presente, nessun salto
+const HOME_LINK = '<a href="/" class="bee-header-home" aria-label="BeeEngine home"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><path d="M12 2.5l8.2 4.75v9.5L12 21.5l-8.2-4.75v-9.5z"/></svg><strong>Bee<span>Engine</span></strong></a>';
+
+function addHomeLink(html) {
+    const out = html.replace(/\s*<a\b[^>]*\bbee-header-home\b[^>]*>[\s\S]*?<\/a>/g, '');
+    return out.replace(/(<header class="bee-docs-header">)/, `$1\n    ${HOME_LINK}`);
 }
 
 function transform(html) {
@@ -153,13 +222,21 @@ function transform(html) {
     // 3. emoji -> niente: l'icona della cartella la disegna il CSS
     out = out.replace(new RegExp('(<summary>)\\s*' + ICON + '\\s*', 'gu'), '$1');
     out = out.replace(new RegExp('(<h3>)\\s*' + ICON + '\\s*', 'gu'), '$1');
+    const titleMatch = out.match(/<span class="bee-header-title">([^<]*)<\/span>/);
+    const headerTitle = titleMatch ? titleMatch[1].trim() : '';
     out = out.replace(/<aside class="bee-docs-sidebar">[\s\S]*?<\/aside>/, (aside) =>
-        openCurrentGroup(
-            aside.replace(new RegExp('(>)\\s*' + ICON + '\\s*', 'gu'), '$1')
-                .replace(/(<summary>)([^<]*?)\s+(<\/summary>)/g, '$1$2$3')
-                .replace(/<div class="bee-sidebar-title">[^<]*<\/div>/, '<div class="bee-sidebar-title">Documentazione</div>')
+        addSidebarControls(
+            openCurrentGroup(
+                aside.replace(new RegExp('(>)\\s*' + ICON + '\\s*', 'gu'), '$1')
+                    .replace(/(<summary>)([^<]*?)\s+(<\/summary>)/g, '$1$2$3')
+                    .replace(/<div class="bee-sidebar-title">[^<]*<\/div>/, '<div class="bee-sidebar-title">Documentazione</div>')
+            ),
+            headerTitle
         )
     );
+
+    // link "BeeEngine home" nella barra in alto
+    out = addHomeLink(out);
 
     // 4. blocchi di codice: <pre> e rientro ripristinato
     out = fixCodeBlocks(out);

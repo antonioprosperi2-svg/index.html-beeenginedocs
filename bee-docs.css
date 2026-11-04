@@ -109,23 +109,11 @@ body:has(.bee-docs-container) .entry-header {
     border: 0;
 }
 
-/* il logo del sito (link BeeEngine home) entra nella barra fissa, in piccolo */
+/* Il link "BeeEngine home" ora e' dentro la barra della documentazione
+   (.bee-header-home). Se il tema aggiunge ancora il suo logo in cima al
+   body, qui lo nascondo: due loghi sarebbero uno di troppo. */
 body:has(.bee-docs-container) > a[aria-label="BeeEngine home"] {
-    position: fixed !important;
-    top: 12px;
-    left: 24px;
-    z-index: 1001;
-    transform: scale(0.5);
-    transform-origin: 0 0;
-    display: inline-flex !important;
-}
-
-body:has(.bee-docs-container) > a[aria-label="BeeEngine home"] > span > span:last-child {
     display: none !important;
-}
-
-body:has(> a[aria-label="BeeEngine home"]) .bee-docs-header {
-    padding-left: 168px;
 }
 
 /* larghezza piena e niente riquadri del tema attorno al contenuto */
@@ -191,7 +179,40 @@ body:has(.bee-docs-container) .entry-content {
     display: flex;
     align-items: center;
     gap: 12px;
+    min-width: 0;
+    margin-right: auto;
     text-decoration: none;
+}
+
+/* link alla home del sito: sempre nel DOM, per chi naviga e per gli agenti */
+.bee-header-home {
+    display: inline-flex;
+    align-items: center;
+    flex: none;
+    gap: 8px;
+    margin-right: 18px;
+    color: var(--bee-text);
+    font: 700 16px/1 var(--bee-font);
+    letter-spacing: -0.01em;
+    text-decoration: none;
+}
+
+.bee-header-home svg {
+    width: 20px;
+    height: 20px;
+    color: var(--bee-honey);
+}
+
+.bee-header-home strong {
+    font-weight: 700;
+}
+
+.bee-header-home span {
+    color: var(--bee-honey-light);
+}
+
+.bee-header-home:hover {
+    color: #fff;
 }
 
 .bee-header-title {
@@ -200,6 +221,14 @@ body:has(.bee-docs-container) .entry-content {
     font-weight: 600;
     font-family: var(--bee-mono);
     letter-spacing: 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bee-header-badge {
+    flex: none;
+    margin-left: 12px;
 }
 
 .bee-header-title::before {
@@ -535,6 +564,31 @@ body:has(.bee-docs-container) .entry-content {
 
 .bee-docs-content>div:first-child:not(.bee-class-card) img {
     border-radius: 18px;
+}
+
+/* Nessuna immagine puo' allargare la pagina oltre lo schermo
+   (su telefono la pagina si trascinava di lato col dito). */
+.bee-docs-content img {
+    max-width: 100%;
+    height: auto;
+}
+
+.bee-docs-content>div:first-child:not(.bee-class-card) img {
+    width: 80px;
+    height: auto;
+    flex: none;
+}
+
+.bee-docs-content>div:first-child:not(.bee-class-card)>div {
+    min-width: 0;
+}
+
+.bee-section-title {
+    overflow-wrap: anywhere;
+}
+
+body:has(.bee-docs-container) {
+    overflow-x: clip;
 }
 
 /* La scheda e' una sezione, non un riquadro */
@@ -949,16 +1003,17 @@ body:has(.bee-docs-container) .entry-content {
         max-width: none;
     }
 
-    /* indice a scomparsa (solo se il JavaScript e' partito) */
-    .bee-docs-sidebar.bee-js .bee-sidebar-toggle {
+    /* indice a scomparsa. Funziona solo con CSS (il pulsante e' nell'HTML):
+       la pagina nasce gia' chiusa e non si sposta quando parte il JavaScript */
+    .bee-docs-sidebar .bee-sidebar-toggle {
         display: flex;
     }
 
-    .bee-docs-sidebar.bee-js:not(.bee-side-open)> :not(.bee-sidebar-toggle) {
+    .bee-docs-sidebar:not(.bee-side-open)> :not(.bee-sidebar-toggle) {
         display: none;
     }
 
-    .bee-docs-sidebar.bee-js .bee-sidebar-toggle[aria-expanded="true"] {
+    .bee-docs-sidebar .bee-sidebar-toggle[aria-expanded="true"] {
         margin-bottom: 14px;
     }
 }
@@ -977,13 +1032,9 @@ body:has(.bee-docs-container) .entry-content {
         backdrop-filter: none;
     }
 
-    body:has(> a[aria-label="BeeEngine home"]) .bee-docs-header {
-        padding-left: 150px;
-    }
-
-    body:has(.bee-docs-container) > a[aria-label="BeeEngine home"] {
-        left: 16px;
-        transform: scale(0.44);
+    .bee-header-home {
+        margin-right: 10px;
+        font-size: 14px;
     }
 
     .bee-header-title {

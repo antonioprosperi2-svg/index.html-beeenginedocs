@@ -69,3 +69,5 @@ Dopo aver modificato uno dei due file lancia:
 node build-docs.mjs          # aggiorna tutte le pagine
 node build-docs.mjs --check  # elenca solo le pagine da aggiornare
 ```
+
+Nelle pagine finiscono versioni compatte di CSS e JS (niente commenti e rientri, come chiede PageSpeed): i commenti restano solo nei due file sorgente. Lo script inserisce anche, nell'HTML, il link "BeeEngine home" della barra in alto, il pulsante dell'indice e la ricerca: stanno nel markup (non creati dal JavaScript) per non far spostare la pagina durante il caricamento (CLS).
