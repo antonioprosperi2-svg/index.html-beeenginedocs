@@ -12,7 +12,7 @@
     <a href="#" class="bee-header-logo">
         <span class="bee-header-title">BeeBullet</span>
     </a>
-    <span class="bee-header-badge">v2.2.0</span>
+    <span class="bee-header-badge">v2.12.1</span>
 </header>
 
 <!-- CONTENITORE PRINCIPALE -->
@@ -149,7 +149,7 @@
                         href="https://beeenginejs.com/touch-button-component-input-touch-per-canvas-2d-in-javascript/">BeeTouchButton.js</a>
                 </li>
                 <li><a href="https://beeenginejs.com/controlli-touch-su-canvas-javascript-d-pad-e-pulsante/">BeeTouchControls.js</a></li>
-                <li><a href="#BeeVirtualDPad">BeeVirtualDPad.js</a></li>
+                <li><a href="https://beeenginejs.com/d-pad-virtuale-javascript-su-canvas-joystick-touch-4-8-direzioni/">BeeVirtualDPad.js</a></li>
             </ul>
         </details>
         <details open>
@@ -189,92 +189,337 @@
     <!-- AREA CONTENUTI (TUTTI I MODULI VANNO QUI DENTRO) -->
     <main class="bee-docs-content">
 
-        <!-- SEZIONE 1 -->
-        <h2 class="bee-section-title"></h2>
+        <div
+            style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
+            <div>
+                <h2 class="bee-section-title" style="margin: 0;">BeeBullet — Documentazione Tecnica</h2>
+                <p style="margin-top: 5px;">Proiettile 2D:
+                    <code class="bee-inline-code">vx</code> e
+                    <code class="bee-inline-code">vy</code>,
+                    durata in secondi, pool del motore
+                </p>
+            </div>
+            <img src="https://beeenginejs.com/wp-content/uploads/2026/09/Gemini_Generated_Image_bg7xjjbg7xjjbg7x-1-1.jpg"
+                alt="BeeEngine Mascot" width="80" height="80" style="width: 80px; height: auto; flex-shrink: 0;">
+        </div>
 
-        <div class="bee-class-card" id="radme">****>>>>>>>> mettere id >>>>>>>>>>*****
-            <h3> </h3>
+        <div class="bee-class-card" id="BeeBullet">
 
-            <p></p>
+            <h3>Panoramica</h3>
 
-            <p> </p>
+            <p><code>BeeBullet</code> è un rettangolo che si sposta da solo.
+                Vive in <code>src/physics/BeeBullet.js</code> ed estende
+                <code>BeeEntity</code>, quindi ha <code>x</code>, <code>y</code>,
+                <code>worldX</code>, <code>worldY</code>, <code>active</code> e
+                <code>destroy()</code> come le altre entità. Non è un corpo
+                rigido e non scrive tasti: la velocità è
+                <code>vx</code> e <code>vy</code>, in pixel al secondo.
+            </p>
 
-            <p>📁 </p>
+            <p>Di default parte da <code>(0, 0)</code>, è 8×8,
+                <code>vx</code> è 0 e <code>vy</code> è 300 (verso il basso,
+                perché la Y del canvas cresce in giù), il colore è oro e
+                <code>lifespan</code> è 5 secondi. Il motore crea già il pool
+                <code>gioco.bullets</code>: 32 proiettili pronti, al massimo 256.
+                <code>acquire</code> non lo mette in scena. Senza
+                <code>addEntity</code> non viene aggiornato e non viene disegnato.
+                <code>BeeEnemyShooter</code> fa proprio questo: prende un colpo
+                dal pool e lo aggiunge alla scena.
+            </p>
 
-            <pre class="bee-code-block"></pre>
+            <pre class="bee-code-block"><span class="token keyword">const</span> colpo <span class="token operator">=</span> gioco<span class="token punctuation">.</span>bullets<span class="token punctuation">.</span><span class="token function">acquire</span><span class="token punctuation">(</span>
+    eroe<span class="token punctuation">.</span>worldX <span class="token operator">+</span> eroe<span class="token punctuation">.</span>width <span class="token operator">/</span> <span class="token number">2</span> <span class="token operator">-</span> <span class="token number">4</span><span class="token punctuation">,</span>
+    eroe<span class="token punctuation">.</span>worldY <span class="token operator">+</span> eroe<span class="token punctuation">.</span>height <span class="token operator">/</span> <span class="token number">2</span> <span class="token operator">-</span> <span class="token number">4</span><span class="token punctuation">,</span>
+    <span class="token number">420</span><span class="token punctuation">,</span>
+    <span class="token number">0</span><span class="token punctuation">,</span>
+    <span class="token number">8</span><span class="token punctuation">,</span>
+    <span class="token number">8</span><span class="token punctuation">,</span>
+    <span class="token string">'proiettile'</span><span class="token punctuation">,</span>
+    <span class="token number">2</span>
+<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token keyword">if</span> <span class="token punctuation">(</span>colpo<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    gioco<span class="token punctuation">.</span><span class="token function">addEntity</span><span class="token punctuation">(</span>colpo<span class="token punctuation">)</span><span class="token punctuation">;</span>
+    gioco<span class="token punctuation">.</span>collisions<span class="token punctuation">.</span><span class="token function">add</span><span class="token punctuation">(</span><span class="token string">'proiettili'</span><span class="token punctuation">,</span> colpo<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span></pre>
 
-            <p>📁</p>
+            <p>L'ordine degli argomenti di <code>acquire</code> è quello di
+                <code>reset</code>: <code>x</code>, <code>y</code>,
+                <code>vx</code>, <code>vy</code>, <code>width</code>,
+                <code>height</code>, <code>textureKey</code>,
+                <code>lifespan</code>. Qui il colpo va a destra a 420 pixel
+                al secondo e scade dopo 2 secondi. La chiave
+                <code>'proiettile'</code> è un'immagine già caricata con
+                <code>BeeAssetManager</code>.
+            </p>
 
-            <pre class="bee-code-block"></pre>
+            <h3>Vita e movimento</h3>
 
-            <p>📁</p>
+            <div class="bee-flow" role="region" aria-label="Flusso BeeBullet">
+                <p class="bee-flow-caption">Ogni frame, prima si invecchia.
+                    Se il tempo è scaduto il colpo non si muove più in quel frame.</p>
+                <ol class="bee-flow-row">
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>età</strong>
+                            <code>age</code> cresce di <code>dt</code>,
+                            in secondi, come <code>BeeTime.dt</code>.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>scadenza</strong>
+                            Se <code>lifespan &gt; 0</code> e
+                            <code>age &gt;= lifespan</code>,
+                            <code>destroy()</code> e si esce.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box bee-flow-read"><strong>moto</strong>
+                            <code>x</code> e <code>y</code> avanzano di
+                            <code>vx * dt</code> e <code>vy * dt</code>.
+                            Poi si controlla lo schermo.</span>
+                    </li>
+                </ol>
+            </div>
 
-            <pre class="bee-code-block"></pre>
+            <p><code>lifespan</code> a 0, o negativo, non scade mai da solo.
+                <code>age</code> continua a crescere, e puoi farlo sparire tu
+                con <code>destroy()</code>. Gravità e attrito di
+                <code>BeeEntity</code> sono 0, quindi la velocità resta quella
+                che hai scritto. Se assegni <code>colpo.gravity</code>,
+                <code>integrate</code> la applica e il colpo cade.
+            </p>
 
-            <p>📁</p>
+            <p><code>reset</code> rimette posizione, dimensione, velocità,
+                texture, <code>lifespan</code> e <code>age</code> a 0, e
+                ritorna <code>this</code>. Gli argomenti omessi tornano ai
+                default. <code>recycle</code> azzera solo
+                <code>age</code>, <code>vx</code> e <code>vy</code>:
+                posizione, dimensione e durata restano. Lo chiama il pool
+                quando il colpo viene rilasciato, non tu a ogni sparo.
+            </p>
 
-            <pre class="bee-code-block"></pre>
+            <h3>Schermo e telecamera</h3>
 
-            <p>📁</p>
+            <p>Dopo il movimento, se c'è <code>engine.canvas</code>, il colpo
+                si confronta con l'inquadratura, non con l'angolo del canvas.
+                Se <code>engine.camera.getViewBounds()</code> esiste, l'area è
+                quella (è l'inquadratura di <code>BeeCamera</code>). Senza
+                telecamera l'area è il canvas, con origine
+                <code>(0, 0)</code>.
+            </p>
 
-            <pre class="bee-code-block"></pre>
+            <p>Intorno a quell'area ci sono 200 pixel di mondo per lato.
+                Il colpo muore solo quando tutto il suo rettangolo
+                (<code>worldX</code>, <code>worldY</code>, <code>width</code>,
+                <code>height</code>) è fuori da questa zona allargata.
+                Un colpo a cavallo del bordo, o entro quei 200 pixel, resta
+                vivo e può rientrare. Con <code>width</code> o
+                <code>height</code> a 0 conta il punto
+                <code>worldX</code> / <code>worldY</code>. Senza
+                <code>engine</code>, o senza canvas, questo test non c'è:
+                il colpo invecchia lo stesso.
+            </p>
 
-            <p>📁 </p>
+            <p>Su un canvas 800×600, senza telecamera, un colpo con
+                <code>worldX</code> a <code>800 + 199</code> resta,
+                uno a <code>800 + 201</code> muore. Con la telecamera a
+                <code>x: 1000</code> e la stessa larghezza, un colpo a
+                <code>worldX</code> 1500 è in quadro e resta vivo. Prima
+                della 2.12.1 quel colpo moriva, perché 1500 veniva confrontato
+                con 800.
+            </p>
 
-            <div class="bee-class-card"></div>
+            <p>Disegno e vita non sono la stessa cosa. Il motore non chiama
+                <code>draw</code> se il rettangolo non interseca l'inquadratura.
+                Nel margine di 200 pixel il colpo è ancora vivo, si muove,
+                e semplicemente non si vede finché non rientra.
+            </p>
 
-            <p>📁 </p>
+            <h3>Il pool</h3>
 
-            <div class="bee-class-card"></div>
+            <p><code>gioco.bullets</code> è un <code>BeePool</code> creato nel
+                costruttore del motore, con nome <code>'bullet'</code>.
+                <code>acquire</code> chiama <code>reset</code> con gli
+                argomenti che gli passi e sveglia il colpo
+                (<code>destroyed</code> false, <code>active</code> true).
+                <code>destroy()</code>, se il colpo ha <code>pool</code>,
+                non lo butta: lo rimette tra i disponibili, chiama
+                <code>recycle</code> e lo toglie dalla lista della scena
+                al giro successivo, perché <code>destroyed</code> è true.
+            </p>
 
-            <p> 📁 </p>
+            <p>Il massimo è 256, e il riuso del più vecchio è acceso.
+                Il colpo numero 257 non è <code>null</code>: è il più vecchio
+                ancora in uso, che salta alla nuova posizione e alla nuova
+                velocità. Se costruisci un pool tuo con il riuso spento,
+                <code>acquire</code> a pool pieno ritorna <code>null</code>,
+                ed è per questo che l'esempio controlla <code>if (colpo)</code>.
+            </p>
 
-            <div class="bee-class-card"></div>
+            <p><code>new BeeBullet(x, y, vx, vy, width, height, textureKey, lifespan)</code>
+                fa lo stesso <code>reset</code>, ma senza pool.
+                Il suo <code>destroy()</code> è definitivo: non torna in
+                circolo. Ha senso per un colpo singolo. Per sparare di
+                continuo usa <code>gioco.bullets</code>, altrimenti crei
+                un'entità nuova a ogni colpo.
+            </p>
+        </div>
 
-            <p> 📁 </p>
+        <div class="bee-class-card" id="BeeBullet-draw">
+            <h3>Disegno</h3>
 
-            <div class="bee-class-card"></div>
+            <p><code>draw(ctx, engine)</code> lavora in coordinate di mondo.
+                Il loop la chiama da <code>layers.drawWorld</code>, dopo che
+                la telecamera ha spostato il contesto, quindi non la chiami
+                tu e non la metti nel passaggio schermo. Senza
+                <code>ctx</code> esce e non lancia.
+            </p>
 
-            <p>📁 </p>
+            <p>Se <code>textureKey</code> è valorizzata e
+                <code>engine.assets.getImage</code> è una funzione, il colpo
+                disegna quell'immagine con <code>drawImage</code>, sul
+                rettangolo <code>worldX</code>, <code>worldY</code>,
+                <code>width</code>, <code>height</code>. L'immagine deve avere
+                una <code>width</code> numerica. Se la chiave manca, se
+                <code>getImage</code> non c'è, o se il valore non è
+                un'immagine (un suono o un JSON hanno spesso lo stesso nome),
+                disegna un rettangolo <code>#FFD700</code>. Non usa
+                <code>engine.getAsset</code>, che restituirebbe la prima cosa
+                trovata tra immagini, suoni e JSON.
+            </p>
+        </div>
 
-            <div class="bee-class-card"> </div>
+        <div class="bee-class-card bee-ladybug" id="BeeBullet-note">
+            <h3>Dove è facile sbagliare</h3>
 
-            <p>📁 </p>
+            <p><strong><code>acquire</code> non basta.</strong>
+                Il pool tiene il colpo in memoria, non nella scena.
+                <code>addEntity</code> lo mette nella scena corrente, se c'è,
+                altrimenti in <code>gioco.entities</code>. È lì che
+                <code>update</code> e <code>draw</code> lo trovano.
+                Rifarlo su un colpo già in lista non lo duplica.
+            </p>
 
-            <div class="bee-class-card"></div>
+            <p><strong>Il gruppo collisioni tiene l'oggetto, non il colpo del frame.</strong>
+                <code>collisions.add</code> salta un doppione. Quando il pool
+                riusa lo stesso oggetto, quello è ancora nel gruppo, e
+                <code>add</code> di nuovo non cambia niente.
+                I colpi con <code>destroyed</code> true vengono saltati dal
+                controllo, quindi un colpo a riposo nel pool non colpisce.
+                Se fai <code>new BeeBullet</code> senza pool, dopo
+                <code>destroy()</code> toglilo tu con
+                <code>collisions.remove</code>: l'oggetto morto resta
+                nell'array del gruppo.
+            </p>
 
-            <p>📁</p>
+            <p><strong>Non vederlo non vuol dire che è morto.</strong>
+                Entro 200 pixel fuori dall'inquadratura il colpo vive e si
+                muove, ma il disegno lo salta. Oltre quel margine
+                <code>destroy()</code> parte da solo. Il margine è in pixel
+                di mondo, su tutti e quattro i lati, e guarda l'intero
+                rettangolo: a sinistra conta
+                <code>worldX + width</code>, non solo <code>worldX</code>.
+            </p>
 
-            <div class="bee-class-card"> </div>
+            <p><strong>Posizione locale e posizione di mondo.</strong>
+                <code>reset</code> scrive <code>x</code> e <code>y</code>,
+                che senza un genitore coincidono con
+                <code>worldX</code> e <code>worldY</code>. Se il colpo ha un
+                parent, disegno e limite dello schermo usano il mondo, non
+                il valore locale. <code>vx</code> e <code>vy</code> spostano
+                <code>x</code> e <code>y</code> locali.
+            </p>
 
-            <p>📁 </p>
+            <p><strong>Il frame della scadenza non si muove.</strong>
+                Il controllo su <code>lifespan</code> è prima di
+                <code>super.update</code>. Quando <code>age</code> arriva
+                giusto al limite, la posizione resta quella del frame prima.
+                Cambiare <code>vx</code>, <code>vy</code> o
+                <code>lifespan</code> mentre vola vale dal frame successivo.
+                <code>lifespan</code> si legge ogni frame: portarlo a 0
+                ferma la scadenza, non azzera <code>age</code>.
+            </p>
+        </div>
 
-            <div class="bee-class-card"> </div>
-
-            <p> 📁 </p>
-
-            <pre class="bee-code-block"></pre>
-
-            <p>📁</p>
-
-            <pre class="bee-code-block"></pre>
-
-
-            <p>📁 </p>
-
-            <pre class="bee-code-block"></pre>
-
-            <p>📁 </p>
-
-            <pre class="bee-code-block"></pre>
-
-            <p> 📁</p>
-
-            <pre class="bee-code-block"></pre>
-
-
-
-
+        <div class="bee-class-card" id="BeeBullet-api">
+            <h3>Riepilogo API</h3>
+            <p>Niente gravità e niente attrito, finché non li scrivi tu.
+                Il rettangolo di riserva è oro pieno, senza bordo.
+                Il pool del motore si chiama <code>gioco.bullets</code>.
+            </p>
+            <table class="bee-api-table">
+                <thead>
+                    <tr>
+                        <th>Membro</th>
+                        <th>Ritorna</th>
+                        <th>Scopo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>new BeeBullet(x?, y?, vx?, vy?, width?, height?, textureKey?, lifespan?)</code></td>
+                        <td><code>BeeBullet</code></td>
+                        <td>Default: <code>(0, 0)</code>,
+                            <code>vx</code> 0, <code>vy</code> 300,
+                            8×8, texture <code>null</code>,
+                            <code>lifespan</code> 5. Chiama <code>reset</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>reset(x?, y?, vx?, vy?, width?, height?, textureKey?, lifespan?)</code></td>
+                        <td><code>this</code></td>
+                        <td>Gli stessi default. Azzera <code>age</code>.
+                            È quello che chiama <code>gioco.bullets.acquire</code>.</td>
+                    </tr>
+                    <tr>
+                        <td><code>recycle()</code></td>
+                        <td></td>
+                        <td>Azzera <code>age</code>, <code>vx</code> e
+                            <code>vy</code>. Non tocca posizione, dimensione,
+                            texture e <code>lifespan</code>. Lo chiama il pool
+                            al rilascio.</td>
+                    </tr>
+                    <tr>
+                        <td><code>update(dt, input, engine)</code></td>
+                        <td></td>
+                        <td>Fa crescere <code>age</code>, scade se
+                            <code>lifespan &gt; 0</code>, poi muove e,
+                            se c'è il canvas, applica il margine di 200 pixel
+                            sull'inquadratura.</td>
+                    </tr>
+                    <tr>
+                        <td><code>draw(ctx, engine)</code></td>
+                        <td></td>
+                        <td>Immagine da <code>assets.getImage</code>, oppure
+                            rettangolo <code>#FFD700</code>. Senza
+                            <code>ctx</code> esce.</td>
+                    </tr>
+                    <tr>
+                        <td><code>x</code> / <code>y</code> / <code>vx</code> / <code>vy</code></td>
+                        <td></td>
+                        <td>Posizione locale e velocità in pixel al secondo.
+                            <code>vy</code> positivo va verso il basso.</td>
+                    </tr>
+                    <tr>
+                        <td><code>width</code> / <code>height</code> / <code>textureKey</code></td>
+                        <td></td>
+                        <td>Rettangolo disegnato e chiave immagine.
+                            Il limite dello schermo usa questi valori subito.</td>
+                    </tr>
+                    <tr>
+                        <td><code>lifespan</code> / <code>age</code></td>
+                        <td><code>number</code></td>
+                        <td>Durata e secondi già vissuti.
+                            <code>lifespan</code> 0 o negativo: non scade da solo.</td>
+                    </tr>
+                    <tr>
+                        <td><code>destroy()</code></td>
+                        <td></td>
+                        <td>Con <code>pool</code>, torna nel pool.
+                            Senza pool, chiusura definitiva di
+                            <code>BeeEntity</code>.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
     </main>
 
