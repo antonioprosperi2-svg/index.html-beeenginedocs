@@ -34,6 +34,7 @@ Questo spazio raccoglie le guide, gli esempi pratici e le spiegazioni di tutti i
 * **⌨️ BeeInput (v2.10.7):** Tastiera, mouse e touch (`src/input/BeeInput.html`): `isPressed` e `wasPressed`, `setKey` a parte, `endFrame` a fine loop.
 * **🕹️ BeeJoystick (v2.10.9):** Stick in basso a sinistra (`src/input/BeeJoystick.html`): dito o mouse, coppie freccia e WASD, `enableJoystick()`.
 * **⭕ BeeTouchButton (v2.10.10):** Cerchio su schermo (`src/input/BeeTouchButton.html`): `isPressed` finché il pointer è giù, `render` dopo la camera.
+* **🕹️ BeeVirtualDPad (v2.11.4):** Croce direzionale su canvas (`src/input/BeeVirtualDPad.html`): `state` a 4 o 8 direzioni, il dito resta del pad anche fuori dal cerchio e dalla zona morta, `touch-action: none` sul canvas, `destroy`.
 * **🎮 BeeTouchControls (v2.11.3):** Croce e azione su schermo (`src/input/BeeTouchControls.html`): `enableTouchControls()` (non `enableJoystick()`), `setKey` con `Space`, `setButtonKeys` per cambiare tasto, `draw` senza `ctx` esce in silenzio, il tocco su un pulsante non è un clic.
 * **🐝 BeeEngine:** Facade e core loop (`src/core/BeeEngine.html`): `start`/`stop`/`pause`, scene vs `addEntity`, tween/timer/prefab/pathfinder.
 * **⏱ BeeTime:** Orologio unico del core loop (`src/core/BeeTime.html`): `dt` di simulazione, `unscaledDt` reale, pausa/F4, `timeScale`, accumulator per `BeePhysicsWorld`.

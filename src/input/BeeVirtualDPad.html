@@ -1,4 +1,4 @@
-<meta charset="UTF-8">
+﻿<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Documentazione - BeeEngine</title>
 
@@ -12,7 +12,7 @@
     <a href="#" class="bee-header-logo">
         <span class="bee-header-title">BeeVirtualDPad</span>
     </a>
-    <span class="bee-header-badge">v2.2.0</span>
+    <span class="bee-header-badge">v2.11.4</span>
 </header>
 
 <!-- CONTENITORE PRINCIPALE -->
@@ -189,92 +189,290 @@
     <!-- AREA CONTENUTI (TUTTI I MODULI VANNO QUI DENTRO) -->
     <main class="bee-docs-content">
 
-        <!-- SEZIONE 1 -->
-        <h2 class="bee-section-title"></h2>
+        <div
+            style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
+            <div>
+                <h2 class="bee-section-title" style="margin: 0;">BeeVirtualDPad — Documentazione Tecnica</h2>
+                <p style="margin-top: 5px;">Croce direzionale su canvas:
+                    <code class="bee-inline-code">state</code> a 4 o 8 direzioni, lo leggi tu ogni frame
+                </p>
+            </div>
+            <img src="https://beeenginejs.com/wp-content/uploads/2026/10/bee-engine-logo-animated-ezgif.com-resize.gif"
+                alt="BeeEngine Mascot" width="80" height="80" style="width: 80px; height: auto; flex-shrink: 0;">
+        </div>
 
-        <div class="bee-class-card" id="radme">****>>>>>>>> mettere id >>>>>>>>>>*****
-            <h3> </h3>
+        <div class="bee-class-card" id="BeeVirtualDPad">
 
-            <p></p>
+            <h3>Panoramica</h3>
 
-            <p> </p>
+            <p><code>BeeVirtualDPad</code> è una croce che il dito (o il mouse)
+                trascina. Vive in <code>src/input/BeeVirtualDPad.js</code>.
+                Non scrive tasti e non passa da <code>BeeInput</code>: ha quattro
+                booleani in <code>state</code> (<code>up</code>, <code>down</code>,
+                <code>left</code>, <code>right</code>) e in update li leggi tu.
+                Il loop del motore non la crea, non la aggiorna e non la
+                disegna: <code>render</code> la chiami tu.
+            </p>
 
-            <p>📁 </p>
+            <p><code>x</code> e <code>y</code> sono il centro, in pixel del bitmap.
+                <code>size</code> è la larghezza totale (di default 120) e il
+                raggio è <code>size / 2</code>. <code>eightWay</code> è false:
+                una direzione alla volta. Con true le diagonali accendono due
+                direzioni insieme.
+            </p>
 
-            <pre class="bee-code-block"></pre>
+            <pre class="bee-code-block"><span class="token keyword">const</span> pad <span class="token operator">=</span> <span class="token keyword">new</span> <span class="token class-name">BeeVirtualDPad</span><span class="token punctuation">({</span>
+    canvas<span class="token operator">:</span> gioco<span class="token punctuation">.</span>canvas<span class="token punctuation">,</span>
+    x<span class="token operator">:</span> <span class="token number">150</span><span class="token punctuation">,</span>
+    y<span class="token operator">:</span> <span class="token number">340</span><span class="token punctuation">,</span>
+    size<span class="token operator">:</span> <span class="token number">160</span><span class="token punctuation">,</span>
+    eightWay<span class="token operator">:</span> <span class="token boolean">false</span>
+<span class="token punctuation">})</span><span class="token punctuation">;</span>
 
-            <p>📁</p>
+eroe<span class="token punctuation">.</span>update <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>dt<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    <span class="token keyword">const</span> s <span class="token operator">=</span> pad<span class="token punctuation">.</span>state<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>s<span class="token punctuation">.</span>left<span class="token punctuation">)</span> <span class="token keyword">this</span><span class="token punctuation">.</span>worldX <span class="token operator">-=</span> <span class="token number">220</span> <span class="token operator">*</span> dt<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>s<span class="token punctuation">.</span>right<span class="token punctuation">)</span> <span class="token keyword">this</span><span class="token punctuation">.</span>worldX <span class="token operator">+=</span> <span class="token number">220</span> <span class="token operator">*</span> dt<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>s<span class="token punctuation">.</span>up<span class="token punctuation">)</span> <span class="token keyword">this</span><span class="token punctuation">.</span>worldY <span class="token operator">-=</span> <span class="token number">220</span> <span class="token operator">*</span> dt<span class="token punctuation">;</span>
+    <span class="token keyword">if</span> <span class="token punctuation">(</span>s<span class="token punctuation">.</span>down<span class="token punctuation">)</span> <span class="token keyword">this</span><span class="token punctuation">.</span>worldY <span class="token operator">+=</span> <span class="token number">220</span> <span class="token operator">*</span> dt<span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span>
 
-            <pre class="bee-code-block"></pre>
+<span class="token comment">// nella scena, dopo il mondo: la croce sta sullo schermo</span>
+scena<span class="token punctuation">.</span><span class="token function-variable function">draw</span> <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span>ctx<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    pad<span class="token punctuation">.</span><span class="token function">render</span><span class="token punctuation">(</span>ctx<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span></pre>
 
-            <p>📁</p>
+            <h3>Direzioni: 4 o 8</h3>
 
-            <pre class="bee-code-block"></pre>
+            <p>La direzione viene dal vettore che va dal centro al dito.
+                Se il dito è nella zona morta (a distanza minore o uguale a
+                <code>radius * 0.2</code> dal centro) non si accende niente.
+                Fuori dalla zona morta, la regola dipende da
+                <code>eightWay</code>.
+            </p>
 
-            <p>📁</p>
+            <table class="bee-api-table">
+                <thead>
+                    <tr>
+                        <th>Modo</th>
+                        <th>Regola</th>
+                        <th>Direzioni accese</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>eightWay: false</code></td>
+                        <td>Vince l'asse con la distanza maggiore: se
+                            <code>|dx| &gt; |dy|</code> è orizzontale,
+                            altrimenti verticale (a parità, verticale).</td>
+                        <td>Sempre una sola.</td>
+                    </tr>
+                    <tr>
+                        <td><code>eightWay: true</code></td>
+                        <td>Il vettore è normalizzato. Una direzione si accende
+                            se la sua componente supera
+                            <code>sin(π / 8)</code>, circa 0,38 (22,5°).</td>
+                        <td>Una sui quattro assi, due in diagonale
+                            (per esempio <code>up</code> e <code>left</code>).</td>
+                    </tr>
+                </tbody>
+            </table>
 
-            <pre class="bee-code-block"></pre>
+            <p>Puoi cambiare <code>eightWay</code> mentre il gioco gira. Lo
+                <code>state</code> si aggiorna al prossimo evento del dito:
+                finché il dito sta fermo resta quello di prima.
+            </p>
 
-            <p>📁</p>
+            <h3>Dito e zona morta</h3>
 
-            <pre class="bee-code-block"></pre>
+            <div class="bee-flow" role="region" aria-label="Flusso BeeVirtualDPad">
+                <p class="bee-flow-caption">Il pad resta di quel dito fino a
+                    quando non lo alzi, anche fuori dal cerchio e anche
+                    passando dal centro.</p>
+                <ol class="bee-flow-row">
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>presa</strong>
+                            <code>pointerdown</code> sul canvas, a distanza
+                            minore o uguale al raggio.
+                            <code>isPressed</code> true e
+                            <code>pointerId</code> salvato.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>tenuta</strong>
+                            <code>pointermove</code> sulla window, solo di
+                            quel pointer. A ogni evento
+                            <code>state</code> si ricalcola. Nella zona morta
+                            tutto è false, ma il pad resta tuo.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box bee-flow-read"><strong>rilascio</strong>
+                            <code>pointerup</code> o
+                            <code>pointercancel</code> di quel pointer:
+                            <code>resetState</code> azzera tutto e rilascia
+                            il capture.</span>
+                    </li>
+                </ol>
+            </div>
 
-            <p>📁 </p>
+            <p>Una volta preso, il dito non ha un limite esterno: se esce dal
+                cerchio la direzione continua a seguirlo. L'area dove si
+                prende il pad è un cerchio, non la croce: anche gli angoli
+                tra le braccia fanno presa.
+            </p>
+        </div>
 
-            <div class="bee-class-card"></div>
+        <div class="bee-class-card bee-ladybug" id="BeeVirtualDPad-note">
+            <h3>Dove è facile sbagliare</h3>
 
-            <p>📁 </p>
+            <p><strong>Sul telefono serve <code>touch-action: none</code>.</strong>
+                Il pad usa i pointer event e non chiama
+                <code>preventDefault</code>. Se il canvas non ha questa regola nel
+                CSS, il browser può prendere il trascinamento per uno scroll
+                della pagina e mandare <code>pointercancel</code>: il pad si
+                azzera a metà gesto. Il motore non la imposta da solo.
+            </p>
 
-            <div class="bee-class-card"></div>
+            <pre class="bee-code-block"><span class="token selector">canvas</span> <span class="token punctuation">{</span>
+    <span class="token property">touch-action</span><span class="token punctuation">:</span> none<span class="token punctuation">;</span>
+<span class="token punctuation">}</span></pre>
 
-            <p> 📁 </p>
+            <p><strong>Lo spazio è lo schermo.</strong> <code>render</code> va
+                chiamata dopo il <code>restore</code> della camera, per esempio in
+                <code>draw(ctx)</code> della scena. Sotto la camera la croce
+                scrolla col mondo, mentre il punto toccato resta in pixel del
+                canvas. Le coordinate sono
+                <code>(client - rect) * (canvas / rettangolo CSS)</code>:
+                con un canvas ridimensionato dal CSS il pad segue comunque il
+                dito. Se il canvas ha lato CSS 0, <code>canvasPoint</code> dà
+                <code>null</code> e quell'evento è ignorato.
+            </p>
 
-            <div class="bee-class-card"></div>
+            <p><strong>Non scrive tasti.</strong> <code>input.isPressed('ArrowLeft')</code>
+                non si accende con questo pad: si legge <code>pad.state</code>.
+                Se vuoi i tasti, c'è <code>BeeTouchControls</code>. Non registra
+                nemmeno <code>input.addTouchBlocker</code>, quindi un tocco sulla croce
+                è anche un tocco normale per <code>input.mouse</code>: un
+                <code>BeeButton</code> o un <code>BeeMenuScene</code> sotto la
+                croce può scattare.
+            </p>
 
-            <p> 📁 </p>
+            <p><strong>Un dito solo.</strong> Finché un pointer tiene il pad, un
+                <code>pointerdown</code> di un altro dito dentro il raggio viene
+                ignorato: il primo dito resta il proprietario. Vale il dito, il
+                pennino e il mouse, con qualsiasi tasto: l'evento è
+                <code>pointerdown</code>.
+            </p>
 
-            <div class="bee-class-card"></div>
+            <p><strong>Cambiare <code>size</code> o <code>radius</code>.</strong>
+                <code>radius</code> segue sempre <code>size</code>
+                (<code>size / 2</code>): se scrivi <code>pad.size = 200</code>
+                crescono anche l'area toccabile e la zona morta. Scrivere
+                <code>radius</code> cambia <code>size</code>; un valore non
+                valido non fa niente. Lo <code>state</code> si ricalcola solo
+                al prossimo evento del dito. Lo stesso vale per
+                <code>x</code> e <code>y</code>.
+            </p>
 
-            <p>📁 </p>
+            <p><strong>Errori e chiusura.</strong> Senza canvas il costruttore lancia
+                <code>BeeVirtualDPad: canvas required</code>. Se
+                <code>x</code> o <code>y</code> non sono numeri finiti, o
+                <code>size</code> non è un numero finito maggiore di 0, lancia un
+                errore con un messaggio che nomina il campo.
+                <code>render</code> senza <code>ctx</code> esce in silenzio.
+                <code>destroy</code> toglie i listener, rilascia il capture e
+                azzera <code>state</code>, <code>isPressed</code> e
+                <code>pointerId</code>. Si può chiamare più volte, e dopo un
+                <code>pointerdown</code> non riaccende il pad. Chiamala quando
+                cambi scena o rifai il pad: se no i vecchi listener restano su
+                <code>window</code> e il canvas.
+            </p>
+        </div>
 
-            <div class="bee-class-card"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"></div>
-
-            <p>📁</p>
-
-            <div class="bee-class-card"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"> </div>
-
-            <p> 📁 </p>
-
-            <pre class="bee-code-block"></pre>
-
-            <p>📁</p>
-
-            <pre class="bee-code-block"></pre>
-
-
-            <p>📁 </p>
-
-            <pre class="bee-code-block"></pre>
-
-            <p>📁 </p>
-
-            <pre class="bee-code-block"></pre>
-
-            <p> 📁</p>
-
-            <pre class="bee-code-block"></pre>
-
-
-
-
+        <div class="bee-class-card" id="BeeVirtualDPad-api">
+            <h3>Riepilogo API</h3>
+            <p>Il disegno è una croce a "+" con un solo contorno: riempimento
+                nero al 40%, bordo bianco di 2 pixel. Le braccia sono larghe
+                <code>radius * 0.35</code>. Un braccio acceso si riempie di
+                bianco al 70%.
+            </p>
+            <table class="bee-api-table">
+                <thead>
+                    <tr>
+                        <th>Membro</th>
+                        <th>Ritorna</th>
+                        <th>Scopo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>new BeeVirtualDPad({ canvas, x, y, size?, eightWay? })</code></td>
+                        <td><code>BeeVirtualDPad</code></td>
+                        <td>Centro <code>x</code>, <code>y</code>.
+                            <code>size</code> 120, <code>eightWay</code> false.
+                            Registra <code>pointerdown</code> sul canvas e
+                            <code>pointermove</code>, <code>pointerup</code>,
+                            <code>pointercancel</code> sulla window.</td>
+                    </tr>
+                    <tr>
+                        <td><code>state</code></td>
+                        <td><code>{ up, down, left, right }</code></td>
+                        <td>Quattro booleani, tutti false a riposo. Si leggono
+                            ogni frame: nessun evento da ascoltare.</td>
+                    </tr>
+                    <tr>
+                        <td><code>isPressed</code></td>
+                        <td><code>boolean</code></td>
+                        <td>True finché il dito che ha preso il pad è giù,
+                            anche nella zona morta.</td>
+                    </tr>
+                    <tr>
+                        <td><code>pointerId</code></td>
+                        <td><code>number | null</code></td>
+                        <td>Il pointer proprietario. <code>null</code> se il pad
+                            è libero.</td>
+                    </tr>
+                    <tr>
+                        <td><code>x</code> / <code>y</code> / <code>size</code> /
+                            <code>radius</code> / <code>eightWay</code></td>
+                        <td></td>
+                        <td>Centro, dimensione, raggio e modo. Hit test e
+                            disegno leggono i valori di adesso. <code>radius</code>
+                            è <code>size / 2</code> e si può anche scrivere.</td>
+                    </tr>
+                    <tr>
+                        <td><code>canvasPoint(e)</code></td>
+                        <td><code>{ x, y } | null</code></td>
+                        <td>Il punto del pointer in pixel del bitmap, o
+                            <code>null</code> se il canvas non ha dimensione
+                            o la scala non è finita.</td>
+                    </tr>
+                    <tr>
+                        <td><code>resetState()</code></td>
+                        <td></td>
+                        <td>Azzera <code>state</code>, <code>isPressed</code> e
+                            <code>pointerId</code> e rilascia il capture.</td>
+                    </tr>
+                    <tr>
+                        <td><code>render(ctx)</code></td>
+                        <td></td>
+                        <td>Disegna la croce e le braccia accese. Senza
+                            <code>ctx</code>: return. Chiamata dal gioco, dopo
+                            la camera.</td>
+                    </tr>
+                    <tr>
+                        <td><code>destroy()</code></td>
+                        <td></td>
+                        <td>Toglie i listener (tenuti in
+                            <code>onPointerDown</code>,
+                            <code>onPointerMove</code>,
+                            <code>onPointerUp</code>) e azzera lo stato. Si
+                            può chiamare più volte.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
     </main>
 
