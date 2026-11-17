@@ -17,6 +17,7 @@ Questo spazio raccoglie le guide, gli esempi pratici e le spiegazioni di tutti i
 * **🍯 BeeCollectible (v2.8.1):** Bonus che cade (`src/gameplay/BeeCollectible.html`): `reset` in cima, `collect(collector)` + `onCollect`, moto su `worldY`.
 * **🔫 BeeEnemyShooter:** Nemico che rimbalza e spara (`src/gameplay/BeeEnemyShooter.html`): `setBounds` mondo, colpi in `hazards`, timer in pool.
 * **💥 BeeBullet (v2.12.1):** Proiettile (`src/physics/BeeBullet.html`): `gioco.bullets.acquire` più `addEntity`, `lifespan` in secondi, margine di 200 pixel sull'inquadratura, texture da `assets.getImage`.
+* **💥 BeeCollisionSystem (v2.12.2):** Gruppi, piattaforme e contatti (`src/physics/BeeCollisionSystem.html`): `solid` e `overlap`, `run()` in `lateUpdate`, stesso gruppo una volta per coppia.
 * **📋 BeeMenuScene:** Scena di menu (`src/gameplay/BeeMenuScene.html`): splash o `items`, `next` / `onStart`, niente input in pausa.
 * **👾 BeeEnemy (v2.8.4):** Pattuglia X (`src/gameplay/BeeEnemy.html`): `worldX`, muro `minX`/`maxX + width`.
 * **🟫 BeePlatform:** Sprite statico per i solidi (`src/gameplay/BeePlatform.html`): la fisica è `collisions.solid` + `resolvePlatformCollision`.

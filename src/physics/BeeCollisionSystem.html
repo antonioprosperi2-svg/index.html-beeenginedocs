@@ -12,7 +12,7 @@
     <a href="#" class="bee-header-logo">
         <span class="bee-header-title">BeeCollisionSystem</span>
     </a>
-    <span class="bee-header-badge">v2.2.0</span>
+    <span class="bee-header-badge">v2.12.2</span>
 </header>
 
 <!-- CONTENITORE PRINCIPALE -->
@@ -189,92 +189,283 @@
     <!-- AREA CONTENUTI (TUTTI I MODULI VANNO QUI DENTRO) -->
     <main class="bee-docs-content">
 
-        <!-- SEZIONE 1 -->
-        <h2 class="bee-section-title"></h2>
+        <div
+            style="display: flex; align-items: center; justify-content: space-between; gap: 20px; margin-bottom: 20px;">
+            <div>
+                <h2 class="bee-section-title" style="margin: 0;">BeeCollisionSystem — Documentazione Tecnica</h2>
+                <p style="margin-top: 5px;">Gruppi di entità, piattaforme solide e contatti:
+                    <code class="bee-inline-code">run()</code> dopo il movimento
+                </p>
+            </div>
+            <img src="https://beeenginejs.com/wp-content/uploads/2026/10/bee-engine-logo-animated-ezgif.com-resize.gif"
+                alt="BeeEngine Mascot" width="80" height="80" style="width: 80px; height: auto; flex-shrink: 0;">
+        </div>
 
-        <div class="bee-class-card" id="radme">****>>>>>>>> mettere id >>>>>>>>>>*****
-            <h3> </h3>
+        <div class="bee-class-card" id="BeeCollisionSystem">
 
-            <p></p>
+            <h3>Panoramica</h3>
 
-            <p> </p>
+            <p><code>BeeCollisionSystem</code> decide chi tocca chi.
+                Vive in <code>src/physics/BeeCollisionSystem.js</code>.
+                Il motore ne crea una e la mette in
+                <code>gioco.collisions</code>. Non gira da sola:
+                le regole si registrano una volta, e
+                <code>run()</code> si chiama ogni frame, dopo che le
+                entità si sono mosse.
+            </p>
 
-            <p>📁 </p>
+            <p>Le entità stanno in gruppi con un nome
+                (<code>'player'</code>, <code>'solids'</code>,
+                <code>'monete'</code>). Una regola
+                <code>solid</code> spinge chi si muove fuori dalle
+                piattaforme. Una regola <code>overlap</code> chiama
+                una funzione quando due rettangoli si toccano.
+                Il primo filtro è <code>BeeSpatialHash</code>, celle
+                da 64 pixel: si guardano solo i vicini. Il contatto
+                vero lo decide <code>collidesWith</code>.
+            </p>
 
-            <pre class="bee-code-block"></pre>
+            <pre class="bee-code-block"><span class="token keyword">const</span> collisioni <span class="token operator">=</span> gioco<span class="token punctuation">.</span>collisions<span class="token punctuation">;</span>
 
-            <p>📁</p>
+collisioni<span class="token punctuation">.</span><span class="token function">setGroup</span><span class="token punctuation">(</span><span class="token string">'player'</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>eroe<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+collisioni<span class="token punctuation">.</span><span class="token function">setGroup</span><span class="token punctuation">(</span><span class="token string">'solids'</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>terra<span class="token punctuation">,</span> piattaforma<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+collisioni<span class="token punctuation">.</span><span class="token function">setGroup</span><span class="token punctuation">(</span><span class="token string">'monete'</span><span class="token punctuation">,</span> <span class="token punctuation">[</span>moneta<span class="token punctuation">]</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-            <pre class="bee-code-block"></pre>
+collisioni<span class="token punctuation">.</span><span class="token function">solid</span><span class="token punctuation">(</span><span class="token string">'player'</span><span class="token punctuation">,</span> <span class="token string">'solids'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+collisioni<span class="token punctuation">.</span><span class="token function">overlap</span><span class="token punctuation">(</span><span class="token string">'player'</span><span class="token punctuation">,</span> <span class="token string">'monete'</span><span class="token punctuation">,</span> <span class="token punctuation">(</span>chi<span class="token punctuation">,</span> cosa<span class="token punctuation">)</span> <span class="token operator">=&gt;</span> <span class="token punctuation">{</span>
+    cosa<span class="token punctuation">.</span><span class="token function">collect</span><span class="token punctuation">(</span>chi<span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
 
-            <p>📁</p>
+<span class="token comment">// la scena muove le entità in update, poi chiama lateUpdate</span>
+scena<span class="token punctuation">.</span>lateUpdate <span class="token operator">=</span> <span class="token keyword">function</span> <span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    collisioni<span class="token punctuation">.</span><span class="token function">run</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">;</span></pre>
 
-            <pre class="bee-code-block"></pre>
+            <h3>I gruppi</h3>
 
-            <p>📁</p>
+            <p><code>setGroup(nome, entità)</code> sostituisce il gruppo
+                e ne copia l'array. Aggiungere o togliere qualcosa
+                dall'array che hai passato, dopo, non cambia il gruppo:
+                usa <code>add</code> e <code>remove</code>.
+                Un array vuoto svuota il gruppo.
+                <code>add</code> crea il gruppo se manca e non mette
+                due volte la stessa entità. <code>remove</code> su un
+                gruppo che non esiste non fa niente.
+            </p>
 
-            <pre class="bee-code-block"></pre>
+            <p>Un'entità con <code>active === false</code> o
+                <code>destroyed === true</code> non collide, ma resta
+                nell'array. È il caso del proiettile del pool: quando
+                torna disponibile è <code>destroyed</code>, e quando
+                <code>acquire</code> lo risveglia è di nuovo nello
+                stesso gruppo, senza una seconda <code>add</code>.
+                <code>BeeEnemyShooter</code> chiama lo stesso
+                <code>add</code> a ogni colpo: la seconda volta non
+                duplica.
+            </p>
 
-            <p>📁</p>
+            <h3>Solido</h3>
 
-            <pre class="bee-code-block"></pre>
+            <p><code>solid(chiSiMuove, chiStaFermo)</code> è ordinato.
+                Il primo nome è chi viene spinto. Il secondo è la
+                piattaforma. A ogni <code>run</code>, i fermi entrano
+                nell'hash. Ogni entità del primo gruppo che ha
+                <code>resolvePlatformCollision</code> lo chiama sui
+                vicini. <code>BeeEntity</code> ce l'ha: se stai cadendo
+                ti appoggia sopra, se sali ti ferma la testa, se vai
+                di lato ti spinge fuori. Il valore di ritorno della
+                risoluzione non conta qui. Si muove la posizione di mondo.
+            </p>
 
-            <p>📁 </p>
+            <p>La stessa coppia di nomi, registrata due volte, resta
+                una regola sola. <code>solid('solids', 'player')</code>
+                è un'altra regola: spinge le piattaforme contro il
+                giocatore. L'ordine degli argomenti è il verso della spinta.
+            </p>
 
-            <div class="bee-class-card"></div>
+            <h3>Overlap</h3>
 
-            <p>📁 </p>
+            <div class="bee-flow" role="region" aria-label="Flusso overlap">
+                <p class="bee-flow-caption">Il callback parte solo se il
+                    rettangolo di mondo si tocca davvero. L'hash dice
+                    «forse».</p>
+                <ol class="bee-flow-row">
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>gruppo B</strong>
+                            Entra nell'hash. Senza area
+                            (<code>width</code> o <code>height</code>
+                            a 0) non entra.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box"><strong>gruppo A</strong>
+                            Per ogni entità attiva si chiedono i vicini.
+                            <code>collidesWith</code> conferma.</span>
+                        <span class="bee-flow-arrow" aria-hidden="true">→</span>
+                    </li>
+                    <li class="bee-flow-step">
+                        <span class="bee-flow-box bee-flow-read"><strong>callback</strong>
+                            <code>(a, b, engine)</code>.
+                            <code>a</code> è del primo gruppo,
+                            <code>b</code> del secondo.</span>
+                    </li>
+                </ol>
+            </div>
 
-            <div class="bee-class-card"></div>
+            <p>Due gruppi diversi: un contatto, una chiamata, in
+                quell'ordine. Se la stessa entità sta in tutti e due,
+                non viene confrontata con se stessa. Lo stesso gruppo
+                due volte, <code>overlap('sciame', 'sciame', fn)</code>,
+                dà ogni coppia una volta sola, nell'ordine in cui stanno
+                nel gruppo: prima chi ha l'indice più basso.
+            </p>
 
-            <p> 📁 </p>
+            <p>La stessa funzione sugli stessi due nomi non si registra
+                due volte. Due funzioni diverse sugli stessi gruppi
+                restano due regole, ed entrambe partono, nell'ordine
+                in cui le hai aggiunte. <code>run</code> esegue prima
+                i <code>solid</code> e gli <code>overlap</code> così
+                come stanno in lista, una regola dopo l'altra.
+            </p>
+        </div>
 
-            <div class="bee-class-card"></div>
+        <div class="bee-class-card bee-ladybug" id="BeeCollisionSystem-note">
+            <h3>Dove è facile sbagliare</h3>
 
-            <p> 📁 </p>
+            <p><strong><code>run()</code> va dopo il movimento.</strong>
+                Il motore non lo chiama. In una scena,
+                <code>update</code> parte prima di
+                <code>entity.update</code>, e <code>lateUpdate</code>
+                parte dopo. Se metti <code>run()</code> in
+                <code>update</code>, i contatti sono quelli del frame
+                precedente. Senza scena, le entità di
+                <code>gioco.entities</code> si muovono in
+                <code>updateEntities</code>, e <code>run()</code> sta
+                bene in <code>gioco.update</code>, che arriva dopo.
+            </p>
 
-            <div class="bee-class-card"></div>
+            <p><strong>Il nome vuoto e l'array.</strong>
+                <code>createGroup</code>, <code>setGroup</code>,
+                <code>add</code>, <code>remove</code>, <code>solid</code>
+                e <code>overlap</code> lanciano
+                <code>BeeCollisionSystem: name required</code> se il nome
+                non è una stringa non vuota.
+                <code>setGroup</code> con un valore che non è un array
+                lancia
+                <code>BeeCollisionSystem.setGroup: entities must be an array</code>
+                e lascia il gruppo com'era.
+                <code>overlap</code> senza funzione lancia subito
+                <code>BeeCollisionSystem.overlap: callback required</code>
+                e non registra la regola.
+            </p>
 
-            <p>📁 </p>
+            <p><strong>Senza area non si viene colpiti.</strong>
+                <code>BeeSpatialHash</code> inserisce solo rettangoli
+                con <code>width</code> e <code>height</code> maggiori
+                di 0. Un membro del gruppo B largo 0 non entra nell'hash
+                e non genera callback. Un membro del gruppo A largo 0
+                interroga solo la cella del suo punto, e il contatto
+                vero lo decide comunque <code>collidesWith</code>.
+            </p>
 
-            <div class="bee-class-card"> </div>
+            <p><strong>Non richiamare <code>run()</code> dal callback.</strong>
+                I vicini dell'entità corrente sono una copia: un
+                <code>hash.query()</code> dentro il callback non gli
+                fa perdere i contatti già trovati. <code>run()</code>
+                di nuovo, invece, ricostruisce l'hash condiviso. I
+                contatti delle entità successive di quel giro possono
+                saltare o arrivare dal gruppo sbagliato.
+            </p>
 
-            <p>📁 </p>
+            <p><strong><code>clear()</code> porta via tutto.</strong>
+                Svuota i gruppi, le regole e l'hash, e ritorna
+                <code>this</code>. Dopo, <code>solid</code> e
+                <code>overlap</code> vanno registrati di nuovo.
+                Non c'è un metodo per togliere una sola regola:
+                per cambiarla si chiama <code>clear()</code> e si
+                ricostruisce, oppure si lascia la regola e si
+                svuota il gruppo con <code>setGroup(nome, [])</code>.
+            </p>
 
-            <div class="bee-class-card"></div>
+            <p><strong>Tra un frame e l'altro si passa attraverso.</strong>
+                Il controllo è la posizione di adesso, non il segmento
+                percorso. Un colpo molto veloce, o una piattaforma
+                sottile, può non toccare il rettangolo in quel frame
+                e non generare né spinta né callback.
+            </p>
+        </div>
 
-            <p>📁</p>
-
-            <div class="bee-class-card"> </div>
-
-            <p>📁 </p>
-
-            <div class="bee-class-card"> </div>
-
-            <p> 📁 </p>
-
-            <pre class="bee-code-block"></pre>
-
-            <p>📁</p>
-
-            <pre class="bee-code-block"></pre>
-
-
-            <p>📁 </p>
-
-            <pre class="bee-code-block"></pre>
-
-            <p>📁 </p>
-
-            <pre class="bee-code-block"></pre>
-
-            <p> 📁</p>
-
-            <pre class="bee-code-block"></pre>
-
-
-
-
+        <div class="bee-class-card" id="BeeCollisionSystem-api">
+            <h3>Riepilogo API</h3>
+            <p>Tutto ritorna <code>this</code>, tranne <code>run()</code>.
+                I gruppi sono la <code>Map</code> <code>groups</code>.
+                L'hash è <code>hash</code>, celle da 64 pixel, e si
+                svuota a ogni regola.
+            </p>
+            <table class="bee-api-table">
+                <thead>
+                    <tr>
+                        <th>Membro</th>
+                        <th>Ritorna</th>
+                        <th>Scopo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><code>new BeeCollisionSystem(engine)</code></td>
+                        <td><code>BeeCollisionSystem</code></td>
+                        <td>Gruppi vuoti, nessuna regola, un
+                            <code>BeeSpatialHash</code>. Il motore lo
+                            fa nel costruttore.</td>
+                    </tr>
+                    <tr>
+                        <td><code>createGroup(nome)</code></td>
+                        <td><code>this</code></td>
+                        <td>Crea il gruppo se manca. Nome vuoto: errore.</td>
+                    </tr>
+                    <tr>
+                        <td><code>setGroup(nome, entità)</code></td>
+                        <td><code>this</code></td>
+                        <td>Sostituisce il gruppo con una copia dell'array.
+                            Array vuoto: gruppo vuoto. Non-array: errore,
+                            il gruppo resta.</td>
+                    </tr>
+                    <tr>
+                        <td><code>add(nome, entità)</code> / <code>remove(nome, entità)</code></td>
+                        <td><code>this</code></td>
+                        <td><code>add</code> crea il gruppo e ignora i
+                            doppioni e i valori vuoti. <code>remove</code>
+                            toglie quell'oggetto.</td>
+                    </tr>
+                    <tr>
+                        <td><code>solid(chiSiMuove, chiStaFermo)</code></td>
+                        <td><code>this</code></td>
+                        <td>Regola di spinta. La stessa coppia di nomi
+                            non si aggiunge due volte.</td>
+                    </tr>
+                    <tr>
+                        <td><code>overlap(gruppoA, gruppoB, callback)</code></td>
+                        <td><code>this</code></td>
+                        <td>Callback <code>(a, b, engine)</code>.
+                            Stesso gruppo: una volta per coppia.
+                            Stessa funzione già registrata: niente.
+                            Senza funzione: errore subito.</td>
+                    </tr>
+                    <tr>
+                        <td><code>run()</code></td>
+                        <td></td>
+                        <td>Esegue le regole in ordine. Salta
+                            <code>active === false</code> e
+                            <code>destroyed</code>. Non li toglie dal gruppo.</td>
+                    </tr>
+                    <tr>
+                        <td><code>clear()</code></td>
+                        <td><code>this</code></td>
+                        <td>Cancella gruppi, regole e hash.</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
 
     </main>
 
